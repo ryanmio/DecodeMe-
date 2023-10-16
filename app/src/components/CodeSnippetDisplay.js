@@ -1,7 +1,18 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-export default function CodeSnippetDisplay() {
-  const codeSnippet = 'Example code snippet';
+async function fetchCodeSnippet(gameMode) {
+  const response = await fetch(`/api/code-snippets?gameMode=${gameMode}`);
+  const data = await response.json();
+  return data.codeSnippet;
+}
+
+export default function CodeSnippetDisplay({ gameMode }) {
+  const [codeSnippet, setCodeSnippet] = useState('');
+
+  useEffect(() => {
+    fetchCodeSnippet(gameMode).then(setCodeSnippet);
+  }, [gameMode]);
 
   return (
     <div>
@@ -10,3 +21,7 @@ export default function CodeSnippetDisplay() {
     </div>
   );
 }
+
+CodeSnippetDisplay.propTypes = {
+  gameMode: PropTypes.string.isRequired,
+};
