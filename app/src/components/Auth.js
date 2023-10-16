@@ -1,14 +1,16 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import firebase from '../firebase';
 
 export default function Auth() {
-  // This marks the component as a Client Component
-  if (typeof window === 'undefined') return null;
-
+  const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const signUp = () => {
     firebase.auth().createUserWithEmailAndPassword(email, password)
@@ -35,6 +37,10 @@ export default function Auth() {
         var errorMessage = error.message;
       });
   };
+
+  if (!isClient) {
+    return null;
+  }
 
   return (
     <div>
