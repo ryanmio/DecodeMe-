@@ -3,38 +3,37 @@
 import { useState, useEffect } from 'react';
 import firebase from '../firebase';
 
-export default function Auth() {
+export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
+    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+      onUserAuth(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
   const signUp = () => {
+    setLoading(true);
     firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // User registered
-        var user = userCredential.user;
-      })
       .catch((error) => {
-        // Handle errors
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        setError(error.message);
+        setLoading(false);
       });
   };
 
   const signIn = () => {
+    setLoading(true);
     firebase.auth().signInWithEmailAndPassword(email, password)
-      .then((userCredential) => {
-        // User signed in
-        var user = userCredential.user;
-      })
       .catch((error) => {
-        // Handle errors
-        var errorCode = error.code;
-        var errorMessage = error.message;
+        setError(error.message);
+        setLoading(false);
       });
   };
 
@@ -46,8 +45,14 @@ export default function Auth() {
     <div>
       <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={signUp}>Sign Up</button>
-      <button onClick={signIn}>Sign In</button>
+      <button onClick={signUp} disabled={loading}>Sign Up</button>
+      <button onClick={signIn} disabled={loading}>Sign In</button>
+      {loading && <p>Loading...</p>}
+      {error && <p>Error: {error}</p>}
     </div>
   );
 }
+
+Auth.propTypes = {
+  onUserAuth: PropTypes.func.isRequired,
+};
