@@ -68,3 +68,4 @@ node_modules/
 functions/index copy.js
 TASKS.md
 backend/decodeme-1f38e-firebase-adminsdk-j6zn0-8494efde02.json
+.env.local
