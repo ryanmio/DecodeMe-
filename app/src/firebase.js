@@ -11,8 +11,19 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+console.log("Firebase configuration:", firebaseConfig);
+
+try {
+  // Check if a Firebase instance doesn't exist. If not, initialize Firebase.
+  if (!firebase.apps.length) {
+    console.log("Initializing Firebase...");
+    firebase.initializeApp(firebaseConfig);
+    console.log("Firebase initialized successfully!");
+  } else {
+    console.warn("Firebase already initialized.");
+  }
+} catch (err) {
+  console.error("Error during Firebase initialization or check:", err);
 }
 
 export default firebase;
