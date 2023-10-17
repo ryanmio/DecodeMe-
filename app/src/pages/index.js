@@ -18,6 +18,11 @@ export default function Home() {
     setGameMode(mode);
   };
 
+  const handleAnswerSubmit = (answer) => {
+    console.log(`User's answer: ${answer}`);
+    // TODO: Check if the answer is correct and update the user's score
+  };
+
   return (
     <div>
       <h1>DecodeMe!</h1>
@@ -28,7 +33,7 @@ export default function Home() {
       ) : (
         <>
           <CodeSnippetDisplay gameMode={gameMode} />
-          <UserAnswerInput gameMode={gameMode} />
+          <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
         </>
       )}
     </div>
