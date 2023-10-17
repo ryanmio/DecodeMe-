@@ -1,14 +1,17 @@
 'use client';
 
 import React, { useState } from 'react';
+import PropTypes from 'prop-types';
 
-export default function UserAnswerInput() {
+export default function UserAnswerInput({ onAnswerSubmit }) {
   const [answer, setAnswer] = useState('');
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Handle answer submission
-    console.log(answer);
+    // Pass the answer up to the parent component
+    onAnswerSubmit(answer);
+    // Clear the input field
+    setAnswer('');
   };
 
   return (
@@ -21,3 +24,7 @@ export default function UserAnswerInput() {
     </div>
   );
 }
+
+UserAnswerInput.propTypes = {
+  onAnswerSubmit: PropTypes.func.isRequired,
+};
