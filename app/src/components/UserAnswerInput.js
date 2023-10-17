@@ -1,30 +1,41 @@
-'use client';
-
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
+import Auth from '../components/Auth';
+import GameModeSelection from '../components/GameModeSelection';
+import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
+import UserAnswerInput from '../components/UserAnswerInput';
 
-export default function UserAnswerInput({ onAnswerSubmit }) {
-  const [answer, setAnswer] = useState('');
+console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Pass the answer up to the parent component
-    onAnswerSubmit(answer);
-    // Clear the input field
-    setAnswer('');
+export default function Home() {
+  const [user, setUser] = useState(null);
+  const [gameMode, setGameMode] = useState(null);
+
+  const handleUserAuth = (user) => {
+    setUser(user);
+  };
+
+  const handleGameModeSelect = (mode) => {
+    setGameMode(mode);
+  };
+
+  const handleAnswerSubmit = (answer) => {
+    console.log(`User's answer: ${answer}`);
+    // TODO: Check if the answer is correct and update the user's score
   };
 
   return (
     <div>
-      <h1>Your Answer</h1>
-      <form onSubmit={handleSubmit}>
-        <input type="text" value={answer} onChange={(e) => setAnswer(e.target.value)} />
-        <button type="submit">Submit</button>
-      </form>
+      <h1>DecodeMe!</h1>
+      {!user ? (
+        <Auth onUserAuth={handleUserAuth} />
+      ) : !gameMode ? (
+        <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+      ) : (
+        <>
+          <CodeSnippetDisplay gameMode={gameMode} />
+          <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
+        </>
+      )}
     </div>
   );
 }
-
-UserAnswerInput.propTypes = {
-  onAnswerSubmit: PropTypes.func.isRequired,
-};
