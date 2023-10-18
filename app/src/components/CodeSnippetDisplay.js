@@ -26,7 +26,7 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
       <pre>{codeSnippet}</pre>
       <h2>Options</h2>
       <form>
-        {options.map((option, index) => (
+        {options && options.map((option, index) => (
           <div key={index}>
             <input type="radio" id={`option${index}`} name="option" value={option} />
             <label htmlFor={`option${index}`}>{option}</label>
