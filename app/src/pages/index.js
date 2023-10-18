@@ -9,6 +9,8 @@ console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
 export default function Home() {
   const [user, setUser] = useState(null);
   const [gameMode, setGameMode] = useState(null);
+  const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [score, setScore] = useState(0);
 
   const handleUserAuth = (user) => {
     setUser(user);
@@ -20,7 +22,14 @@ export default function Home() {
 
   const handleAnswerSubmit = (answer) => {
     console.log(`User's answer: ${answer}`);
-    // TODO: Check if the answer is correct and update the user's score
+    if (answer === correctAnswer) {
+      setScore(score + 1);
+    }
+  };
+
+  const handleCodeSnippetFetch = (data) => {
+    setCorrectAnswer(data.correctAnswer);
+    // handle other data as needed
   };
 
   return (
@@ -32,7 +41,7 @@ export default function Home() {
         <GameModeSelection onGameModeSelect={handleGameModeSelect} />
       ) : (
         <>
-          <CodeSnippetDisplay gameMode={gameMode} />
+          <CodeSnippetDisplay gameMode={gameMode} onCodeSnippetFetch={handleCodeSnippetFetch} />
           <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
         </>
       )}
