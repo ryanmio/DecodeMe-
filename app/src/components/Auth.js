@@ -13,8 +13,8 @@ export default function Auth({ onUserAuth }) {
 
   useEffect(() => {
     setIsClient(true);
-    const firebaseInstance = getFirebase(); // get the instance on-demand
-    if (firebaseInstance && firebaseInstance.apps.length > 0) {
+    const firebaseInstance = getFirebase();
+    if (firebaseInstance) {
       const unsubscribe = firebaseInstance.auth().onAuthStateChanged(user => {
         onUserAuth(user);
         setLoading(false);
