@@ -11,6 +11,7 @@ export default function Home() {
   const [gameMode, setGameMode] = useState(null);
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [score, setScore] = useState(0);
+  const [options, setOptions] = useState([]);
 
   const handleUserAuth = (user) => {
     setUser(user);
@@ -29,6 +30,7 @@ export default function Home() {
 
   const handleCodeSnippetFetch = (data) => {
     setCorrectAnswer(data.correctAnswer);
+    setOptions(data.options);
     // handle other data as needed
   };
 
@@ -42,7 +44,7 @@ export default function Home() {
       ) : (
         <>
           <CodeSnippetDisplay gameMode={gameMode} onCodeSnippetFetch={handleCodeSnippetFetch} />
-          <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
+          <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
         </>
       )}
     </div>
