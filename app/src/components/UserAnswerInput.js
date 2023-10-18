@@ -1,41 +1,41 @@
 import React, { useState } from 'react';
-import Auth from '../components/Auth';
-import GameModeSelection from '../components/GameModeSelection';
-import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
-import UserAnswerInput from '../components/UserAnswerInput';
+import PropTypes from 'prop-types';
 
-console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
+export default function UserAnswerInput({ options, onAnswerSubmit }) {
+  const [selectedOption, setSelectedOption] = useState('');
 
-export default function Home() {
-  const [user, setUser] = useState(null);
-  const [gameMode, setGameMode] = useState(null);
-
-  const handleUserAuth = (user) => {
-    setUser(user);
-  };
-
-  const handleGameModeSelect = (mode) => {
-    setGameMode(mode);
-  };
-
-  const handleAnswerSubmit = (answer) => {
-    console.log(`User's answer: ${answer}`);
-    // TODO: Check if the answer is correct and update the user's score
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Pass the selected option up to the parent component
+    onAnswerSubmit(selectedOption);
+    // Clear the selected option
+    setSelectedOption('');
   };
 
   return (
     <div>
-      <h1>DecodeMe!</h1>
-      {!user ? (
-        <Auth onUserAuth={handleUserAuth} />
-      ) : !gameMode ? (
-        <GameModeSelection onGameModeSelect={handleGameModeSelect} />
-      ) : (
-        <>
-          <CodeSnippetDisplay gameMode={gameMode} />
-          <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
-        </>
-      )}
+      <h1>Your Answer</h1>
+      <form onSubmit={handleSubmit}>
+        {options.map((option, index) => (
+          <div key={index}>
+            <input 
+              type="radio" 
+              id={`option${index}`} 
+              name="option" 
+              value={option} 
+              checked={selectedOption === option}
+              onChange={(e) => setSelectedOption(e.target.value)} 
+            />
+            <label htmlFor={`option${index}`}>{option}</label>
+          </div>
+        ))}
+        <button type="submit">Submit</button>
+      </form>
     </div>
   );
 }
+
+UserAnswerInput.propTypes = {
+  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  onAnswerSubmit: PropTypes.func.isRequired,
+};
