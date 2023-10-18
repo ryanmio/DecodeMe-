@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getFirebase } from '../firebase';
+import { getFirebaseAuth } from '../firebase';
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
@@ -14,28 +14,29 @@ export default function Auth({ onUserAuth }) {
   useEffect(() => {
     console.log("Inside useEffect in Auth component...");
     setIsClient(true);
-    const firebaseInstance = getFirebase();
+    const auth = getFirebaseAuth();
+    console.log(auth);
     
-    if (firebaseInstance) {
-      console.log("Firebase instance acquired in Auth component...");
-      const unsubscribe = firebaseInstance.auth().onAuthStateChanged(user => {
+    if (auth) {
+      console.log("Firebase Auth instance acquired in Auth component...");
+      const unsubscribe = auth.onAuthStateChanged(user => {
         onUserAuth(user);
         setLoading(false);
       });
       return () => unsubscribe();
     } else {
-      console.error("Failed to acquire Firebase instance in Auth component.");
+      console.error("Failed to acquire Firebase Auth instance in Auth component.");
     }
   }, []);
 
   const handleAuthentication = (authMethod) => {
     console.log("Handling authentication...");
     setLoading(true);
-    const firebaseInstance = getFirebase();
+    const auth = getFirebaseAuth();
     
-    if (!firebaseInstance) {
-      console.error("Failed to get Firebase instance inside handleAuthentication.");
-      setError("Failed to get Firebase instance. Please check initialization.");
+    if (!auth) {
+      console.error("Failed to get Firebase Auth instance inside handleAuthentication.");
+      setError("Failed to get Firebase Auth instance. Please check initialization.");
       setLoading(false);
       return;
     }
@@ -46,8 +47,15 @@ export default function Auth({ onUserAuth }) {
       });
   };
 
-  const signUp = () => handleAuthentication(() => firebaseInstance.auth().createUserWithEmailAndPassword(email, password));
-  const signIn = () => handleAuthentication(() => firebaseInstance.auth().signInWithEmailAndPassword(email, password));
+  const signUp = () => {
+    const auth = getFirebaseAuth();
+    handleAuthentication(() => auth.createUserWithEmailAndPassword(email, password));
+  };
+  
+  const signIn = () => {
+    const auth = getFirebaseAuth();
+    handleAuthentication(() => auth.signInWithEmailAndPassword(email, password));
+  };
 
   if (!isClient) {
     return null;
