@@ -32,6 +32,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 
 ### Frontend Development
 - [x] Implement Firebase Authentication in frontend
+- [ ] Build a working signup page
 - [x] Create game mode selection UI
 - [x] Design UI for displaying code snippets
 - [ ] Implement input forms for user answers
@@ -39,8 +40,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 ### Game Logic
 - [x] Develop function for fetching code snippets
 - [ ] Implement multiple-choice questions logic
-- [ ] Implement open-ended questions logic
-- [ ] Implement data analysis questions logic
+- [ ] Implement open-ended questions logic (save for future release)
+- [ ] Implement data analysis questions logic (save for future release)
 
 ### Scoring and Feedback
 - [ ] Develop scoring algorithm
@@ -64,7 +65,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Make necessary adjustments based on feedback
 - [ ] Final review and launch
 
-### Planned Project Directory Structure
+### Originally Planned Project Directory Structure
 .
 ├── backend
 │ ├── firebase_functions
@@ -97,17 +98,23 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 
 ### Current Acutal Project Directory
 .
-|____tailwind.config.js
-|____next.config.js
-|____public
-|____postcss.config.js
-|____src
-| |____layout.js
-| |____components
-| | |____Auth.js
-| | |____GameModeSelection.js
-| | |____CodeSnippetDisplay.js
-| | |____UserAnswerInput.js
-| |____pages
-| | |____index.js
-| |____firebase.js
+|____app
+| |____tailwind.config.js
+| |____next.config.js
+| |____public
+| |____postcss.config.js
+| |____src
+| | |____layout.js
+| | |____components
+| | | |____Auth.js
+| | | |____GameModeSelection.js
+| | | |____CodeSnippetDisplay.js
+| | | |____UserAnswerInput.js
+| | |____pages
+| | | |____index.js
+| | |____firebase.js
+|____functions
+| |____index.js
+| |____.eslintrc.js
+| |____index copy.js
+
