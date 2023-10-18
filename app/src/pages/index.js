@@ -41,11 +41,15 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async () => {
-    const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
-    const data = await response.json();
-    setCorrectAnswer(data.correctAnswer);
-    setOptions(data.options);
-    setResult(null); // Clear the result when a new question is fetched
+    try {
+      const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
+      const data = await response.json();
+      setCorrectAnswer(data.correctAnswer);
+      setOptions(data.options);
+      setResult(null); // Clear the result when a new question is fetched
+    } catch (error) {
+      console.error('Failed to fetch code snippet:', error);
+    }
   };
 
   // Fetch the first code snippet when the game mode is selected
