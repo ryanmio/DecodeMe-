@@ -7,33 +7,37 @@ async function fetchCodeSnippet(gameMode) {
   return data;
 }
 
-export default function CodeSnippetDisplay({ gameMode }) {
+export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
   const [codeSnippet, setCodeSnippet] = useState('');
   const [options, setOptions] = useState([]);
-  const [correctAnswer, setCorrectAnswer] = useState('');
 
   useEffect(() => {
     fetchCodeSnippet(gameMode).then(data => {
       setCodeSnippet(data.codeSnippet);
       setOptions(data.options);
-      setCorrectAnswer(data.correctAnswer);
+      // Call the onCodeSnippetFetch prop with the fetched data
+      onCodeSnippetFetch(data);
     });
-  }, [gameMode]);
+  }, [gameMode, onCodeSnippetFetch]);
 
   return (
     <div>
       <h1>Code Snippet</h1>
       <pre>{codeSnippet}</pre>
       <h2>Options</h2>
-      <ul>
+      <form>
         {options.map((option, index) => (
-          <li key={index}>{option}</li>
+          <div key={index}>
+            <input type="radio" id={`option${index}`} name="option" value={option} />
+            <label htmlFor={`option${index}`}>{option}</label>
+          </div>
         ))}
-      </ul>
+      </form>
     </div>
   );
 }
 
 CodeSnippetDisplay.propTypes = {
   gameMode: PropTypes.string.isRequired,
+  onCodeSnippetFetch: PropTypes.func.isRequired,
 };
