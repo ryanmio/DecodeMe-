@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 import firebase from '../firebase';
 
 export default function Auth({ onUserAuth }) {
@@ -11,13 +12,15 @@ export default function Auth({ onUserAuth }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setIsClient(true);
+  setIsClient(true);
+  if (firebase.apps.length > 0) {
     const unsubscribe = firebase.auth().onAuthStateChanged(user => {
       onUserAuth(user);
       setLoading(false);
     });
     return () => unsubscribe();
-  }, []);
+  }
+}, []);
 
   const signUp = () => {
     setLoading(true);
