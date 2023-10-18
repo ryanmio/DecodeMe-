@@ -12,21 +12,29 @@ export default function Auth({ onUserAuth }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    console.log("Inside useEffect in Auth component...");
     setIsClient(true);
     const firebaseInstance = getFirebase();
+    
     if (firebaseInstance) {
+      console.log("Firebase instance acquired in Auth component...");
       const unsubscribe = firebaseInstance.auth().onAuthStateChanged(user => {
         onUserAuth(user);
         setLoading(false);
       });
       return () => unsubscribe();
+    } else {
+      console.error("Failed to acquire Firebase instance in Auth component.");
     }
   }, []);
 
   const handleAuthentication = (authMethod) => {
+    console.log("Handling authentication...");
     setLoading(true);
     const firebaseInstance = getFirebase();
+    
     if (!firebaseInstance) {
+      console.error("Failed to get Firebase instance inside handleAuthentication.");
       setError("Failed to get Firebase instance. Please check initialization.");
       setLoading(false);
       return;
