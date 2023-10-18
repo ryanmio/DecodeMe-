@@ -1,5 +1,5 @@
-import firebase from 'firebase/app';
-import 'firebase/auth';
+import { initializeApp, getApps } from 'firebase/app';
+import { getAuth } from 'firebase/auth';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,28 +16,22 @@ console.log("Firebase configuration:", firebaseConfig);
 let firebaseInstance;
 
 export function getFirebase() {
-  console.log("Entering getFirebase function...");
-  
-  if (!firebaseInstance) {
-    console.log("Firebase instance is not yet initialized...");
-    
+  if (typeof window !== 'undefined' && !firebaseInstance) {
     try {
-      if (firebase.apps.length === 0) {
-        console.log("Initializing Firebase...");
-        firebaseInstance = firebase.initializeApp(firebaseConfig);
-        console.log("Firebase initialized successfully!");
+      if (!getApps().length) {
+        firebaseInstance = initializeApp(firebaseConfig);
       } else {
-        firebaseInstance = firebase.app();
-        console.warn("Firebase already initialized.");
+        firebaseInstance = getApps()[0];
       }
     } catch (err) {
-      console.error("Error during Firebase initialization or check:", err);
+      console.error("Error during Firebase initialization:", err);
     }
-  } else {
-    console.log("Firebase instance already exists...");
   }
   
   return firebaseInstance;
 }
 
-export default firebase;
+export function getFirebaseAuth() {
+  const app = getFirebase();
+  return getAuth(app);
+}
