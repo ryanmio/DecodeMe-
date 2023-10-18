@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import firebase from '../firebase';
+import { getFirebase } from '../firebase';
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
@@ -12,19 +12,21 @@ export default function Auth({ onUserAuth }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-  setIsClient(true);
-  if (firebase.apps.length > 0) {
-    const unsubscribe = firebase.auth().onAuthStateChanged(user => {
-      onUserAuth(user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
-  }
-}, []);
+    setIsClient(true);
+    const firebaseInstance = getFirebase(); // get the instance on-demand
+    if (firebaseInstance && firebaseInstance.apps.length > 0) {
+      const unsubscribe = firebaseInstance.auth().onAuthStateChanged(user => {
+        onUserAuth(user);
+        setLoading(false);
+      });
+      return () => unsubscribe();
+    }
+  }, []);
 
   const signUp = () => {
     setLoading(true);
-    firebase.auth().createUserWithEmailAndPassword(email, password)
+    const firebaseInstance = getFirebase();
+    firebaseInstance.auth().createUserWithEmailAndPassword(email, password)
       .catch((error) => {
         setError(error.message);
         setLoading(false);
@@ -33,7 +35,8 @@ export default function Auth({ onUserAuth }) {
 
   const signIn = () => {
     setLoading(true);
-    firebase.auth().signInWithEmailAndPassword(email, password)
+    const firebaseInstance = getFirebase();
+    firebaseInstance.auth().signInWithEmailAndPassword(email, password)
       .catch((error) => {
         setError(error.message);
         setLoading(false);
