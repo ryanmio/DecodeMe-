@@ -13,17 +13,24 @@ const firebaseConfig = {
 
 console.log("Firebase configuration:", firebaseConfig);
 
-try {
-  // Check if a Firebase instance doesn't exist. If not, initialize Firebase.
-  if (!firebase.apps.length) {
-    console.log("Initializing Firebase...");
-    firebase.initializeApp(firebaseConfig);
-    console.log("Firebase initialized successfully!");
-  } else {
-    console.warn("Firebase already initialized.");
+let firebaseInstance;
+
+export function getFirebase() {
+  if (!firebaseInstance) {
+    try {
+      if (!firebase.apps.length) {
+        console.log("Initializing Firebase...");
+        firebaseInstance = firebase.initializeApp(firebaseConfig);
+        console.log("Firebase initialized successfully!");
+      } else {
+        firebaseInstance = firebase.app();
+        console.warn("Firebase already initialized.");
+      }
+    } catch (err) {
+      console.error("Error during Firebase initialization or check:", err);
+    }
   }
-} catch (err) {
-  console.error("Error during Firebase initialization or check:", err);
+  return firebaseInstance;
 }
 
 export default firebase;
