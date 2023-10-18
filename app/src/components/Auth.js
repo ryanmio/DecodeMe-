@@ -1,8 +1,7 @@
-'use client';
-
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { getFirebaseAuth } from '../firebase';
+import { onAuthStateChanged, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
@@ -19,7 +18,7 @@ export default function Auth({ onUserAuth }) {
     
     if (auth) {
       console.log("Firebase Auth instance acquired in Auth component...");
-      const unsubscribe = auth.onAuthStateChanged(user => {
+      const unsubscribe = onAuthStateChanged(auth, user => {
         onUserAuth(user);
         setLoading(false);
       });
@@ -32,14 +31,6 @@ export default function Auth({ onUserAuth }) {
   const handleAuthentication = (authMethod) => {
     console.log("Handling authentication...");
     setLoading(true);
-    const auth = getFirebaseAuth();
-    
-    if (!auth) {
-      console.error("Failed to get Firebase Auth instance inside handleAuthentication.");
-      setError("Failed to get Firebase Auth instance. Please check initialization.");
-      setLoading(false);
-      return;
-    }
     authMethod()
       .catch((error) => {
         setError(error.message);
@@ -49,12 +40,12 @@ export default function Auth({ onUserAuth }) {
 
   const signUp = () => {
     const auth = getFirebaseAuth();
-    handleAuthentication(() => auth.createUserWithEmailAndPassword(email, password));
+    handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
   };
   
   const signIn = () => {
     const auth = getFirebaseAuth();
-    handleAuthentication(() => auth.signInWithEmailAndPassword(email, password));
+    handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
   };
 
   if (!isClient) {
