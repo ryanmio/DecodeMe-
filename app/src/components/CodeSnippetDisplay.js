@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 async function fetchCodeSnippet(gameMode) {
-  const response = await fetch(`/api/code-snippets?gameMode=${gameMode}`);
+  const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
   const data = await response.json();
   return data;
 }
