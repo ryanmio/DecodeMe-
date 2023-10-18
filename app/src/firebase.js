@@ -18,7 +18,7 @@ let firebaseInstance;
 export function getFirebase() {
   if (!firebaseInstance) {
     try {
-      if (!firebase.apps.length) {
+      if (firebase.apps.length === 0) {
         console.log("Initializing Firebase...");
         firebaseInstance = firebase.initializeApp(firebaseConfig);
         console.log("Firebase initialized successfully!");
