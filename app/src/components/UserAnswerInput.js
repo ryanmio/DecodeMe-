@@ -6,9 +6,7 @@ export default function UserAnswerInput({ options, onAnswerSubmit }) {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Pass the selected option up to the parent component
     onAnswerSubmit(selectedOption);
-    // Clear the selected option
     setSelectedOption('');
   };
 
@@ -16,7 +14,7 @@ export default function UserAnswerInput({ options, onAnswerSubmit }) {
     <div>
       <h1>Your Answer</h1>
       <form onSubmit={handleSubmit}>
-        {options.map((option, index) => (
+        {options && options.map((option, index) => (
           <div key={index}>
             <input 
               type="radio" 
