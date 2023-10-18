@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
 import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
@@ -30,13 +30,24 @@ export default function Home() {
     } else {
       setResult('Incorrect. Try again.');
     }
+    // Fetch a new code snippet after the user answers a question
+    handleCodeSnippetFetch();
   };
 
-  const handleCodeSnippetFetch = (data) => {
+  const handleCodeSnippetFetch = async () => {
+    const response = await fetch(`/api/code-snippets?gameMode=${gameMode}`);
+    const data = await response.json();
     setCorrectAnswer(data.correctAnswer);
     setOptions(data.options);
     setResult(null); // Clear the result when a new question is fetched
   };
+
+  // Fetch the first code snippet when the game mode is selected
+  useEffect(() => {
+    if (gameMode) {
+      handleCodeSnippetFetch();
+    }
+  }, [gameMode]);
 
   return (
     <div>
@@ -47,7 +58,7 @@ export default function Home() {
         <GameModeSelection onGameModeSelect={handleGameModeSelect} />
       ) : (
         <>
-          <CodeSnippetDisplay gameMode={gameMode} onCodeSnippetFetch={handleCodeSnippetFetch} />
+          <CodeSnippetDisplay gameMode={gameMode} />
           <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
           {result && <p>{result}</p>}
         </>
