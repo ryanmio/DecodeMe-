@@ -41,7 +41,7 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async () => {
-    const response = await fetch(`/api/code-snippets?gameMode=${gameMode}`);
+    const response = await fetch(`http://localhost:3000/decodeme-1f38e/us-central1/getCodeSnippet?gameMode=${gameMode}`);
     const data = await response.json();
     setCorrectAnswer(data.correctAnswer);
     setOptions(data.options);
@@ -66,7 +66,7 @@ export default function Home() {
         <p>Game over! Your final score is {score} out of {questionLimit}.</p>
       ) : (
         <>
-          <CodeSnippetDisplay gameMode={gameMode} />
+          <CodeSnippetDisplay gameMode={gameMode} onCodeSnippetFetch={handleCodeSnippetFetch} />
           <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
           {result && <p>{result}</p>}
         </>
