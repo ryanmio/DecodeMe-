@@ -13,6 +13,9 @@ export default function Home() {
   const [score, setScore] = useState(0);
   const [options, setOptions] = useState([]);
   const [result, setResult] = useState(null);
+  const [questionsAnswered, setQuestionsAnswered] = useState(0);
+
+  const questionLimit = 10;
 
   const handleUserAuth = (user) => {
     setUser(user);
@@ -30,8 +33,11 @@ export default function Home() {
     } else {
       setResult('Incorrect. Try again.');
     }
-    // Fetch a new code snippet after the user answers a question
-    handleCodeSnippetFetch();
+    setQuestionsAnswered(questionsAnswered + 1);
+    if (questionsAnswered < questionLimit - 1) {
+      // Fetch a new code snippet after the user answers a question
+      handleCodeSnippetFetch();
+    }
   };
 
   const handleCodeSnippetFetch = async () => {
@@ -56,6 +62,8 @@ export default function Home() {
         <Auth onUserAuth={handleUserAuth} />
       ) : !gameMode ? (
         <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+      ) : questionsAnswered >= questionLimit ? (
+        <p>Game over! Your final score is {score} out of {questionLimit}.</p>
       ) : (
         <>
           <CodeSnippetDisplay gameMode={gameMode} />
