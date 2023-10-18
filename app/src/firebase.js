@@ -16,7 +16,11 @@ console.log("Firebase configuration:", firebaseConfig);
 let firebaseInstance;
 
 export function getFirebase() {
+  console.log("Entering getFirebase function...");
+  
   if (!firebaseInstance) {
+    console.log("Firebase instance is not yet initialized...");
+    
     try {
       if (firebase.apps.length === 0) {
         console.log("Initializing Firebase...");
@@ -29,7 +33,10 @@ export function getFirebase() {
     } catch (err) {
       console.error("Error during Firebase initialization or check:", err);
     }
+  } else {
+    console.log("Firebase instance already exists...");
   }
+  
   return firebaseInstance;
 }
 
