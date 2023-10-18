@@ -48,11 +48,23 @@ export default function Auth({ onUserAuth }) {
   }
 
   return (
-    <div>
-      <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button onClick={signUp} disabled={loading}>Sign Up</button>
-      <button onClick={signIn} disabled={loading}>Sign In</button>
+    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: '0 auto' }}>
+      <input 
+        type="email" 
+        value={email} 
+        onChange={(e) => setEmail(e.target.value)} 
+        style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }} 
+        placeholder="Email"
+      />
+      <input 
+        type="password" 
+        value={password} 
+        onChange={(e) => setPassword(e.target.value)} 
+        style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }} 
+        placeholder="Password"
+      />
+      <button onClick={signUp} disabled={loading} style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }}>Sign Up</button>
+      <button onClick={signIn} disabled={loading} style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }}>Sign In</button>
       {loading && <p>Loading...</p>}
       {error && <p>Error: {error}</p>}
     </div>
