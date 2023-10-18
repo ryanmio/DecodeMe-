@@ -32,7 +32,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 
 ### Frontend Development
 - [x] Implement Firebase Authentication in frontend
-- [ ] Build a working signup page
+- [x] Build a working signup page
 - [x] Create game mode selection UI
 - [x] Design UI for displaying code snippets
 - [ ] Implement input forms for user answers
