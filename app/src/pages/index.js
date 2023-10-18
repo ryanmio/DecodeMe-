@@ -41,7 +41,7 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async () => {
-    const response = await fetch(`http://localhost:3000/decodeme-1f38e/us-central1/getCodeSnippet?gameMode=${gameMode}`);
+    const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
     const data = await response.json();
     setCorrectAnswer(data.correctAnswer);
     setOptions(data.options);
