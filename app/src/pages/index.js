@@ -12,6 +12,7 @@ export default function Home() {
   const [correctAnswer, setCorrectAnswer] = useState(null);
   const [score, setScore] = useState(0);
   const [options, setOptions] = useState([]);
+  const [result, setResult] = useState(null);
 
   const handleUserAuth = (user) => {
     setUser(user);
@@ -25,18 +26,21 @@ export default function Home() {
     console.log(`User's answer: ${answer}`);
     if (answer === correctAnswer) {
       setScore(score + 1);
+      setResult('Correct!');
+    } else {
+      setResult('Incorrect. Try again.');
     }
   };
 
   const handleCodeSnippetFetch = (data) => {
     setCorrectAnswer(data.correctAnswer);
     setOptions(data.options);
-    // handle other data as needed
+    setResult(null); // Clear the result when a new question is fetched
   };
 
   return (
     <div>
-      <h1>DecodeMe!</h1>
+      <h1>DecodeMe! Score: {score}</h1>
       {!user ? (
         <Auth onUserAuth={handleUserAuth} />
       ) : !gameMode ? (
@@ -45,6 +49,7 @@ export default function Home() {
         <>
           <CodeSnippetDisplay gameMode={gameMode} onCodeSnippetFetch={handleCodeSnippetFetch} />
           <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
+          {result && <p>{result}</p>}
         </>
       )}
     </div>
