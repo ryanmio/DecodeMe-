@@ -23,25 +23,23 @@ export default function Auth({ onUserAuth }) {
     }
   }, []);
 
-  const signUp = () => {
+  const handleAuthentication = (authMethod) => {
     setLoading(true);
     const firebaseInstance = getFirebase();
-    firebaseInstance.auth().createUserWithEmailAndPassword(email, password)
+    if (!firebaseInstance) {
+      setError("Failed to get Firebase instance. Please check initialization.");
+      setLoading(false);
+      return;
+    }
+    authMethod()
       .catch((error) => {
         setError(error.message);
         setLoading(false);
       });
   };
 
-  const signIn = () => {
-    setLoading(true);
-    const firebaseInstance = getFirebase();
-    firebaseInstance.auth().signInWithEmailAndPassword(email, password)
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
-  };
+  const signUp = () => handleAuthentication(() => firebaseInstance.auth().createUserWithEmailAndPassword(email, password));
+  const signIn = () => handleAuthentication(() => firebaseInstance.auth().signInWithEmailAndPassword(email, password));
 
   if (!isClient) {
     return null;
