@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-export default function UserAnswerInput({ options, onAnswerSubmit }) {
+export default function UserAnswerInput({ options = [], onAnswerSubmit }) {
   const [selectedOption, setSelectedOption] = useState('');
 
   const handleSubmit = (event) => {
@@ -14,7 +14,7 @@ export default function UserAnswerInput({ options, onAnswerSubmit }) {
     <div>
       <h1>Your Answer</h1>
       <form onSubmit={handleSubmit}>
-        {options && options.map((option, index) => (
+        {options.map((option, index) => (
           <div key={index}>
             <input 
               type="radio" 
@@ -34,6 +34,6 @@ export default function UserAnswerInput({ options, onAnswerSubmit }) {
 }
 
 UserAnswerInput.propTypes = {
-  options: PropTypes.arrayOf(PropTypes.string).isRequired,
+  options: PropTypes.arrayOf(PropTypes.string),
   onAnswerSubmit: PropTypes.func.isRequired,
 };
