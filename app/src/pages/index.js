@@ -43,6 +43,11 @@ export default function Home() {
   const handleCodeSnippetFetch = async () => {
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+  
       const data = await response.json();
       setCorrectAnswer(data.correctAnswer);
       setOptions(data.options);
@@ -51,6 +56,7 @@ export default function Home() {
       console.error('Failed to fetch code snippet:', error);
     }
   };
+  
 
   // Fetch the first code snippet when the game mode is selected
   useEffect(() => {
