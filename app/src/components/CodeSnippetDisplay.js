@@ -28,16 +28,16 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
       <form>
       {options && options.map((option, index) => (
         <div key={index}>
-          <input type="radio" id={`option${index}`} name="option" value={option} />
-          <label htmlFor={`option${index}`}>{option}</label>
-        </div>
-      ))}
-      </form>
-    </div>
-  );
+        <input type="radio" id={`option${index}`} name="option" value={option} />
+        <label htmlFor={`option${index}`}>{option}</label>
+      </div>
+    ))}
+    </form>
+  </div>
+);
 }
 
 CodeSnippetDisplay.propTypes = {
-  gameMode: PropTypes.string.isRequired,
-  onCodeSnippetFetch: PropTypes.func.isRequired,
+gameMode: PropTypes.string.isRequired,
+onCodeSnippetFetch: PropTypes.func.isRequired,
 };
