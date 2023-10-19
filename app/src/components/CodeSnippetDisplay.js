@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
 
 async function fetchCodeSnippet(gameMode, conversationHistory) {
   const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
@@ -30,7 +32,9 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
   return (
     <div>
       <h1>Code Snippet</h1>
-      <pre>{codeSnippet}</pre>
+      <SyntaxHighlighter language="python" style={solarizedlight}>
+        {codeSnippet}
+      </SyntaxHighlighter>
       <h2>Options</h2>
       {options && options.map((option, index) => (
         <div key={index}>
