@@ -36,10 +36,9 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
         console.log(`Received response from OpenAI: ${JSON.stringify(openaiResponse.data)}`);
         const responseText = openaiResponse.data.choices[0].message.content.trim();
-        const codeSnippet = responseText.split('CODE_SNIPPET_START\n')[1].split('\nCODE_SNIPPET_END')[0].trim();
-        const optionsText = responseText.split('OPTIONS_START\n')[1].split('\nOPTIONS_END')[0];
-        const options = optionsText.split('\n').filter(option => option !== '');
-        response.send({ codeSnippet, options, conversationHistory: [...conversationHistory, { role: 'assistant', content: responseText }] });
+        const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
+        const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
+        response.send({ codeSnippet, conversationHistory: [...conversationHistory, { role: 'assistant', content: responseText }] });
       } catch (error) {
         console.error('Error occurred while communicating with OpenAI:', error);
         if (error.response) {
