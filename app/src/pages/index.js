@@ -10,9 +10,11 @@ export default function Home() {
   const [user, setUser] = useState(null);
   const [gameMode, setGameMode] = useState(null);
   const [codeSnippet, setCodeSnippet] = useState(null);
+  const [options, setOptions] = useState([]);
   const [score, setScore] = useState(0);
   const [result, setResult] = useState(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
+  const [conversationHistory, setConversationHistory] = useState([]);
 
   const questionLimit = 10;
 
@@ -25,30 +27,32 @@ export default function Home() {
   };
 
   const handleAnswerSubmit = (answer) => {
-    console.log(`User's answer: ${answer}`);
-    if (answer === codeSnippet) {
-      setScore(score + 1);
-      setResult('Correct!');
-    } else {
-      setResult('Incorrect. Try again.');
-    }
-    setQuestionsAnswered(questionsAnswered + 1);
-    if (questionsAnswered < questionLimit - 1) {
-      // Fetch a new code snippet after the user answers a question
-      handleCodeSnippetFetch();
-    }
+    setConversationHistory([...conversationHistory, { role: 'user', content: answer }]);
+    handleCodeSnippetFetch();
   };
 
   const handleCodeSnippetFetch = async () => {
     try {
-      const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
+      const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ conversationHistory }),
+      });
       
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
   
       const data = await response.json();
-      setCodeSnippet(data.conversationHistory[data.conversationHistory.length - 1].content);
+      const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
+      const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
+      const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
+      setCodeSnippet(codeSnippet);
+      const optionsMatch = responseText.match(/A\) .*\nB\) .*/);
+      const options = optionsMatch ? optionsMatch[0].split('\n') : [];
+      setOptions(options);
       setResult(null); // Clear the result when a new question is fetched
     } catch (error) {
       console.error('Failed to fetch code snippet:', error);
@@ -75,7 +79,7 @@ export default function Home() {
       ) : (
         <>
           <CodeSnippetDisplay codeSnippet={codeSnippet} />
-          <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
+          <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
           {result && <p>{result}</p>}
         </>
       )}
