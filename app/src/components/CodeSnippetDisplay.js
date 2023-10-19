@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dynamic from 'next/dynamic';
 
+
 const SyntaxHighlighter = dynamic(
   import('react-syntax-highlighter/dist/cjs/prism').then(mod => mod.Prism),
   { ssr: false }
