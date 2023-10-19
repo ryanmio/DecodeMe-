@@ -118,3 +118,38 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 | |____.eslintrc.js
 | |____index copy.js
 
+### Progress Updates
+#### 10/18/2023
+Today, we made significant progress in debugging and enhancing the functionality of the DecodeMe! project.
+
+##### Debugging
+
+We encountered a TypeError in the CodeSnippetDisplay.js component, which was caused by an undefined data object. This was due to a failed fetch request to the server, which returned a 500 error. We updated the fetchCodeSnippet function to return an error object when there's an error, preventing the "Cannot read properties of undefined" error from occurring when there's an error with the fetch request.
+
+We also handled a SyntaxError that occurred when the server returned a response that couldn't be parsed as JSON. We updated the fetchCodeSnippet function to handle non-JSON responses gracefully.
+
+##### Code Enhancements
+
+We updated the fetchCodeSnippet function in CodeSnippetDisplay.js to directly use the codeSnippet from the response data, eliminating the need for splitting the response text.
+
+We also updated the useEffect hook in CodeSnippetDisplay.js to use the codeSnippet from the response data.
+
+```javascript
+useEffect(() => {
+  fetchCodeSnippet(gameMode, conversationHistory).then(data => {
+    setCodeSnippet(data.codeSnippet);
+    setConversationHistory(data.conversationHistory);
+    onCodeSnippetFetch(data);
+  });
+}, [gameMode, onCodeSnippetFetch, conversationHistory]);
+```
+
+#####  Next Steps
+
+Moving forward, we need to:
+
+1. Test the updated fetchCodeSnippet function and useEffect hook in CodeSnippetDisplay.js to ensure they work as expected.
+2. Continue developing the game logic in the index.js file.
+3. Implement the scoring and leaderboard features.
+4. Conduct end-to-end testing to ensure all components work together seamlessly.
+5. Deploy the application and conduct user testing to gather feedback for further improvements.
