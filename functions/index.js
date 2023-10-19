@@ -5,7 +5,8 @@ const cors = require('cors')({origin: true});
 exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     cors(request, response, async () => {
       const gameMode = request.query.gameMode;
-      const conversationHistory = request.body.conversationHistory || [];
+      let conversationHistory = request.body.conversationHistory || [];
+      const userMessage = request.body.userMessage;
       if (!gameMode) {
         console.error('No game mode provided.');
         return response.status(400).send('Please provide a game mode.');
@@ -23,14 +24,20 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         'Authorization': `Bearer ${openaiKey}`,
         'Content-Type': 'application/json',
       };
+  
+      // Include the user's answer in the conversation history
+      if (userMessage) {
+        conversationHistory = [...conversationHistory, { role: 'user', content: userMessage }];
+      }
+  
       const data = {
-          model: 'gpt-3.5-turbo',
-          messages: [
-            { role: 'system', content: 'You are a helpful assistant.' },
-            ...conversationHistory,
-            { role: 'user', content: `Let’s play a game that also teaches me python scripts. You will write a short python script in a code block and give me two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". If I get it right, continue with a slightly harder script. If I get it wrong, continue with a similar script. Don’t stop until I say so.` }
-          ]
-        };
+        model: 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: 'You are a helpful assistant.' },
+          ...conversationHistory,
+          { role: 'user', content: `Let’s play a game that also teaches me python scripts. You will write a short python script in a code block and give me two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". If I get it right, continue with a slightly harder script. If I get it wrong, continue with a similar script. Don’t stop until I say so.` }
+        ]
+      };
   
       try {
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
