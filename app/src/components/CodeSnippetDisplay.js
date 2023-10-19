@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-async function fetchCodeSnippet(gameMode) {
-  const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`);
+async function fetchCodeSnippet(gameMode, conversationHistory) {
+  const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ conversationHistory }),
+  });
   const data = await response.json();
   return data;
 }
@@ -10,14 +16,16 @@ async function fetchCodeSnippet(gameMode) {
 export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
   const [codeSnippet, setCodeSnippet] = useState('');
   const [options, setOptions] = useState([]);
+  const [conversationHistory, setConversationHistory] = useState([]);
 
   useEffect(() => {
-    fetchCodeSnippet(gameMode).then(data => {
+    fetchCodeSnippet(gameMode, conversationHistory).then(data => {
       setCodeSnippet(data.codeSnippet);
       setOptions(data.options);
+      setConversationHistory(data.conversationHistory);
       onCodeSnippetFetch(data);
     });
-  }, [gameMode, onCodeSnippetFetch]);
+  }, [gameMode, onCodeSnippetFetch, conversationHistory]);
 
   return (
     <div>
@@ -35,6 +43,6 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
 }
 
 CodeSnippetDisplay.propTypes = {
-gameMode: PropTypes.string.isRequired,
-onCodeSnippetFetch: PropTypes.func.isRequired,
+  gameMode: PropTypes.string.isRequired,
+  onCodeSnippetFetch: PropTypes.func.isRequired,
 };
