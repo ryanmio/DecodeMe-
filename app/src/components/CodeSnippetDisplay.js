@@ -15,7 +15,6 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
     fetchCodeSnippet(gameMode).then(data => {
       setCodeSnippet(data.codeSnippet);
       setOptions(data.options);
-      // Call the onCodeSnippetFetch prop with the fetched data
       onCodeSnippetFetch(data);
     });
   }, [gameMode, onCodeSnippetFetch]);
@@ -25,16 +24,14 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
       <h1>Code Snippet</h1>
       <pre>{codeSnippet}</pre>
       <h2>Options</h2>
-      <form>
       {options && options.map((option, index) => (
         <div key={index}>
-        <input type="radio" id={`option${index}`} name="option" value={option} />
-        <label htmlFor={`option${index}`}>{option}</label>
-      </div>
-    ))}
-    </form>
-  </div>
-);
+          <input type="radio" id={`option${index}`} name="option" value={option} />
+          <label htmlFor={`option${index}`}>{option}</label>
+        </div>
+      ))}
+    </div>
+  );
 }
 
 CodeSnippetDisplay.propTypes = {
