@@ -12,7 +12,9 @@ async function fetchCodeSnippet(gameMode, conversationHistory) {
     body: JSON.stringify({ conversationHistory }),
   });
   const data = await response.json();
-  return data;
+  const responseText = data.text.trim();
+  const codeSnippet = responseText.split('```\n')[1].split('\n```')[0].trim();
+  return { ...data, codeSnippet };
 }
 
 export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
