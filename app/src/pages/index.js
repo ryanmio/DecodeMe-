@@ -28,7 +28,6 @@ export default function Home() {
 
   const handleAnswerSubmit = (answer) => {
     setConversationHistory([...conversationHistory, { role: 'user', content: answer }]);
-    handleCodeSnippetFetch();
   };
 
   const handleCodeSnippetFetch = async () => {
@@ -40,11 +39,7 @@ export default function Home() {
         },
         body: JSON.stringify({ conversationHistory }),
       });
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-  
+
       const data = await response.json();
       const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
       const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
@@ -54,11 +49,11 @@ export default function Home() {
       const options = optionsMatch ? optionsMatch[0].split('\n') : [];
       setOptions(options);
       setResult(null); // Clear the result when a new question is fetched
+      setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
     } catch (error) {
       console.error('Failed to fetch code snippet:', error);
     }
   };
-  
 
   // Fetch the first code snippet when the game mode is selected
   useEffect(() => {
@@ -66,6 +61,13 @@ export default function Home() {
       handleCodeSnippetFetch();
     }
   }, [gameMode]);
+
+  // Fetch the next code snippet when the conversation history changes
+  useEffect(() => {
+    if (gameMode && conversationHistory.length > 0) {
+      handleCodeSnippetFetch();
+    }
+  }, [conversationHistory]);
 
   return (
     <div>
