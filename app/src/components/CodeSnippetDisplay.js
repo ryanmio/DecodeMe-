@@ -33,9 +33,7 @@ async function fetchCodeSnippet(gameMode, conversationHistory) {
     return { error: `Error parsing response as JSON: ${err}` };
   }
 
-  const responseText = data.text.trim();
-  const codeSnippet = responseText.split('```\n')[1].split('\n```')[0].trim();
-  return { ...data, codeSnippet };
+  return data;
 }
 
 export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
@@ -46,7 +44,6 @@ export default function CodeSnippetDisplay({ gameMode, onCodeSnippetFetch }) {
   useEffect(() => {
     fetchCodeSnippet(gameMode, conversationHistory).then(data => {
       setCodeSnippet(data.codeSnippet);
-      setOptions(data.options);
       setConversationHistory(data.conversationHistory);
       onCodeSnippetFetch(data);
     });
