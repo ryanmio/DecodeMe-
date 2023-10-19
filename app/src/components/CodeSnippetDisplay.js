@@ -1,7 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { solarizedlight } from 'react-syntax-highlighter/dist/esm/styles/prism';
+import dynamic from 'next/dynamic';
+
+const SyntaxHighlighter = dynamic(
+  import('react-syntax-highlighter/dist/cjs/prism').then(mod => mod.Prism),
+  { ssr: false }
+);
+const solarizedlight = dynamic(
+  import('react-syntax-highlighter/dist/cjs/styles/prism').then(mod => mod.solarizedlight),
+  { ssr: false }
+);
 
 async function fetchCodeSnippet(gameMode, conversationHistory) {
   const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
@@ -11,7 +19,20 @@ async function fetchCodeSnippet(gameMode, conversationHistory) {
     },
     body: JSON.stringify({ conversationHistory }),
   });
-  const data = await response.json();
+
+  if (!response.ok) {
+    console.error(`Error fetching code snippet: ${response.status} ${response.statusText}`);
+    return;
+  }
+
+  let data;
+  try {
+    data = await response.json();
+  } catch (err) {
+    console.error(`Error parsing response as JSON: ${err}`);
+    return;
+  }
+
   const responseText = data.text.trim();
   const codeSnippet = responseText.split('```\n')[1].split('\n```')[0].trim();
   return { ...data, codeSnippet };
