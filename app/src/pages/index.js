@@ -49,7 +49,11 @@ export default function Home() {
       const options = optionsMatch ? optionsMatch[0].split('\n') : [];
       setOptions(options);
       setResult(null); // Clear the result when a new question is fetched
-      setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
+
+      // Only update the conversation history if the new message is different from the last one
+      if (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content) {
+        setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
+      }
     } catch (error) {
       console.error('Failed to fetch code snippet:', error);
     }
@@ -64,7 +68,7 @@ export default function Home() {
 
   // Fetch the next code snippet when the conversation history changes
   useEffect(() => {
-    if (gameMode && conversationHistory.length > 0) {
+    if (gameMode && conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === 'user') {
       handleCodeSnippetFetch();
     }
   }, [conversationHistory]);
