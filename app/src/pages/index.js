@@ -37,7 +37,7 @@ export default function Home() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ conversationHistory }),
+        body: JSON.stringify({ conversationHistory: conversationHistory.map(message => message.content) }),
       });
 
       const data = await response.json();
