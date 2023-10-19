@@ -22,7 +22,7 @@ async function fetchCodeSnippet(gameMode, conversationHistory) {
 
   if (!response.ok) {
     console.error(`Error fetching code snippet: ${response.status} ${response.statusText}`);
-    return;
+    return { error: `Error fetching code snippet: ${response.status} ${response.statusText}` };
   }
 
   let data;
@@ -30,7 +30,7 @@ async function fetchCodeSnippet(gameMode, conversationHistory) {
     data = await response.json();
   } catch (err) {
     console.error(`Error parsing response as JSON: ${err}`);
-    return;
+    return { error: `Error parsing response as JSON: ${err}` };
   }
 
   const responseText = data.text.trim();
