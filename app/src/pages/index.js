@@ -9,9 +9,8 @@ console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
 export default function Home() {
   const [user, setUser] = useState(null);
   const [gameMode, setGameMode] = useState(null);
-  const [correctAnswer, setCorrectAnswer] = useState(null);
+  const [codeSnippet, setCodeSnippet] = useState(null);
   const [score, setScore] = useState(0);
-  const [options, setOptions] = useState([]);
   const [result, setResult] = useState(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
 
@@ -27,7 +26,7 @@ export default function Home() {
 
   const handleAnswerSubmit = (answer) => {
     console.log(`User's answer: ${answer}`);
-    if (answer === correctAnswer) {
+    if (answer === codeSnippet) {
       setScore(score + 1);
       setResult('Correct!');
     } else {
@@ -49,8 +48,7 @@ export default function Home() {
       }
   
       const data = await response.json();
-      setCorrectAnswer(data.correctAnswer);
-      setOptions(data.options);
+      setCodeSnippet(data.conversationHistory[data.conversationHistory.length - 1].content);
       setResult(null); // Clear the result when a new question is fetched
     } catch (error) {
       console.error('Failed to fetch code snippet:', error);
@@ -76,8 +74,8 @@ export default function Home() {
         <p>Game over! Your final score is {score} out of {questionLimit}.</p>
       ) : (
         <>
-          <CodeSnippetDisplay gameMode={gameMode} onCodeSnippetFetch={handleCodeSnippetFetch} />
-          <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
+          <CodeSnippetDisplay codeSnippet={codeSnippet} />
+          <UserAnswerInput onAnswerSubmit={handleAnswerSubmit} />
           {result && <p>{result}</p>}
         </>
       )}
