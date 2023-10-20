@@ -34,8 +34,8 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         model: 'gpt-3.5-turbo',
         messages: [
           { role: 'system', content: 'You are a helpful assistant.' },
+          ...(conversationHistory.length === 0 ? [{ role: 'user', content: `Let’s play a game that also teaches me python scripts. You will write a short python script in a code block and give me two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". If I get it right, continue with a slightly harder script. If I get it wrong, continue with a similar script. Don’t stop until I say so.` }] : []),
           ...conversationHistory,
-          { role: 'user', content: `Let’s play a game that also teaches me python scripts. You will write a short python script in a code block and give me two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". If I get it right, continue with a slightly harder script. If I get it wrong, continue with a similar script. Don’t stop until I say so.` }
         ]
       };
   
