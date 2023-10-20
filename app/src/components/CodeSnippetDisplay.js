@@ -1,29 +1,34 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import dynamic from 'next/dynamic';
-
-const SyntaxHighlighter = dynamic(
-  () => import('react-syntax-highlighter/dist/cjs/prism').then(mod => mod.Prism),
-  { ssr: false }
-);
-const solarizedlight = dynamic(
-  () => import('react-syntax-highlighter/dist/cjs/styles/prism/solarizedlight'),
-  { ssr: false }
-);
+import { CodeBlock, dracula } from 'react-code-blocks';
 
 export default function CodeSnippetDisplay({ codeSnippet }) {
-  // Remove backticks from the code snippet
-  const formattedCodeSnippet = codeSnippet ? codeSnippet.replace(/```/g, '') : '';
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (codeSnippet) {
+      setLoading(false);
+    }
+  }, [codeSnippet]);
+
+   // Remove backticks and language specification from the code snippet
+   const formattedCodeSnippet = codeSnippet 
+   ? codeSnippet.replace(/```python\n|```/g, '').trim() 
+   : '';
 
   return (
     <div>
-      <h1>Code Snippet</h1>
-      {formattedCodeSnippet ? (
-        <SyntaxHighlighter language="python" style={solarizedlight}>
-          {formattedCodeSnippet}
-        </SyntaxHighlighter>
-      ) : (
+      <h1 className="text-2xl font-bold mb-4">Code Snippet</h1>
+      {loading ? (
         <p>Loading...</p>
+      ) : (
+        <CodeBlock
+          text={formattedCodeSnippet}
+          language={"python"}
+          showLineNumbers={true}
+          theme={dracula}
+          wrapLines
+        />
       )}
     </div>
   );
