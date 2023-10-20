@@ -11,10 +11,10 @@ export default function CodeSnippetDisplay({ codeSnippet }) {
     }
   }, [codeSnippet]);
 
-   // Remove backticks and language specification from the code snippet
-   const formattedCodeSnippet = codeSnippet 
-   ? codeSnippet.replace(/```python\n|```/g, '').trim() 
-   : '';
+  // Remove backticks, language specification, and leading/trailing whitespace from the code snippet
+  const formattedCodeSnippet = codeSnippet 
+    ? codeSnippet.replace(/```python\n|```python|```/g, '').trim() 
+    : '';
 
   return (
     <div>
@@ -22,13 +22,15 @@ export default function CodeSnippetDisplay({ codeSnippet }) {
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <CodeBlock
-          text={formattedCodeSnippet}
-          language={"python"}
-          showLineNumbers={true}
-          theme={dracula}
-          wrapLines
-        />
+        <div className="max-w-[600px] mx-auto">
+          <CodeBlock
+            text={formattedCodeSnippet}
+            language={"python"}
+            showLineNumbers={true}
+            theme={dracula}
+            wrapLines
+          />
+        </div>
       )}
     </div>
   );
