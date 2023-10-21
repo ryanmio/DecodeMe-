@@ -15,7 +15,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit }) {
       <h1>Your Answer</h1>
       <form onSubmit={handleSubmit}>
         {options.map((option, index) => (
-          <div key={index}>
+          <div key={index} className="flex items-center space-x-3">
             <input 
               type="radio" 
               id={`option${index}`} 
@@ -23,11 +23,12 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit }) {
               value={option} 
               checked={selectedOption === option}
               onChange={(e) => setSelectedOption(e.target.value)} 
+              className="form-radio text-indigo-600 h-5 w-5"
             />
-            <label htmlFor={`option${index}`}>{option}</label>
+            <label htmlFor={`option${index}`} className="text-lg">{option}</label>
           </div>
         ))}
-        <button type="submit">Submit</button>
+        <button type="submit" className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">Submit</button>
       </form>
     </div>
   );
