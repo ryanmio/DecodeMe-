@@ -4,8 +4,6 @@ import GameModeSelection from '../components/GameModeSelection';
 import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
 import UserAnswerInput from '../components/UserAnswerInput';
 
-console.log(process.env.NEXT_PUBLIC_FIREBASE_API_KEY);
-
 export default function Home() {
   const [user, setUser] = useState(null);
   const [gameMode, setGameMode] = useState(null);
@@ -74,21 +72,26 @@ export default function Home() {
   }, [conversationHistory]);
 
   return (
-    <div>
-      <h1>DecodeMe! Score: {score}</h1>
-      {!user ? (
-        <Auth onUserAuth={handleUserAuth} />
-      ) : !gameMode ? (
-        <GameModeSelection onGameModeSelect={handleGameModeSelect} />
-      ) : questionsAnswered >= questionLimit ? (
-        <p>Game over! Your final score is {score} out of {questionLimit}.</p>
-      ) : (
-        <>
-          <CodeSnippetDisplay codeSnippet={codeSnippet} />
-          <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
-          {result && <p>{result}</p>}
-        </>
-      )}
+    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+          <h1 className="text-2xl font-bold mb-4 text-center">DecodeMe! Score: {score}</h1>
+          {!user ? (
+            <Auth onUserAuth={handleUserAuth} />
+          ) : !gameMode ? (
+            <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+          ) : questionsAnswered >= questionLimit ? (
+            <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p>
+          ) : (
+            <>
+              <CodeSnippetDisplay codeSnippet={codeSnippet} />
+              <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
+              {result && <p className="text-center">{result}</p>}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

@@ -11,13 +11,10 @@ export default function Auth({ onUserAuth }) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    console.log("Inside useEffect in Auth component...");
     setIsClient(true);
     const auth = getFirebaseAuth();
-    console.log(auth);
     
     if (auth) {
-      console.log("Firebase Auth instance acquired in Auth component...");
       const unsubscribe = onAuthStateChanged(auth, user => {
         onUserAuth(user);
         setLoading(false);
@@ -29,7 +26,6 @@ export default function Auth({ onUserAuth }) {
   }, []);
 
   const handleAuthentication = (authMethod) => {
-    console.log("Handling authentication...");
     setLoading(true);
     authMethod()
       .catch((error) => {
@@ -53,25 +49,26 @@ export default function Auth({ onUserAuth }) {
   }
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', maxWidth: '300px', margin: '0 auto' }}>
+    <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
+      <h1 className="text-2xl font-bold mb-4">Sign In / Sign Up</h1>
       <input 
         type="email" 
         value={email} 
         onChange={(e) => setEmail(e.target.value)} 
-        style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }} 
+        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
         placeholder="Email"
       />
       <input 
         type="password" 
         value={password} 
         onChange={(e) => setPassword(e.target.value)} 
-        style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }} 
+        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
         placeholder="Password"
       />
-      <button onClick={signUp} disabled={loading} style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }}>Sign Up</button>
-      <button onClick={signIn} disabled={loading} style={{ margin: '10px 0', padding: '10px', fontSize: '16px' }}>Sign In</button>
-      {loading && <p>Loading...</p>}
-      {error && <p>Error: {error}</p>}
+      <button onClick={signUp} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Sign Up</button>
+      <button onClick={signIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded">Sign In</button>
+      {loading && <p className="mt-4">Loading...</p>}
+      {error && <p className="mt-4 text-red-500">Error: {error}</p>}
     </div>
   );
 }
