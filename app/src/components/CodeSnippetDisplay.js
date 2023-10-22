@@ -18,7 +18,7 @@ export default function CodeSnippetDisplay({ codeSnippet }) {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold mb-4">Code Snippet</h1>
+      <h2 className="text-xl font-bold mb-4">Code Snippet</h2>
       {loading ? (
         <p>Loading...</p>
       ) : (
