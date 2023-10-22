@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-export default function UserAnswerInput({ options = [], onAnswerSubmit }) {
+export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmitting }) {
   const [selectedOption, setSelectedOption] = useState('');
 
   const handleSubmit = (event) => {
@@ -33,7 +33,9 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit }) {
             <label htmlFor={`option${index}`} className="text-lg">{option}</label>
           </div>
         ))}
-        <button type="submit" className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded">Submit</button>
+        <button type="submit" className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded" disabled={isSubmitting}>
+          {isSubmitting ? 'Submitting...' : 'Submit'}
+        </button>
       </form>
     </div>
   );
@@ -42,4 +44,5 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit }) {
 UserAnswerInput.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string),
   onAnswerSubmit: PropTypes.func.isRequired,
+  isSubmitting: PropTypes.bool,
 };

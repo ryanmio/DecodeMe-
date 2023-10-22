@@ -14,6 +14,7 @@ export default function Home() {
   const [result, setResult] = useState(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const questionLimit = 10;
 
@@ -26,8 +27,8 @@ export default function Home() {
   };
 
   const handleAnswerSubmit = (answer) => {
+    setIsSubmitting(true);
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
-    setConversationHistory(newConversationHistory);
     handleCodeSnippetFetch(newConversationHistory);
   };
 
@@ -46,21 +47,25 @@ export default function Home() {
       }
   
       const data = await response.json();
-      const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
-      const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
-      const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
-      setCodeSnippet(codeSnippet);
-      const optionsMatch = responseText.match(/A\) .*\nB\) .*/);
-      const options = optionsMatch ? optionsMatch[0].split('\n') : [];
-      setOptions(options);
-      setResult(null); // Clear the result when a new question is fetched
+      if (Array.isArray(data.conversationHistory)) {
+        const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
+        const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
+        const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
+        setCodeSnippet(codeSnippet);
+        const optionsMatch = responseText.match(/A\) .*\nB\) .*/);
+        const options = optionsMatch ? optionsMatch[0].split('\n') : [];
+        setOptions(options);
+        setResult(null); // Clear the result when a new question is fetched
   
-      // Only update the conversation history if the new message is different from the last one
-      if (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content) {
-        setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
+        // Only update the conversation history if the new message is different from the last one
+        if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
+          setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
+        }
       }
     } catch (error) {
       console.error('Failed to fetch code snippet:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -69,7 +74,7 @@ export default function Home() {
     // Reset any other state variables related to the game as needed
   };
 
-  // Fetch the first code snippet when the game mode is selected
+   // Fetch the first code snippet when the game mode is selected
   useEffect(() => {
     if (gameMode) {
       handleCodeSnippetFetch([]);
@@ -79,7 +84,7 @@ export default function Home() {
   // Fetch the next code snippet when the conversation history changes
   useEffect(() => {
     if (gameMode && conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === 'user') {
-      handleCodeSnippetFetch();
+      handleCodeSnippetFetch(conversationHistory);
     }
   }, [conversationHistory]);
 
@@ -101,7 +106,7 @@ export default function Home() {
           ) : (
             <>
               <CodeSnippetDisplay codeSnippet={codeSnippet} />
-              <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} />
+              <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} isSubmitting={isSubmitting} />
               {result && <p className="text-center">{result}</p>}
             </>
           )}
