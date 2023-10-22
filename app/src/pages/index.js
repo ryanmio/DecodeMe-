@@ -3,6 +3,7 @@ import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
 import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
 import UserAnswerInput from '../components/UserAnswerInput';
+import { FaHome } from 'react-icons/fa';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -57,6 +58,11 @@ export default function Home() {
     }
   };
 
+  const resetGame = () => {
+    setGameMode(null);
+    // Reset any other state variables related to the game as needed
+  };
+
   // Fetch the first code snippet when the game mode is selected
   useEffect(() => {
     if (gameMode) {
@@ -76,6 +82,9 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+          <button onClick={resetGame} className="absolute top-4 left-4 text-cyan-400">
+            <FaHome size={24} />
+          </button>
           <h1 className="text-2xl font-bold mb-4 text-center">DecodeMe! Score: {score}</h1>
           {!user ? (
             <Auth onUserAuth={handleUserAuth} />
