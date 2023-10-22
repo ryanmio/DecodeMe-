@@ -26,10 +26,12 @@ export default function Home() {
   };
 
   const handleAnswerSubmit = (answer) => {
-    setConversationHistory([...conversationHistory, { role: 'user', content: answer }]);
+    const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
+    setConversationHistory(newConversationHistory);
+    handleCodeSnippetFetch(newConversationHistory);
   };
 
-  const handleCodeSnippetFetch = async () => {
+  const handleCodeSnippetFetch = async (conversationHistory) => {
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -38,7 +40,11 @@ export default function Home() {
         },
         body: JSON.stringify({ conversationHistory }),
       });
-
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
       const data = await response.json();
       const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
       const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
@@ -48,7 +54,7 @@ export default function Home() {
       const options = optionsMatch ? optionsMatch[0].split('\n') : [];
       setOptions(options);
       setResult(null); // Clear the result when a new question is fetched
-
+  
       // Only update the conversation history if the new message is different from the last one
       if (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content) {
         setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
@@ -66,7 +72,7 @@ export default function Home() {
   // Fetch the first code snippet when the game mode is selected
   useEffect(() => {
     if (gameMode) {
-      handleCodeSnippetFetch();
+      handleCodeSnippetFetch([]);
     }
   }, [gameMode]);
 
