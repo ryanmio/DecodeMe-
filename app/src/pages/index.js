@@ -22,17 +22,20 @@ export default function Home() {
     setUser(user);
   };
 
-  const handleGameModeSelect = (mode) => {
+  const handleGameModeSelect = async (mode) => {
     setGameMode(mode);
+    await handleCodeSnippetFetch([]);
   };
 
-  const handleAnswerSubmit = (answer) => {
-    setIsSubmitting(true);
+  const handleAnswerSubmit = async (answer) => {
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
-    handleCodeSnippetFetch(newConversationHistory);
+    console.log('New conversation history after user submits an answer:', newConversationHistory);
+    setConversationHistory(newConversationHistory);
+    await handleCodeSnippetFetch(newConversationHistory);
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
+    setIsSubmitting(true);
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -41,25 +44,29 @@ export default function Home() {
         },
         body: JSON.stringify({ conversationHistory }),
       });
-  
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-  
+
       const data = await response.json();
       if (Array.isArray(data.conversationHistory)) {
         const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
         const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
         const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
+        console.log('New code snippet:', codeSnippet);
         setCodeSnippet(codeSnippet);
         const optionsMatch = responseText.match(/A\) .*\nB\) .*/);
         const options = optionsMatch ? optionsMatch[0].split('\n') : [];
+        console.log('New options:', options);
         setOptions(options);
         setResult(null); // Clear the result when a new question is fetched
-  
+
         // Only update the conversation history if the new message is different from the last one
         if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
-          setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
+          const updatedConversationHistory = [...conversationHistory, { role: 'assistant', content: responseText }];
+          console.log('Updated conversation history after fetching new question:', updatedConversationHistory);
+          setConversationHistory(updatedConversationHistory);
         }
       }
     } catch (error) {
@@ -73,20 +80,6 @@ export default function Home() {
     setGameMode(null);
     // Reset any other state variables related to the game as needed
   };
-
-   // Fetch the first code snippet when the game mode is selected
-  useEffect(() => {
-    if (gameMode) {
-      handleCodeSnippetFetch([]);
-    }
-  }, [gameMode]);
-
-  // Fetch the next code snippet when the conversation history changes
-  useEffect(() => {
-    if (gameMode && conversationHistory.length > 0 && conversationHistory[conversationHistory.length - 1].role === 'user') {
-      handleCodeSnippetFetch(conversationHistory);
-    }
-  }, [conversationHistory]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
