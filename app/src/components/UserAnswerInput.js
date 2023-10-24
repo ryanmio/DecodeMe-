@@ -1,20 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmitting }) {
   const [selectedOption, setSelectedOption] = useState('');
 
+  useEffect(() => {
+    if (!isSubmitting) {
+      setSelectedOption('');
+    }
+  }, [isSubmitting]);
+
   const handleSubmit = (event) => {
     event.preventDefault();
     onAnswerSubmit(selectedOption);
-    setSelectedOption('');
   };
 
   return (
     <div className="flex flex-col items-start w-full max-w-md mx-auto mt-4">
       <h3 className="text-xl font-bold mb-4">What does this code do?</h3>
       <form onSubmit={handleSubmit} className="w-full">
-        {options.map((option, index) => (
+        {!isSubmitting && options.map((option, index) => (
           <div 
             key={index} 
             className={`flex items-center space-x-3 mb-2 bg-white shadow rounded p-4 cursor-pointer transform transition-all duration-200 ease-in-out ${selectedOption === option ? 'bg-blue-200 scale-105' : 'hover:scale-105 hover:shadow-lg'}`}
@@ -34,7 +39,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmit
           </div>
         ))}
         <button type="submit" className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded" disabled={isSubmitting}>
-          {isSubmitting ? 'Submitting...' : 'Submit'}
+          {isSubmitting && selectedOption ? 'Submitting...' : 'Submit'}
         </button>
       </form>
     </div>

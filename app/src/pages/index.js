@@ -15,6 +15,7 @@ export default function Home() {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const questionLimit = 10;
 
@@ -35,6 +36,7 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
+    setIsLoading(true);
     setIsSubmitting(true);
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
@@ -73,6 +75,7 @@ export default function Home() {
       console.error('Failed to fetch code snippet:', error);
     } finally {
       setIsSubmitting(false);
+      setIsLoading(false);
     }
   };
 
@@ -98,7 +101,7 @@ export default function Home() {
             <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p>
           ) : (
             <>
-              <CodeSnippetDisplay codeSnippet={codeSnippet} />
+              <CodeSnippetDisplay codeSnippet={isLoading ? 'Loading...' : codeSnippet} />
               <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} isSubmitting={isSubmitting} />
               {result && <p className="text-center">{result}</p>}
             </>
