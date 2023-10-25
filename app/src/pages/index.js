@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
 import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
@@ -8,13 +8,11 @@ import { FaHome } from 'react-icons/fa';
 export default function Home() {
   const [user, setUser] = useState(null);
   const [gameMode, setGameMode] = useState(null);
-  const [codeSnippet, setCodeSnippet] = useState(null);
-  const [options, setOptions] = useState([]);
+  const [question, setQuestion] = useState({ codeSnippet: null, options: [] });
   const [score, setScore] = useState(0);
   const [result, setResult] = useState(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   const questionLimit = 10;
@@ -37,7 +35,6 @@ export default function Home() {
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
     setIsLoading(true);
-    setIsSubmitting(true);
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -57,11 +54,10 @@ export default function Home() {
         const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
         const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
         console.log('New code snippet:', codeSnippet);
-        setCodeSnippet(codeSnippet);
         const optionsMatch = responseText.match(/A\) .*\nB\) .*/);
         const options = optionsMatch ? optionsMatch[0].split('\n') : [];
         console.log('New options:', options);
-        setOptions(options);
+        setQuestion({ codeSnippet, options });
         setResult(null); // Clear the result when a new question is fetched
 
         // Only update the conversation history if the new message is different from the last one
@@ -74,14 +70,18 @@ export default function Home() {
     } catch (error) {
       console.error('Failed to fetch code snippet:', error);
     } finally {
-      setIsSubmitting(false);
       setIsLoading(false);
     }
   };
 
   const resetGame = () => {
     setGameMode(null);
-    // Reset any other state variables related to the game as needed
+    setQuestion({ codeSnippet: null, options: [] });
+    setScore(0);
+    setResult(null);
+    setQuestionsAnswered(0);
+    setConversationHistory([]);
+    setIsLoading(false);
   };
 
   return (
@@ -101,8 +101,8 @@ export default function Home() {
             <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p>
           ) : (
             <>
-              <CodeSnippetDisplay codeSnippet={codeSnippet} loading={isLoading} />
-              <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} isSubmitting={isSubmitting} disabled={isLoading} />
+              <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
+              <UserAnswerInput options={question.options} onAnswerSubmit={handleAnswerSubmit} disabled={isLoading} />
               {result && <p className="text-center">{result}</p>}
             </>
           )}

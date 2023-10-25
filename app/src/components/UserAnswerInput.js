@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmitting, disabled }) {
+export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled }) {
   const [selectedOption, setSelectedOption] = useState('');
 
   useEffect(() => {
-    if (!isSubmitting) {
+    if (!disabled) {
       setSelectedOption('');
     }
-  }, [isSubmitting]);
+  }, [disabled]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -22,7 +22,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmit
         {options.map((option, index) => (
           <div 
             key={index} 
-            className={`flex items-center space-x-3 mb-2 bg-white shadow rounded p-4 cursor-pointer transform transition-all duration-200 ease-in-out ${selectedOption === option ? 'bg-blue-200 scale-105' : 'hover:scale-105 hover:shadow-lg'}`}
+            className={`flex items-center space-x-3 mb-2 shadow rounded p-4 cursor-pointer transform transition-all duration-200 ease-in-out ${selectedOption === option ? 'bg-cyan-400 border-cyan-600 border-2 scale-102' : 'bg-white hover:scale-102 hover:shadow-lg'}`}
             onClick={() => !disabled && setSelectedOption(option)}
           >
             <input 
@@ -39,8 +39,8 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmit
             <label htmlFor={`option${index}`} className="text-lg">{option}</label>
           </div>
         ))}
-        <button type="submit" className="w-full mt-4 px-4 py-2 bg-blue-500 text-white rounded" disabled={isSubmitting || disabled}>
-          {isSubmitting && selectedOption ? 'Submitting...' : 'Submit'}
+        <button type="submit" className={`w-full mt-4 px-4 py-2 text-white rounded ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`} disabled={disabled}>
+          {disabled && selectedOption ? 'Submitting...' : 'Submit'}
         </button>
       </form>
     </div>
@@ -50,6 +50,5 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, isSubmit
 UserAnswerInput.propTypes = {
   options: PropTypes.arrayOf(PropTypes.string),
   onAnswerSubmit: PropTypes.func.isRequired,
-  isSubmitting: PropTypes.bool,
   disabled: PropTypes.bool,
 };
