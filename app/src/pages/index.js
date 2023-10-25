@@ -101,8 +101,8 @@ export default function Home() {
             <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p>
           ) : (
             <>
-              <CodeSnippetDisplay codeSnippet={isLoading ? 'Loading...' : codeSnippet} />
-              <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} isSubmitting={isSubmitting} />
+              <CodeSnippetDisplay codeSnippet={codeSnippet} loading={isLoading} />
+              <UserAnswerInput options={options} onAnswerSubmit={handleAnswerSubmit} isSubmitting={isSubmitting} disabled={isLoading} />
               {result && <p className="text-center">{result}</p>}
             </>
           )}
