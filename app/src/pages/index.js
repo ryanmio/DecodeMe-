@@ -17,20 +17,18 @@ export default function Home() {
 
   const questionLimit = 10;
 
-  const handleUserAuth = (user) => {
-    setUser(user);
-  };
-
-  const handleGameModeSelect = async (mode) => {
+  const handleUserAuth = setUser;
+  const handleGameModeSelect = mode => {
     setGameMode(mode);
-    await handleCodeSnippetFetch([]);
+    handleCodeSnippetFetch([]);
   };
 
-  const handleAnswerSubmit = async (answer) => {
-    const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
-    console.log('New conversation history after user submits an answer:', newConversationHistory);
-    setConversationHistory(newConversationHistory);
-    await handleCodeSnippetFetch(newConversationHistory);
+  const handleAnswerSubmit = async (answerIndex) => {
+    const answer = question.options[answerIndex];
+    setConversationHistory(prev => [...prev, { role: 'user', content: answer }]);
+    await handleCodeSnippetFetch([...conversationHistory, { role: 'user', content: answer }]);
+    if (answerIndex === 0) setScore(prevScore => prevScore + 1);
+    setQuestionsAnswered(prev => prev + 1);
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
@@ -38,33 +36,19 @@ export default function Home() {
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ conversationHistory }),
       });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       if (Array.isArray(data.conversationHistory)) {
         const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
-        const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
-        const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
-        console.log('New code snippet:', codeSnippet);
-        const optionsMatch = responseText.match(/A\) .*\nB\) .*/);
-        const options = optionsMatch ? optionsMatch[0].split('\n') : [];
-        console.log('New options:', options);
+        const codeSnippet = responseText.match(/```(.|\n)*?```/)?.[0] || '';
+        const options = responseText.match(/A\) .*\nB\) .*/)?.[0].split('\n') || [];
         setQuestion({ codeSnippet, options });
-        setResult(null); // Clear the result when a new question is fetched
-
-        // Only update the conversation history if the new message is different from the last one
+        setResult(null);
         if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
-          const updatedConversationHistory = [...conversationHistory, { role: 'assistant', content: responseText }];
-          console.log('Updated conversation history after fetching new question:', updatedConversationHistory);
-          setConversationHistory(updatedConversationHistory);
+          setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
         }
       }
     } catch (error) {
@@ -89,23 +73,13 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <button onClick={resetGame} className="absolute top-4 left-4 text-cyan-400">
-            <FaHome size={24} />
-          </button>
+          <button onClick={resetGame} className="absolute top-4 left-4 text-cyan-400"><FaHome size={24} /></button>
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">DecodeMe! Score: {score}</h1>
-          {!user ? (
-            <Auth onUserAuth={handleUserAuth} />
-          ) : !gameMode ? (
-            <GameModeSelection onGameModeSelect={handleGameModeSelect} />
-          ) : questionsAnswered >= questionLimit ? (
-            <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p>
-          ) : (
-            <>
-              <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
-              <UserAnswerInput options={question.options} onAnswerSubmit={handleAnswerSubmit} disabled={isLoading} />
-              {result && <p className="text-center">{result}</p>}
-            </>
-          )}
+          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit ? <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p> : <>
+            <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
+            <UserAnswerInput options={question.options} onAnswerSubmit={handleAnswerSubmit} disabled={isLoading} />
+            {result && <p className="text-center">{result}</p>}
+          </>}
         </div>
       </div>
     </div>

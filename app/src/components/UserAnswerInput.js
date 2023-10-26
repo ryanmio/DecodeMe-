@@ -20,7 +20,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAnswerSubmit(selectedOption);
+    onAnswerSubmit(options.indexOf(selectedOption));
   };
 
   return (
