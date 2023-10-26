@@ -16,30 +16,31 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
   };
 
   return (
-    <div className="flex flex-col items-start w-full max-w-md mx-auto mt-4">
-      <h3 className="text-xl font-bold mb-4">What does this code do?</h3>
+    <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4 space-y-4">
+      <h3 className="text-2xl font-extrabold text-gray-900 mb-4">What does this code do?</h3>
       <form onSubmit={handleSubmit} className="w-full">
-        {options.map((option, index) => (
-          <div 
-            key={index} 
-            className={`flex items-center space-x-3 mb-2 shadow rounded p-4 cursor-pointer transform transition-all duration-200 ease-in-out ${selectedOption === option ? 'bg-cyan-400 border-cyan-600 border-2 scale-102' : 'bg-white hover:scale-102 hover:shadow-lg'}`}
-            onClick={() => !disabled && setSelectedOption(option)}
-          >
-            <input 
-              type="radio" 
-              id={`option${index}`} 
-              name="option" 
-              value={option} 
-              checked={selectedOption === option}
-              onChange={(e) => setSelectedOption(e.target.value)} 
-              className="form-radio text-indigo-600 h-5 w-5"
-              style={{ display: 'none' }}
-              disabled={disabled}
-            />
-            <label htmlFor={`option${index}`} className="text-lg">{option}</label>
-          </div>
-        ))}
-        <button type="submit" className={`w-full mt-4 px-4 py-2 text-white rounded ${disabled ? 'bg-gray-500 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-700'}`} disabled={disabled}>
+        <div className="space-y-2">
+          {options.map((option, index) => (
+            <div 
+              key={index} 
+              className={`flex items-center p-4 rounded-lg transition duration-200 ease-in-out cursor-pointer ring-1 ring-gray-300 ${selectedOption === option ? 'ring-2 ring-gradient-to-r from-purple-400 via-pink-500 to-red-500' : 'hover:ring-2 hover:ring-gradient-to-r hover:from-purple-400 hover:via-pink-500 hover:to-red-500'}`}
+              onClick={() => !disabled && setSelectedOption(option)}
+            >
+              <input 
+                type="radio" 
+                id={`option${index}`} 
+                name="option" 
+                value={option} 
+                checked={selectedOption === option}
+                onChange={(e) => setSelectedOption(e.target.value)} 
+                className="hidden"
+                disabled={disabled}
+              />
+              <label htmlFor={`option${index}`} className={`text-lg ${selectedOption === option ? 'font-semibold text-gray-800' : 'text-gray-600'}`}>{option}</label>
+            </div>
+          ))}
+        </div>
+        <button type="submit" className={`w-full mt-4 py-2 text-white rounded-lg bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 ${disabled ? 'cursor-not-allowed opacity-50' : 'hover:opacity-90'}`} disabled={disabled}>
           {disabled && selectedOption ? 'Submitting...' : 'Submit'}
         </button>
       </form>
