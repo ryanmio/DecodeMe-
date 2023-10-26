@@ -92,7 +92,7 @@ export default function Home() {
           <button onClick={resetGame} className="absolute top-4 left-4 text-cyan-400">
             <FaHome size={24} />
           </button>
-          <h1 className="text-2xl font-bold mb-4 text-center">DecodeMe! Score: {score}</h1>
+          <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">DecodeMe! Score: {score}</h1>
           {!user ? (
             <Auth onUserAuth={handleUserAuth} />
           ) : !gameMode ? (
