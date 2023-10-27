@@ -44,7 +44,8 @@ export default function Home() {
       if (Array.isArray(data.conversationHistory)) {
         const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
         const codeSnippet = responseText.match(/```(.|\n)*?```/)?.[0] || '';
-        const options = responseText.match(/A\) .*\nB\) .*/)?.[0].split('\n') || [];
+        let options = responseText.match(/A\) .*\nB\) .*/)?.[0].split('\n') || [];
+        options = options.map(option => option.slice(3)); // Remove the "A) " and "B) " prefixes
         setQuestion({ codeSnippet, options });
         setResult(null);
         if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
