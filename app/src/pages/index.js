@@ -14,6 +14,7 @@ export default function Home() {
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [correctAnswerIndex] = useState(0);
 
   const questionLimit = 10;
 
@@ -23,11 +24,10 @@ export default function Home() {
     handleCodeSnippetFetch([]);
   };
 
-  const handleAnswerSubmit = async (answerIndex) => {
+  const handleAnswerSubmit = async (answerIndex, isCorrect) => {
     const answer = question.options[answerIndex];
     setConversationHistory(prev => [...prev, { role: 'user', content: answer }]);
     await handleCodeSnippetFetch([...conversationHistory, { role: 'user', content: answer }]);
-    if (answerIndex === 0) setScore(prevScore => prevScore + 1);
     setQuestionsAnswered(prev => prev + 1);
   };
 
@@ -78,7 +78,13 @@ export default function Home() {
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">DecodeMe! Score: {score}</h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit ? <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p> : <>
             <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
-            <UserAnswerInput options={question.options} onAnswerSubmit={handleAnswerSubmit} disabled={isLoading} />
+            <UserAnswerInput
+              options={question.options}
+              onAnswerSubmit={handleAnswerSubmit}
+              disabled={isLoading}
+              correctAnswerIndex={correctAnswerIndex}
+              setScore={setScore} // Pass setScore as a prop here
+            />
             {result && <p className="text-center">{result}</p>}
           </>}
         </div>
