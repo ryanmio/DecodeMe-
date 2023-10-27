@@ -4,12 +4,16 @@ import { useSpring, animated } from '@react-spring/web';
 
 export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled }) {
   const [selectedOption, setSelectedOption] = useState('');
+  const [displayOptions, setDisplayOptions] = useState(
+    Math.random() < 0.5 ? options.slice().reverse() : options
+  );
 
   useEffect(() => {
     if (!disabled) {
       setSelectedOption('');
+      setDisplayOptions(Math.random() < 0.5 ? options.slice().reverse() : options);
     }
-  }, [disabled]);
+  }, [disabled, options]);
 
   const fadeAnswers = useSpring({
     from: { opacity: 0 },
@@ -20,7 +24,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    onAnswerSubmit(options.indexOf(selectedOption));
+    onAnswerSubmit(displayOptions.indexOf(selectedOption));
   };
 
   return (
@@ -28,7 +32,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
        <h2 className="text-xl font-medium mt-2 text-gray-900">What does this code do?</h2>
       <form onSubmit={handleSubmit} className="w-full">
         <animated.div style={fadeAnswers} className="space-y-2">
-          {options.map((option, index) => (
+          {displayOptions.map((option, index) => (
             <div 
               key={index} 
               className={`flex items-center p-4 rounded-lg border border-gray-200 transition-all duration-200 ease-in-out cursor-pointer hover:shadow-lg hover:scale-105 shadow-sm ${selectedOption === option ? 'bg-purple-100 shadow-md' : 'bg-white'}`}
