@@ -6,13 +6,13 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
   const [selectedOption, setSelectedOption] = useState('');
   const [submittedOption, setSubmittedOption] = useState('');
   const [displayOptions, setDisplayOptions] = useState([]);
-  const [correctDisplayIndex, setCorrectDisplayIndex] = useState(null); // New state variable for correct index in displayOptions
+  const [correctDisplayIndex, setCorrectDisplayIndex] = useState(null);
 
   useEffect(() => {
     if (!disabled) {
       const shuffledOptions = Math.random() < 0.5 ? options.slice().reverse() : options;
       setDisplayOptions(shuffledOptions);
-      setCorrectDisplayIndex(shuffledOptions.indexOf(options[correctAnswerIndex])); // Update correct index in displayOptions
+      setCorrectDisplayIndex(shuffledOptions.indexOf(options[correctAnswerIndex]));
       setSelectedOption('');
       setSubmittedOption('');
     }
@@ -30,7 +30,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
     setSubmittedOption(selectedOption);
     const originalIndex = options.indexOf(selectedOption);
     if (originalIndex === correctAnswerIndex) {
-      setScore(prevScore => prevScore + 1); // Use setScore here
+      setScore(prevScore => prevScore + 1);
       onAnswerSubmit(originalIndex, true);
     } else {
       onAnswerSubmit(originalIndex, false);
