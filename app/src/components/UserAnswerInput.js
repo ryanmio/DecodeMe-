@@ -1,12 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSpring, animated } from '@react-spring/web';
+import Sparkle from '../components/Sparkle';
 
 export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled, correctAnswerIndex, setScore }) {
   const [selectedOption, setSelectedOption] = useState('');
   const [submittedOption, setSubmittedOption] = useState('');
   const [displayOptions, setDisplayOptions] = useState([]);
   const [correctDisplayIndex, setCorrectDisplayIndex] = useState(null);
+  const [showSparkle, setShowSparkle] = useState(false);
+  const [shake, setShake] = useState(false);
 
   useEffect(() => {
     if (!disabled) {
@@ -15,6 +18,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
       setCorrectDisplayIndex(shuffledOptions.indexOf(options[correctAnswerIndex]));
       setSelectedOption('');
       setSubmittedOption('');
+      setShowSparkle(false);
     }
   }, [disabled, options, correctAnswerIndex]);
 
@@ -32,8 +36,11 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
     if (originalIndex === correctAnswerIndex) {
       setScore(prevScore => prevScore + 1);
       onAnswerSubmit(originalIndex, true);
+      setShowSparkle(true);
+      setShake(false);  // Reset shake state
     } else {
       onAnswerSubmit(originalIndex, false);
+      setShake(true);  // Trigger shake animation
     }
   };
 
@@ -45,7 +52,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
           {displayOptions.map((option, index) => (
             <div 
               key={index} 
-              className={`flex items-center p-4 rounded-lg border border-gray-200 transition-all duration-200 ease-in-out cursor-pointer hover:shadow-lg hover:scale-105 shadow-sm ${submittedOption === option ? (displayOptions.indexOf(submittedOption) === correctDisplayIndex ? 'bg-green-100 shadow-md' : 'bg-red-100 shadow-md') : (selectedOption === option ? 'bg-purple-100 shadow-md' : 'bg-white')}`}
+              className={`flex items-center p-4 rounded-lg border border-gray-200 transition-all duration-200 ease-in-out cursor-pointer hover:shadow-lg hover:scale-105 shadow-sm ${submittedOption === option ? (displayOptions.indexOf(submittedOption) === correctDisplayIndex ? 'bg-green-100 shadow-md' : `bg-red-100 shadow-md ${shake ? 'shake-animation' : ''}`) : (selectedOption === option ? 'bg-purple-100 shadow-md' : 'bg-white')}`}
               onClick={() => !disabled && setSelectedOption(option)}
             >
               <input 
@@ -59,6 +66,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
                 disabled={disabled}
               />
               <label htmlFor={`option${index}`} className={`text-lg ${selectedOption === option ? 'text-gray-900' : 'text-gray-900'}`}>{option}</label>
+              {showSparkle && submittedOption === option && displayOptions.indexOf(submittedOption) === correctDisplayIndex && <Sparkle />}
             </div>
           ))}
         </animated.div>
@@ -67,7 +75,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
         </button>
       </form>
     </div>
-  );
+  );  
 }
 
 UserAnswerInput.propTypes = {
@@ -75,4 +83,5 @@ UserAnswerInput.propTypes = {
   onAnswerSubmit: PropTypes.func.isRequired,
   disabled: PropTypes.bool,
   correctAnswerIndex: PropTypes.number,
+  setScore: PropTypes.func,
 };

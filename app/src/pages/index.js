@@ -10,7 +10,6 @@ export default function Home() {
   const [gameMode, setGameMode] = useState(null);
   const [question, setQuestion] = useState({ codeSnippet: null, options: [] });
   const [score, setScore] = useState(0);
-  const [result, setResult] = useState(null);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -45,9 +44,9 @@ export default function Home() {
         const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
         const codeSnippet = responseText.match(/```(.|\n)*?```/)?.[0] || '';
         let options = responseText.match(/A\) .*\nB\) .*/)?.[0].split('\n') || [];
-        options = options.map(option => option.slice(3)); // Remove the "A) " and "B) " prefixes
+        // Uncomment the line below to remove the "A) " and "B) " prefixes
+        // options = options.map(option => option.slice(3));
         setQuestion({ codeSnippet, options });
-        setResult(null);
         if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
           setConversationHistory([...conversationHistory, { role: 'assistant', content: responseText }]);
         }
@@ -63,7 +62,6 @@ export default function Home() {
     setGameMode(null);
     setQuestion({ codeSnippet: null, options: [] });
     setScore(0);
-    setResult(null);
     setQuestionsAnswered(0);
     setConversationHistory([]);
     setIsLoading(false);
@@ -83,9 +81,8 @@ export default function Home() {
               onAnswerSubmit={handleAnswerSubmit}
               disabled={isLoading}
               correctAnswerIndex={correctAnswerIndex}
-              setScore={setScore} // Pass setScore as a prop here
+              setScore={setScore}
             />
-            {result && <p className="text-center">{result}</p>}
           </>}
         </div>
       </div>
