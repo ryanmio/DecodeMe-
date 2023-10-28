@@ -1,14 +1,13 @@
-import { animated, useSpring, config } from '@react-spring/web';
+import { animated, useSpring } from '@react-spring/web';
 import { useEffect, useState } from 'react';
 
 export default function Spark() {
   const [shouldAnimate, setShouldAnimate] = useState(false);
 
   const props = useSpring({
-    opacity: shouldAnimate ? 0 : 1,
-    transform: shouldAnimate ? 'translate3d(0px, -50px, 0)' : 'translate3d(0px, 0px, 0)',
     from: { opacity: 1, transform: 'translate3d(0px, 0px, 0)' },
-    config: config.stiff,
+    to: { opacity: 0, transform: 'translate3d(0px, -50px, 0)' },
+    reset: shouldAnimate,
     onRest: () => setShouldAnimate(false),
   });
 
