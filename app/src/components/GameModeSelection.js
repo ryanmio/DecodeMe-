@@ -19,7 +19,8 @@ function GameModeSelection({ onGameModeSelect }) {
           <li key={index} className="w-full">
             <button 
               onClick={() => handleGameModeSelect(mode)}
-              className={`w-full text-left py-2 px-4 rounded shadow ${selectedMode === mode ? 'bg-blue-500 text-white' : 'bg-white'}`}
+              className={`w-full text-left py-2 px-4 rounded shadow ${selectedMode === mode ? 'bg-blue-500 text-white' : 'bg-white'} transition-all duration-200 ease-in-out ${mode !== 'Multiple Choice' ? 'cursor-not-allowed opacity-50' : 'hover:shadow-lg hover:scale-105'}`}
+              disabled={mode !== 'Multiple Choice'}
             >
               {mode}
             </button>
