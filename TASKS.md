@@ -35,17 +35,30 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Build a working signup page
 - [x] Create game mode selection UI
 - [x] Design UI for displaying code snippets
-- [ ] Implement input forms for user answers
+- [x] Implement input forms for user answers
 
 ### Game Logic
 - [x] Develop function for fetching code snippets
-- [ ] Implement multiple-choice questions logic
+- [x] Implement multiple-choice questions logic
 - [ ] Implement open-ended questions logic (save for future release)
 - [ ] Implement data analysis questions logic (save for future release)
 
 ### Scoring and Feedback
-- [ ] Develop scoring algorithm
+- [x] Develop scoring algorithm
 - [ ] Implement leaderboard functionality
+
+### New Features
+- [ ] Add "Give me a hint" button in options menu
+- [ ] Add "Log out" button in options menu
+- [ ] Add "Skip this/Refresh" button in options menu
+- [ ] Implement history of past questions in options menu
+- [ ] Implement adjustable text size in options menu
+- [ ] Add daily, weekly, lifetime scores in leaderboards
+- [ ] Add multilanguage support in leaderboards
+- [ ] Implement shareable score previews
+- [ ] Implement challenge mode for friends
+- [ ] Implement daily streaks
+- [ ] Rethink scoring based on new constraints
 
 ### Testing
 - [ ] Unit tests for backend functions
@@ -64,6 +77,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Conduct user testing
 - [ ] Make necessary adjustments based on feedback
 - [ ] Final review and launch
+
 
 ### Originally Planned Project Directory Structure
 .
