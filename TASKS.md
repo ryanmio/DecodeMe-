@@ -153,3 +153,36 @@ Moving forward, we need to:
 3. Implement the scoring and leaderboard features.
 4. Conduct end-to-end testing to ensure all components work together seamlessly.
 5. Deploy the application and conduct user testing to gather feedback for further improvements.
+
+
+## DecodeMe Project Summary
+
+### Game Basics
+- Multiple-choice Python code questions.
+- Question difficulty adjusts based on user performance.
+
+### Options Menu
+- "Give me a hint" button.
+- "Log out" button.
+- "Skip this/Refresh" button.
+- History of past questions.
+- Adjustable text size.
+
+### User Onboarding
+- Prompt for a display name upon first play.
+- Account creation for saving progress, prompted at game end.
+- Optional email for updates.
+
+### Leaderboards
+- Daily, weekly, lifetime scores.
+- Multilanguage support.
+
+### Social Features
+- Shareable score previews.
+- Challenge mode for friends.
+
+### User Engagement
+- Daily streaks using last incorrect question as baseline.
+  
+### Scoring
+- Opted for a simple, flat point system due to constraints with dynamically generated questions.
