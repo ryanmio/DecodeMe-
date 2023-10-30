@@ -1,17 +1,20 @@
 import React from "react";
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
 import { IoOptions } from "react-icons/io5";
-import { getFirebaseAuth } from '../firebase'; // Corrected import
-import { signOut } from 'firebase/auth'; // Import signOut
+import { getFirebaseAuth } from '../firebase';
+import { signOut } from 'firebase/auth';
 
 const OptionsMenu = () => {
   const handleLogout = async () => {
-    const auth = getFirebaseAuth();
-    try {
-      await signOut(auth);
-      window.location.href = '/';
-    } catch (error) {
-      console.error('Failed to log out:', error);
+    const confirmLogout = window.confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+      const auth = getFirebaseAuth();
+      try {
+        await signOut(auth);
+        window.location.href = '/';
+      } catch (error) {
+        console.error('Failed to log out:', error);
+      }
     }
   };
 
