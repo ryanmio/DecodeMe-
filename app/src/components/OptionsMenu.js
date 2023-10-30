@@ -14,16 +14,13 @@ const OptionsMenu = () => {
 >
   <IoOptions size={24} color="#22D3EE" />
 </Button>
-
-
       </DropdownTrigger>
       <DropdownMenu variant="shadow" aria-label="Options menu">
-        <DropdownItem key="settings" shortcut="⌘S">Settings</DropdownItem>
-        <DropdownItem key="profile" shortcut="⌘P">Profile</DropdownItem>
-        <DropdownItem key="help" shortcut="⌘H">Help</DropdownItem>
-        <DropdownItem key="logout" shortcut="⌘L" className="text-danger" color="danger">
-          Logout
-        </DropdownItem>
+        <DropdownItem key="hint" shortcut="⌘H">Hint</DropdownItem>
+        <DropdownItem key="logout" shortcut="⌘L">Logout</DropdownItem>
+        <DropdownItem key="skip" shortcut="⌘S">Skip/Refresh</DropdownItem>
+        <DropdownItem key="history" shortcut="⌘H">Past Questions</DropdownItem>
+        <DropdownItem key="textSize" shortcut="⌘T">Text Size</DropdownItem>
       </DropdownMenu>
     </Dropdown>
   );
