@@ -19,3 +19,10 @@
     animation: shake 0.2s ease-in-out;
   }
   
+
+  .custom-button {
+    min-width: auto !important;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  

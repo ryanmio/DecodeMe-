@@ -5,6 +5,8 @@ import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
 import UserAnswerInput from '../components/UserAnswerInput';
 import Sparkle from '../components/Sparkle';
 import { FaHome } from 'react-icons/fa';
+import { IoOptions } from 'react-icons/io5';
+import OptionsMenu from '../components/OptionsMenu';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -16,6 +18,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
+  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
 
   const questionLimit = 10;
 
@@ -73,7 +76,7 @@ export default function Home() {
   useEffect(() => {
     if (score > 0) {
       setShowScoreSparkle(true);
-      setTimeout(() => setShowScoreSparkle(false), 1000); // Adjust delay as needed
+      setTimeout(() => setShowScoreSparkle(false), 1000);
     }
   }, [score]);
 
@@ -82,7 +85,10 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <button onClick={resetGame} className="absolute top-4 left-4 text-cyan-400"><FaHome size={24} /></button>
+          <div className="absolute top-4 left-4 flex space-x-2">
+            <button onClick={resetGame} className="text-cyan-400"><FaHome size={24} /></button>
+            <OptionsMenu />
+          </div>
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -106,4 +112,5 @@ export default function Home() {
       </div>
     </div>
   );
+
 }
