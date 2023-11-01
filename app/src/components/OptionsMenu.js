@@ -31,11 +31,11 @@ const OptionsMenu = () => {
         </Button>
       </DropdownTrigger>
       <DropdownMenu variant="shadow" aria-label="Options menu">
-        <DropdownItem key="hint" shortcut="⌘H">Hint</DropdownItem>
+        {/* <DropdownItem key="hint" shortcut="⌘H">Hint</DropdownItem> */}
         <DropdownItem key="logout" shortcut="⌘L" onClick={handleLogout}>Logout</DropdownItem>
-        <DropdownItem key="skip" shortcut="⌘S">Skip/Refresh</DropdownItem>
-        <DropdownItem key="history" shortcut="⌘H">Past Questions</DropdownItem>
-        <DropdownItem key="textSize" shortcut="⌘T">Text Size</DropdownItem>
+        {/* <DropdownItem key="skip" shortcut="⌘S">Skip/Refresh</DropdownItem> */}
+        {/* <DropdownItem key="history" shortcut="⌘H">Past Questions</DropdownItem> */}
+        {/* <DropdownItem key="textSize" shortcut="⌘T">Text Size</DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );
