@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
+import { getAuth, onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { getFirebaseFirestore } from '../firebase';
 import { getFirebaseAuth } from '../firebase';
-import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
@@ -10,6 +12,8 @@ export default function Auth({ onUserAuth }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const db = getFirebaseFirestore();
+  const auth = getFirebaseAuth();
 
   useEffect(() => {
     setIsClient(true);
@@ -31,7 +35,9 @@ export default function Auth({ onUserAuth }) {
     const auth = getFirebaseAuth();
     signInAnonymously(auth)
       .then((userCredential) => {
-        // Store leaderboard name in user's local state or Firestore
+        // Create a new document in the 'guests' collection
+        const docRef = doc(db, 'guests', userCredential.user.uid);
+        setDoc(docRef, { leaderboardName });
       })
       .catch((error) => {
         setError(error.message);
@@ -50,12 +56,38 @@ export default function Auth({ onUserAuth }) {
 
   const signUp = () => {
     const auth = getFirebaseAuth();
-    handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
+    handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password))
+      .then((userCredential) => {
+        // Create a new document in the 'users' collection
+        const docRef = doc(db, 'users', userCredential.user.uid);
+        setDoc(docRef, { email });
+      });
   };
   
   const signIn = () => {
     const auth = getFirebaseAuth();
     handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+  };
+
+  const handleUpgradeAccount = () => {
+    const auth = getFirebaseAuth();
+    const credential = EmailAuthProvider.credential(email, password);
+    linkWithCredential(auth.currentUser, credential)
+      .then((userCredential) => {
+        // Clone the document from the 'guests' collection to the 'users' collection
+        const oldDocRef = doc(db, 'guests', userCredential.user.uid);
+        const newDocRef = doc(db, 'users', userCredential.user.uid);
+        oldDocRef.get().then((doc) => {
+          if (doc.exists) {
+            setDoc(newDocRef, doc.data());
+            deleteDoc(oldDocRef);
+          }
+        });
+      })
+      .catch((error) => {
+        setError(error.message);
+        setLoading(false);
+      });
   };
 
   if (!isClient) {

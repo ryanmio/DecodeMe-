@@ -1,5 +1,6 @@
 import { initializeApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -14,7 +15,7 @@ const firebaseConfig = {
 let firebaseInstance;
 
 export function getFirebase() {
-  if (typeof window !== 'undefined' && !firebaseInstance) {
+  if (!firebaseInstance) {
     try {
       if (!getApps().length) {
         firebaseInstance = initializeApp(firebaseConfig);
@@ -25,11 +26,15 @@ export function getFirebase() {
       console.error("Error during Firebase initialization:", err);
     }
   }
-  
   return firebaseInstance;
 }
 
 export function getFirebaseAuth() {
   const app = getFirebase();
   return getAuth(app);
+}
+
+export function getFirebaseFirestore() {
+  const app = getFirebase();
+  return getFirestore(app);
 }
