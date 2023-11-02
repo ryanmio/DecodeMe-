@@ -73,25 +73,27 @@ export default function Auth({ onUserAuth }) {
       />
       <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Play as Guest</button>
       <div className="w-full border-b border-gray-300 my-4"></div>
-      <p className="text-gray-500 mb-4">Or sign in with your email</p>
-      <input 
-        type="email" 
-        value={email} 
-        onChange={(e) => setEmail(e.target.value)} 
-        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-        placeholder="Email"
-      />
-      <input 
-        type="password" 
-        value={password} 
-        onChange={(e) => setPassword(e.target.value)} 
-        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-        placeholder="Password"
-      />
-      <button onClick={signUp} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Sign Up</button>
-      <button onClick={signIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded">Sign In</button>
-      {loading && <p className="mt-4">Loading...</p>}
-      {error && <p className="mt-4 text-red-500">Error: {error}</p>}
+      <p className="text-gray-500 mb-2 text-sm">Or sign in with your email</p>
+      <div className="flex flex-col space-y-2">
+        <input 
+          type="email" 
+          value={email} 
+          onChange={(e) => setEmail(e.target.value)} 
+          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+          placeholder="Email"
+        />
+        <input 
+          type="password" 
+          value={password} 
+          onChange={(e) => setPassword(e.target.value)} 
+          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+          placeholder="Password"
+        />
+        <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
+        <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+      </div>
+      {loading && <p className="mt-2 text-sm">Loading...</p>}
+      {error && <p className="mt-2 text-red-500 text-sm">Error: {error}</p>}
     </div>
   );
 }
