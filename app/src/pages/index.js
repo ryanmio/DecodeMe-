@@ -18,7 +18,6 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
-  const [showOptionsMenu, setShowOptionsMenu] = useState(false);
 
   const questionLimit = 10;
 
