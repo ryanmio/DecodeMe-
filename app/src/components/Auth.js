@@ -47,7 +47,7 @@ export default function Auth({ onUserAuth }) {
 
   const handleAuthentication = (authMethod) => {
     setLoading(true);
-    authMethod()
+    return authMethod()
       .catch((error) => {
         setError(error.message);
         setLoading(false);
