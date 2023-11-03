@@ -7,6 +7,10 @@ import Sparkle from '../components/Sparkle';
 import { FaHome } from 'react-icons/fa';
 import { IoOptions } from 'react-icons/io5';
 import OptionsMenu from '../components/OptionsMenu';
+import { getAuth } from 'firebase/auth';
+import { collection, doc, setDoc } from 'firebase/firestore';
+import { getFirestore } from 'firebase/firestore';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -18,6 +22,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
+  const db = getFirestore();
 
   const questionLimit = 10;
 
@@ -33,6 +38,19 @@ export default function Home() {
     setConversationHistory(newConversationHistory);
     await handleCodeSnippetFetch(newConversationHistory);
     setQuestionsAnswered(prev => prev + 1);
+  
+    // Log the answered question in Firestore
+    const auth = getAuth();
+    const questionId = uuidv4();
+    const questionDoc = doc(db, 'users', auth.currentUser.uid, 'history', questionId);
+    setDoc(questionDoc, {
+      question: question.codeSnippet,
+      answer,
+      isCorrect,
+      timestamp: new Date()
+    }).catch((error) => {
+      console.error('Failed to log answer:', error);
+    });
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
