@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { useSpring, animated } from '@react-spring/web';
 import { Ping } from '@uiball/loaders';
+import PythonChip from './PythonChip';
 
 export default function CodeSnippetDisplay({ codeSnippet, loading }) {
   const formattedCodeSnippet = codeSnippet?.replace(/```python\n|```python|```/g, '').trim() || '';
@@ -23,6 +24,9 @@ export default function CodeSnippetDisplay({ codeSnippet, loading }) {
             wrapLines 
             style={{minWidth: '300px', minHeight: '200px'}}
           />
+          <div style={{position: 'absolute', top: 5, right: 5}}>
+            <PythonChip />
+          </div>
           {loading && (
             <animated.div style={fadeLoading} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <Ping size={45} speed={2} color="white" />
