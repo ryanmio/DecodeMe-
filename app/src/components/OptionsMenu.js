@@ -25,7 +25,6 @@ const OptionsMenu = () => {
   // add other hotkeys here
   // useHotkeys('command+s', handleSkip);
   // useHotkeys('command+h', handleHistory);
-  // useHotkeys('command+t', handleTextSize);
 
   return (
     <Dropdown>
@@ -44,7 +43,6 @@ const OptionsMenu = () => {
         <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>
         {/* <DropdownItem key="skip" shortcut="⌘S">Skip/Refresh</DropdownItem> */}
         {/* <DropdownItem key="history" shortcut="⌘H">Past Questions</DropdownItem> */}
-        {/* <DropdownItem key="textSize" shortcut="⌘T">Text Size</DropdownItem> */}
       </DropdownMenu>
     </Dropdown>
   );
