@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 // GameModeSelection component
 function GameModeSelection({ onGameModeSelect }) {
-  const gameModes = ['Multiple Choice', 'Open-Ended Questions', 'Data Analysis Challenges'];
+  const gameModes = ['Multiple Choice', 'Short Answer', 'Daily Challenge'];
   const [selectedMode, setSelectedMode] = useState(null);
 
   const handleGameModeSelect = (mode) => {
