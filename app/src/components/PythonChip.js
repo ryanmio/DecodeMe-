@@ -17,9 +17,9 @@ const PythonChip = () => {
       onMouseEnter={() => setHover(true)}
       onMouseLeave={() => setHover(false)}
       style={{
-        transform: hover ? 'scale(1)' : 'scale(0.85)',
+        transform: hover ? 'scale(0.9)' : 'scale(0.85)',
         transition: 'transform 0.3s ease-in-out',
-        opacity: hover ? '1' : '0.9',
+        opacity: hover ? '1' : '0.8',
       }}
     >
       Python
