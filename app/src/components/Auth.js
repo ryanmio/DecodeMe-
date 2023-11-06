@@ -17,77 +17,58 @@ export default function Auth({ onUserAuth }) {
 
   useEffect(() => {
     setIsClient(true);
-    const auth = getFirebaseAuth();
-    
-    if (auth) {
-      const unsubscribe = onAuthStateChanged(auth, user => {
-        onUserAuth(user);
-        setLoading(false);
-      });
-      return () => unsubscribe();
-    } else {
-      console.error("Failed to acquire Firebase Auth instance in Auth component.");
-    }
+    const unsubscribe = onAuthStateChanged(auth, user => {
+      onUserAuth(user);
+      setLoading(false);
+    });
+    return () => unsubscribe();
   }, []);
 
-  const handleAnonymousSignIn = () => {
+  const handleAnonymousSignIn = async () => {
     setLoading(true);
-    const auth = getFirebaseAuth();
-    signInAnonymously(auth)
-      .then((userCredential) => {
-        // Create a new document in the 'guests' collection
-        const docRef = doc(db, 'guests', userCredential.user.uid);
-        setDoc(docRef, { leaderboardName });
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+    try {
+      const { user } = await signInAnonymously(auth);
+      await setDoc(doc(db, 'guests', user.uid), { leaderboardName });
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
   };
 
-  const handleAuthentication = (authMethod) => {
+  const handleAuthentication = async (authMethod) => {
     setLoading(true);
-    return authMethod()
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+    try {
+      return await authMethod();
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
   };
 
-  const signUp = () => {
-    const auth = getFirebaseAuth();
-    handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password))
-      .then((userCredential) => {
-        // Create a new document in the 'users' collection
-        const docRef = doc(db, 'users', userCredential.user.uid);
-        setDoc(docRef, { email });
-      });
+  const signUp = async () => {
+    const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
+    await setDoc(doc(db, 'users', user.uid), { email });
   };
   
   const signIn = () => {
-    const auth = getFirebaseAuth();
     handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
   };
 
-  const handleUpgradeAccount = () => {
-    const auth = getFirebaseAuth();
-    const credential = EmailAuthProvider.credential(email, password);
-    linkWithCredential(auth.currentUser, credential)
-      .then((userCredential) => {
-        // Clone the document from the 'guests' collection to the 'users' collection
-        const oldDocRef = doc(db, 'guests', userCredential.user.uid);
-        const newDocRef = doc(db, 'users', userCredential.user.uid);
-        oldDocRef.get().then((doc) => {
-          if (doc.exists) {
-            setDoc(newDocRef, doc.data());
-            deleteDoc(oldDocRef);
-          }
-        });
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+  const handleUpgradeAccount = async () => {
+    try {
+      const credential = EmailAuthProvider.credential(email, password);
+      const { user } = await linkWithCredential(auth.currentUser, credential);
+      const oldDocRef = doc(db, 'guests', user.uid);
+      const newDocRef = doc(db, 'users', user.uid);
+      const docData = (await oldDocRef.get()).data();
+      if (docData) {
+        await setDoc(newDocRef, docData);
+        await deleteDoc(oldDocRef);
+      }
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
   };
 
   if (!isClient) {
