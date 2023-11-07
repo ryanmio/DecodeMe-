@@ -8,10 +8,12 @@ import { FaHome } from 'react-icons/fa';
 import OptionsMenu from '../components/OptionsMenu';
 import { getFirebaseAuth, getFirebaseFirestore } from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
-import { collection, doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc } from 'firebase/firestore';
+import GameOver from '../components/GameOver';
 
 export default function Home() {
   const [user, setUser] = useState(null);
+  const [userId, setUserId] = useState(null);
   const [gameMode, setGameMode] = useState(null);
   const [question, setQuestion] = useState({ codeSnippet: null, options: [] });
   const [score, setScore] = useState(0);
@@ -21,12 +23,17 @@ export default function Home() {
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
   const db = getFirebaseFirestore();
+  const [gameId, setGameId] = useState(null);
 
-  const questionLimit = 10;
+  const questionLimit = 2;
 
-  const handleUserAuth = setUser;
+  const handleUserAuth = (user) => {
+    setUser(user);
+    setUserId(user.uid);
+  };
   const handleGameModeSelect = mode => {
     setGameMode(mode);
+    setGameId(uuidv4());
     handleCodeSnippetFetch([]);
   };
 
@@ -40,11 +47,12 @@ export default function Home() {
     // Log the answered question in Firestore
     const auth = await getFirebaseAuth();
     const questionId = uuidv4();
-    const questionDoc = doc(db, 'users', auth.currentUser.uid, 'history', questionId);
+    const questionDoc = doc(db, 'users', userId, 'games', gameId, 'history', questionId);
     setDoc(questionDoc, {
       question: question.codeSnippet,
       answer,
       isCorrect,
+      gameId,
       timestamp: new Date()
     }).catch((error) => {
       console.error('Failed to log answer:', error);
@@ -95,6 +103,20 @@ export default function Home() {
     }
   }, [score]);
 
+  useEffect(() => {
+    const auth = getFirebaseAuth();
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      if (user) {
+        setUser(user);
+        setUserId(user.uid);
+      } else {
+        setUser(null);
+        setUserId(null);
+      }
+    });
+    return () => unsubscribe();
+  }, []);
+
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -113,7 +135,7 @@ export default function Home() {
               {score}
             </div>
           </h1>
-          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit ? <p className="text-center">Game over! Your final score is {score} out of {questionLimit}.</p> : <>
+          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} /> : <>
             <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
             <UserAnswerInput
               options={question.options}
