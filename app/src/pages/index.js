@@ -114,7 +114,9 @@ export default function Home() {
         setUserId(null);
       }
     });
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return (
@@ -135,7 +137,7 @@ export default function Home() {
               {score}
             </div>
           </h1>
-          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} /> : <>
+          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} /> : <>
             <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
             <UserAnswerInput
               options={question.options}
