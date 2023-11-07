@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs } from 'firebase/firestore';
 import { motion } from 'framer-motion';
+import { CodeBlock, dracula } from 'react-code-blocks';
 
 const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
   useEffect(() => {
     const fetchGameHistory = async () => {
@@ -17,9 +19,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       setLoading(true);
       try {
         const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
-
         const querySnapshot = await getDocs(historyCollectionRef);
-
         const historyData = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
@@ -51,8 +51,14 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
           {gameHistory.map((entry) => (
             <li key={entry.id} className="mb-2 p-2 rounded shadow">
               <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 items-center">
-                <span className="font-bold">Q:</span>
-                <span className="text-left">{entry.question}</span>
+                <CodeBlock
+                  text={formatCodeSnippet(entry.question)}
+                  language={"python"}
+                  theme={dracula}
+                  showLineNumbers={false}
+                  wrapLines
+                  codeContainerStyle={{ textAlign: 'left' }}
+                />
                 <span className={entry.isCorrect ? 'text-green-500' : 'text-red-500'}>
                   {entry.isCorrect ? '✔️' : '❌'}
                 </span>
@@ -65,7 +71,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
         </ul>
       </motion.div>
     </div>
-  );  
+  );
 };
 
 export default GameOver;
