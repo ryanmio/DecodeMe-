@@ -10,16 +10,16 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   useEffect(() => {
     const fetchGameHistory = async () => {
       if (!gameId || !userId) {
-        console.log('gameId or userId is not set:', { gameId, userId });
+        console.error('gameId or userId is not set:', { gameId, userId });
         return;
       }
 
       setLoading(true);
       try {
         const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
+
         const querySnapshot = await getDocs(historyCollectionRef);
-        console.log(`Fetched ${querySnapshot.docs.length} history items`);
-        
+
         const historyData = querySnapshot.docs.map(doc => ({
           id: doc.id,
           ...doc.data()
@@ -27,9 +27,10 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
         setGameHistory(historyData);
       } catch (error) {
         console.error('Error fetching game history:', error);
-        setError('Failed to load game history. Please try again.');
+        setError('Failed to load game history.');
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
     };
 
     fetchGameHistory();
@@ -48,14 +49,23 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
         {error && <p className="text-red-500">{error}</p>}
         <ul className="history-list">
           {gameHistory.map((entry) => (
-            <li key={entry.id}>
-              Q: {entry.question} - Your answer: {entry.answer} ({entry.isCorrect ? 'Correct' : 'Incorrect'})
+            <li key={entry.id} className="mb-2 p-2 rounded shadow">
+              <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 items-center">
+                <span className="font-bold">Q:</span>
+                <span className="text-left">{entry.question}</span>
+                <span className={entry.isCorrect ? 'text-green-500' : 'text-red-500'}>
+                  {entry.isCorrect ? '✔️' : '❌'}
+                </span>
+              </div>
+              <div className="text-sm text-gray-600 italic">
+                Your answer: {entry.answer}
+              </div>
             </li>
           ))}
         </ul>
       </motion.div>
     </div>
-  );
+  );  
 };
 
 export default GameOver;
