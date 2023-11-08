@@ -4,25 +4,30 @@ import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../firebase';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
-  // Make sure gameData is not null
   return (
-    <div>
-      <h1>Game Results</h1>
-      <p>Score: {gameData?.score} / {gameData?.questionLimit}</p>
-      {/* Convert the ISO string back to a readable date */}
-      <p>Shared At: {gameData ? new Date(gameData.sharedAt).toString() : 'Loading...'}</p>
-      <div>
-        <h2>Game History</h2>
-        {gameHistory.map((entry) => (
-          <div key={entry.id}>
-            <p>Question: {entry.question}</p>
-            <p>Your Answer: {entry.answer}</p>
-            <p>Correct: {entry.isCorrect ? 'Yes' : 'No'}</p>
+    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+          <div className="results-header mb-4">
+            <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
           </div>
-        ))}
+          <p className="results-score text-lg font-semibold text-gray-700 mb-2">Score: {gameData?.score} / {gameData?.questionLimit}</p>
+          <p className="results-shared-at text-sm text-gray-500 mb-6">Shared At: {gameData ? new Date(gameData.sharedAt).toString() : 'Loading...'}</p>
+          <div className="game-history">
+            <h2 className="text-xl font-medium text-gray-800 mb-4">Game History</h2>
+            {gameHistory.map((entry) => (
+              <div key={entry.id} className="game-history-entry bg-gray-50 p-4 rounded-lg shadow mb-4">
+                <p className="game-question text-gray-800">Question: {entry.question}</p>
+                <p className="game-answer text-gray-800">Your Answer: {entry.answer}</p>
+                <p className={`game-correct font-semibold ${entry.isCorrect ? 'text-green-500' : 'text-red-500'}`}>Correct: {entry.isCorrect ? 'Yes' : 'No'}</p>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
-  );
+  );  
 };
 
 export const getServerSideProps = async (context) => {
