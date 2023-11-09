@@ -13,9 +13,8 @@ const ResultsPage = ({ gameData, gameHistory }) => {
             <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
           </div>
           <p className="results-score text-lg font-semibold text-gray-700 mb-2">Score: {gameData?.score} / {gameData?.questionLimit}</p>
-          <p className="results-shared-at text-sm text-gray-500 mb-6">Shared At: {gameData ? new Date(gameData.sharedAt).toString() : 'Loading...'}</p>
+          <p className="results-shared-at text-sm text-gray-500 mb-6">Shared: {gameData ? new Date(gameData.sharedAt).toLocaleString() : 'Loading...'}</p>
           <div className="game-history">
-            <h2 className="text-xl font-medium text-gray-800 mb-4">Game History</h2>
             {gameHistory.map((entry) => (
               <div key={entry.id} className="game-history-entry bg-gray-50 p-4 rounded-lg shadow mb-4">
                 <p className="game-question text-gray-800">Question: {entry.question}</p>
