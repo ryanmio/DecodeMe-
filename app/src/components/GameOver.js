@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, addDoc, doc, writeBatch } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, writeBatch, getDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import { CodeBlock, dracula } from 'react-code-blocks';
 
@@ -8,6 +8,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
+  const [leaderboardName, setLeaderboardName] = useState('');
 
   useEffect(() => {
     const fetchGameHistory = async () => {
@@ -41,36 +42,57 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       console.error('Cannot share results because gameId or userId is not set:', { gameId, userId });
       return;
     }
-
+  
     setLoading(true);
     setError('');
-
+  
     try {
+      // Fetch the user's leaderboard name if it's not set
+      if (!leaderboardName) {
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+        const userData = userDoc.data();
+        if (userData && userData.leaderboardName) {
+          setLeaderboardName(userData.leaderboardName);
+        } else {
+          const inputName = prompt('Please enter your leaderboard name:');
+          if (inputName) {
+            setLeaderboardName(inputName);
+            // Update the leaderboard name in Firebase
+            await updateDoc(userDocRef, { leaderboardName: inputName });
+          } else {
+            // If the user didn't enter a name, stop the function
+            setLoading(false);
+            return;
+          }
+        }
+      }
+  
       // Generate a unique identifier for the share
-      const shareId = `${userId}_${Date.now()}`;
-
+      const shareId = `${leaderboardName}_${Date.now()}`;
+  
       // Start a batch
       const batch = writeBatch(db);
-
+  
       // Reference to the user's game history
       const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
-
+  
       // Fetch the user's game history
       const querySnapshot = await getDocs(historyCollectionRef);
-
+  
       // Reference to the public share collection
       const shareCollectionRef = collection(db, 'sharedResults');
-
+  
       // Create a new document for sharing with the generated unique identifier
       const shareDocRef = doc(shareCollectionRef, shareId);
       batch.set(shareDocRef, {
         gameId,
-        userId,
+        leaderboardName,
         score,
         questionLimit,
         sharedAt: new Date(),
       });
-
+  
       // Add each history item to the shared document
       querySnapshot.forEach((historyDoc) => {
         const historyData = historyDoc.data();
@@ -78,11 +100,10 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
         const historyDocRef = doc(shareDocRef, 'history', historyDoc.id);
         batch.set(historyDocRef, historyData);
       });
-      
-
+  
       // Commit the batch
       await batch.commit();
-
+  
       // Provide feedback to the user that their results are shared
       alert(`Your results are shared with ID: ${shareId}`);
     } catch (error) {
