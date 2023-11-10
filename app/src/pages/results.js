@@ -16,26 +16,26 @@ const ResultsPage = ({ gameData, gameHistory }) => {
           <p className="results-score text-lg font-semibold text-gray-700 mb-2">Score: {gameData?.score} / {gameData?.questionLimit}</p>
           <p className="results-shared-at text-sm text-gray-500 mb-6">Shared: {gameData ? new Date(gameData.sharedAt).toLocaleString() : 'Loading...'}</p>
           <div className="game-history">
-            {gameHistory.map((entry) => {
-              const formattedQuestion = entry.question.replace(/```python\n|```python|```/g, '').trim();
-              return (
-                <div key={entry.id} className="game-history-entry bg-gray-50 p-4 rounded-lg shadow mb-4">
-                  <div className="game-question text-gray-800">
-                    <h3>Question:</h3>
-                    <CodeBlock
-                      text={formattedQuestion}
-                      language={"python"}
-                      showLineNumbers={true}
-                      theme={dracula}
-                      wrapLines
-                    />
-                  </div>
-                  <p className="game-answer text-gray-800">Your Answer: {entry.answer}</p>
-                  <p className={`game-correct font-semibold ${entry.isCorrect ? 'text-green-500' : 'text-red-500'}`}>Correct: {entry.isCorrect ? 'Yes' : 'No'}</p>
-                </div>
-              );
-            })}
+      {gameHistory.map((entry, index) => {
+        const formattedQuestion = entry.question.replace(/```python\n|```python|```/g, '').trim();
+        return (
+          <div key={entry.id} className="game-history-entry bg-gray-50 p-4 rounded-lg shadow mb-4">
+            <div className="game-question text-gray-800">
+              <h3>Code Snippet {index + 1}</h3>
+              <CodeBlock 
+                text={formattedQuestion} 
+                language={"python"} 
+                showLineNumbers={true} 
+                theme={dracula} 
+                wrapLines 
+              />
+            </div>
+            <p className="game-answer text-gray-800">My Answer: {entry.answer}</p>
+            <p className={`game-correct font-semibold ${entry.isCorrect ? 'text-green-500' : 'text-red-500'}`}>Correct: {entry.isCorrect ? 'Yes' : 'No'}</p>
           </div>
+        );
+      })}
+    </div>
         </div>
       </div>
     </div>
