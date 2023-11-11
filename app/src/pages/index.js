@@ -27,10 +27,15 @@ export default function Home() {
 
   const questionLimit = 2;
 
-  const handleUserAuth = (user) => {
+  const handleUserUpdate = (user) => {
     setUser(user);
-    setUserId(user.uid);
+    setUserId(user?.uid || null);
   };
+
+  const handleUserAuth = (user) => {
+    handleUserUpdate(user);
+  };
+
   const handleGameModeSelect = mode => {
     setGameMode(mode);
     setGameId(uuidv4());
@@ -43,7 +48,7 @@ export default function Home() {
     setConversationHistory(newConversationHistory);
     await handleCodeSnippetFetch(newConversationHistory);
     setQuestionsAnswered(prev => prev + 1);
-  
+
     // Log the answered question in Firestore
     const auth = await getFirebaseAuth();
     const questionId = uuidv4();
@@ -105,18 +110,8 @@ export default function Home() {
 
   useEffect(() => {
     const auth = getFirebaseAuth();
-    const unsubscribe = auth.onAuthStateChanged(user => {
-      if (user) {
-        setUser(user);
-        setUserId(user.uid);
-      } else {
-        setUser(null);
-        setUserId(null);
-      }
-    });
-    return () => {
-      unsubscribe();
-    };
+    const unsubscribe = auth.onAuthStateChanged(handleUserUpdate);
+    return unsubscribe;
   }, []);
 
   return (
