@@ -1,6 +1,6 @@
 // pages/results.js
 import React from 'react';
-import { doc, getDoc, collection, getDocs } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../firebase';
 import ChallengeSection from '../components/ChallengeSection';
 import {CircularProgress} from "@nextui-org/react";
@@ -43,8 +43,8 @@ const ResultsPage = ({ gameData, gameHistory }) => {
 export const getServerSideProps = async (context) => {
   const db = getFirebaseFirestore();
 
-  const { query } = context;
-  const { shareId } = query;
+  const { query: contextQuery } = context;
+  const { shareId } = contextQuery;
 
   let gameData = null;
   let gameHistory = [];
