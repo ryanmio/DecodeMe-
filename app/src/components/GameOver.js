@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc, doc, writeBatch, getDoc, updateDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
-import { CodeBlock, dracula } from 'react-code-blocks';
 import GameHistory from './GameHistory';
 
 const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
@@ -29,7 +28,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
 
          // Sort the history data by timestamp in ascending order
     const sortedHistoryData = historyData.sort((a, b) => a.timestamp - b.timestamp);
-    
+
         setGameHistory(historyData);
       } catch (error) {
         console.error('Error fetching game history:', error);
