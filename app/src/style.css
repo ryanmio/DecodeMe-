@@ -26,3 +26,7 @@
     padding-right: 8px;
   }
   
+
+  .fixed-width {
+    width: 500px; /* Adjust this value to your needs */
+  }
