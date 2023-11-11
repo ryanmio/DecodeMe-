@@ -50,18 +50,22 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
     setLoading(true);
     setError('');
   
+    let finalLeaderboardName = leaderboardName; // Use a new variable to store the final leaderboard name
+
     try {
       // Fetch the user's leaderboard name if it's not set
-      if (!leaderboardName) {
+      if (!finalLeaderboardName) {
         const userDocRef = doc(db, 'users', userId);
         const userDoc = await getDoc(userDocRef);
         const userData = userDoc.data();
         if (userData && userData.leaderboardName) {
-          setLeaderboardName(userData.leaderboardName);
+          finalLeaderboardName = userData.leaderboardName; // Use the leaderboard name directly from the user data
+          setLeaderboardName(finalLeaderboardName);
         } else {
           const inputName = prompt('Please enter your leaderboard name:');
           if (inputName) {
-            setLeaderboardName(inputName);
+            finalLeaderboardName = inputName; // Use the input name directly
+            setLeaderboardName(finalLeaderboardName);
             // Update the leaderboard name in Firebase
             await updateDoc(userDocRef, { leaderboardName: inputName });
           } else {
@@ -72,12 +76,10 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
         }
       }
   
-      console.log('Leaderboard name:', leaderboardName); // Added console log
+      console.log('Leaderboard name:', finalLeaderboardName); // Use finalLeaderboardName
   
       // Generate a unique identifier for the share
-      const shareId = `${leaderboardName}_${Date.now()}`;
-  
-      console.log('Share ID:', shareId); // Added console log
+      const shareId = `${finalLeaderboardName}_${Date.now()}`; // Use finalLeaderboardName
   
       // Start a batch
       const batch = writeBatch(db);
@@ -97,7 +99,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       const shareDocRef = doc(shareCollectionRef, shareId);
       batch.set(shareDocRef, {
         gameId,
-        leaderboardName,
+        leaderboardName: finalLeaderboardName, // Use finalLeaderboardName
         score,
         questionLimit,
         sharedAt: new Date(),
