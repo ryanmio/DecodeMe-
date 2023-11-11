@@ -29,7 +29,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
          // Sort the history data by timestamp in ascending order
     const sortedHistoryData = historyData.sort((a, b) => a.timestamp - b.timestamp);
 
-        setGameHistory(historyData);
+    setGameHistory(sortedHistoryData);
       } catch (error) {
         console.error('Error fetching game history:', error);
         setError('Failed to load game history.');
@@ -72,8 +72,12 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
         }
       }
   
+      console.log('Leaderboard name:', leaderboardName); // Added console log
+  
       // Generate a unique identifier for the share
       const shareId = `${leaderboardName}_${Date.now()}`;
+  
+      console.log('Share ID:', shareId); // Added console log
   
       // Start a batch
       const batch = writeBatch(db);
@@ -83,6 +87,8 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   
       // Fetch the user's game history
       const querySnapshot = await getDocs(historyCollectionRef);
+  
+      console.log('Fetched game history:', querySnapshot.docs.map(doc => doc.data())); // Added console log
   
       // Reference to the public share collection
       const shareCollectionRef = collection(db, 'sharedResults');
@@ -106,17 +112,19 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       });
   
       // Commit the batch
-    await batch.commit();
-
-    // Generate the share link
-    const shareLink = `http://localhost:3000/results?shareId=${shareId}`;
-
-    // Copy the share link to the clipboard
-    await navigator.clipboard.writeText(shareLink);
-
-    // Provide feedback to the user that their results are shared
-    alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
-  } catch (error) {
+      await batch.commit();
+  
+      console.log('Batch committed'); // Added console log
+  
+      // Generate the share link
+      const shareLink = `http://localhost:3000/results?shareId=${shareId}`;
+  
+      // Copy the share link to the clipboard
+      await navigator.clipboard.writeText(shareLink);
+  
+      // Provide feedback to the user that their results are shared
+      alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
+    } catch (error) {
       console.error('Error sharing game history:', error);
       setError('Failed to share game history.');
     } finally {

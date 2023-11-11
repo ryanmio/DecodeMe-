@@ -7,6 +7,7 @@ import {CircularProgress} from "@nextui-org/react";
 import GameHistory from '../components/GameHistory';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
+  console.log("Rendering ResultsPage with gameData:", gameData, "and gameHistory:", gameHistory); // Added console log
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
@@ -46,12 +47,16 @@ export const getServerSideProps = async (context) => {
   const { query: contextQuery } = context;
   const { shareId } = contextQuery;
 
+  console.log('Share ID:', shareId); // Added console log
+
   let gameData = null;
   let gameHistory = [];
 
   if (shareId) {
     const shareDocRef = doc(db, 'sharedResults', shareId);
     const shareDocSnap = await getDoc(shareDocRef);
+
+    console.log('Share document snapshot:', shareDocSnap); // Added console log
 
     if (shareDocSnap.exists()) {
       gameData = {
@@ -60,16 +65,22 @@ export const getServerSideProps = async (context) => {
         sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString()
       };
 
-      // Retrieve the history subcollection
-    const historyCollectionRef = collection(shareDocRef, 'history');
-    const historyQuery = query(historyCollectionRef, orderBy('createdAt')); // replace 'createdAt' with your timestamp field
-    const historySnapshot = await getDocs(historyQuery);
+      console.log('Fetched game data:', gameData); // Added console log
 
-    gameHistory = historySnapshot.docs.map(docSnapshot => ({
-      id: docSnapshot.id,
-      ...docSnapshot.data()
-    }));
-  }
+      // Retrieve the history subcollection
+      const historyCollectionRef = collection(shareDocRef, 'history');
+      const historyQuery = query(historyCollectionRef, orderBy('timestamp')); // replace 'createdAt' with 'timestamp'
+      const historySnapshot = await getDocs(historyQuery);
+
+      console.log('History snapshot:', historySnapshot); // Added console log
+
+      gameHistory = historySnapshot.docs.map(docSnapshot => ({
+        id: docSnapshot.id,
+        ...docSnapshot.data()
+      }));
+
+      console.log('Fetched game history:', gameHistory); // Added console log
+    }
   }
 
   return {
