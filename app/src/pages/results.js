@@ -7,6 +7,7 @@ import Link from 'next/link';
 import ChallengeSection from '../components/ChallengeSection';
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { Tooltip } from "@nextui-org/react";
+import {CircularProgress} from "@nextui-org/react";
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   return (
@@ -18,8 +19,20 @@ const ResultsPage = ({ gameData, gameHistory }) => {
             <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
             <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
           </div>
-          <p className="results-score text-lg font-semibold text-gray-700 mb-2">Score: {gameData?.score} / {gameData?.questionLimit}</p>
-          <p className="results-shared-at text-sm text-gray-500 mb-6">Shared: {gameData ? new Date(gameData.sharedAt).toLocaleString() : 'Loading...'}</p>
+          <div className="flex justify-center items-center mb-6">
+            <CircularProgress
+              label="Accuracy"
+              size="lg"
+              value={gameData ? (gameData.score / gameData.questionLimit) * 100 : 0}
+              color="success"
+              formatOptions={{ style: "percent" }}
+              showValueLabel={true}
+            />
+            <div className="ml-6">
+              <p className="text-lg font-semibold text-gray-700">Questions Correct: {gameData?.score} / {gameData?.questionLimit}</p>
+              <p className="results-shared-at text-sm text-gray-500">Shared: {gameData ? new Date(gameData.sharedAt).toLocaleString() : 'Loading...'}</p>
+            </div>
+          </div>
           <div className="game-history">
             <Accordion motionProps={{
               variants: {
@@ -70,7 +83,9 @@ const ResultsPage = ({ gameData, gameHistory }) => {
           </div>
         </div>
       </div>
-      <ChallengeSection />
+      <div style={{ paddingTop: "20px" }}>
+        <ChallengeSection />
+      </div>
     </div>
   );
 };
