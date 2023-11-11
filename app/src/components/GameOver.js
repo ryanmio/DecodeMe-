@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, addDoc, doc, writeBatch, getDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, doc, writeBatch, getDoc, updateDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import { CodeBlock, dracula } from 'react-code-blocks';
+import GameHistory from './GameHistory';
 
 const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   const [gameHistory, setGameHistory] = useState([]);
@@ -25,6 +26,10 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
           id: doc.id,
           ...doc.data()
         }));
+
+         // Sort the history data by timestamp in ascending order
+    const sortedHistoryData = historyData.sort((a, b) => a.timestamp - b.timestamp);
+    
         setGameHistory(historyData);
       } catch (error) {
         console.error('Error fetching game history:', error);
@@ -102,11 +107,17 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       });
   
       // Commit the batch
-      await batch.commit();
-  
-      // Provide feedback to the user that their results are shared
-      alert(`Your results are shared with ID: ${shareId}`);
-    } catch (error) {
+    await batch.commit();
+
+    // Generate the share link
+    const shareLink = `http://localhost:3000/results?shareId=${shareId}`;
+
+    // Copy the share link to the clipboard
+    await navigator.clipboard.writeText(shareLink);
+
+    // Provide feedback to the user that their results are shared
+    alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
+  } catch (error) {
       console.error('Error sharing game history:', error);
       setError('Failed to share game history.');
     } finally {
@@ -132,28 +143,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       </button>
         {loading && <p>Loading game history...</p>}
         {error && <p className="text-red-500">{error}</p>}
-        <ul className="history-list">
-          {gameHistory.map((entry) => (
-            <li key={entry.id} className="mb-2 p-2 rounded shadow">
-              <div className="grid grid-cols-1 md:grid-cols-[auto_1fr_auto] gap-4 items-center">
-                <CodeBlock
-                  text={formatCodeSnippet(entry.question)}
-                  language={"python"}
-                  theme={dracula}
-                  showLineNumbers={false}
-                  wrapLines
-                  codeContainerStyle={{ textAlign: 'left' }}
-                />
-                <span className={entry.isCorrect ? 'text-green-500' : 'text-red-500'}>
-                  {entry.isCorrect ? '✔️' : '❌'}
-                </span>
-              </div>
-              <div className="text-sm text-gray-600 italic">
-                Your answer: {entry.answer}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <GameHistory gameHistory={gameHistory} />
       </motion.div>
     </div>
   );
