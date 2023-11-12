@@ -5,6 +5,7 @@ import { getFirebaseFirestore } from '../firebase';
 import ChallengeSection from '../components/ChallengeSection';
 import {CircularProgress} from "@nextui-org/react";
 import GameHistory from '../components/GameHistory';
+import FinalScore from '../components/FinalScore';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   console.log("Rendering ResultsPage with gameData:", gameData, "and gameHistory:", gameHistory); // Added console log
@@ -17,20 +18,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
             <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
             <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
           </div>
-          <div className="flex justify-center items-center mb-6">
-            <CircularProgress
-              label="Accuracy"
-              size="lg"
-              value={gameData ? (gameData.score / gameData.questionLimit) * 100 : 0}
-              color="success"
-              formatOptions={{ style: "percent" }}
-              showValueLabel={true}
-            />
-            <div className="ml-6">
-              <p className="text-lg font-semibold text-gray-700">Questions Correct: {gameData?.score} / {gameData?.questionLimit}</p>
-              <p className="results-shared-at text-sm text-gray-500">Shared: {gameData ? new Date(gameData.sharedAt).toLocaleString() : 'Loading...'}</p>
-            </div>
-          </div>
+          <FinalScore score={gameData?.score} questionLimit={gameData?.questionLimit} sharedAt={gameData?.sharedAt} />
           <GameHistory gameHistory={gameHistory} />
         </div>
       </div>

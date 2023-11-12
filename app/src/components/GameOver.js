@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { collection, getDocs, addDoc, doc, writeBatch, getDoc, updateDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
+import FinalScore from './FinalScore';
 
 const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   const [gameHistory, setGameHistory] = useState([]);
@@ -135,14 +136,14 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   };
 
   return (
-    <div className="text-center">
+    <div className="text-center w-[400px] mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
-        <p className="text-lg">Your score is {score} out of {questionLimit}.</p>
+        <FinalScore score={score} questionLimit={questionLimit} sharedAt={new Date()} />
         <button 
         onClick={handleShareResults} 
         className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
