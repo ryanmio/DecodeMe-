@@ -3,6 +3,7 @@ import { collection, getDocs, addDoc, doc, writeBatch, getDoc, updateDoc } from 
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
+import { Button } from "@nextui-org/react";
 
 const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   const [gameHistory, setGameHistory] = useState([]);
@@ -51,7 +52,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
     setLoading(true);
     setError('');
   
-    let finalLeaderboardName = leaderboardName; // Use a new variable to store the final leaderboard name
+    let finalLeaderboardName = leaderboardName;
 
     try {
       // Fetch the user's leaderboard name if it's not set
@@ -144,16 +145,17 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionLimit={questionLimit} sharedAt={new Date()} />
-        <button 
-        onClick={handleShareResults} 
-        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-700 transition duration-300"
-        disabled={loading}
-      >
-        {loading ? 'Sharing...' : 'Share Results'}
-      </button>
-        {loading && <p>Loading game history...</p>}
-        {error && <p className="text-red-500">{error}</p>}
         <GameHistory gameHistory={gameHistory} />
+        <Button 
+          onClick={handleShareResults} 
+          radius="full" 
+          className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+          disabled={loading}
+        >
+          Share Results
+        </Button>
+        {error && <p className="text-red-500">{error}</p>}
+       
       </motion.div>
     </div>
   );
