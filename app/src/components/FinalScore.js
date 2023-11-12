@@ -13,9 +13,9 @@ const FinalScore = ({ score, questionLimit, sharedAt }) => {
         formatOptions={{ style: "percent" }}
         showValueLabel={true}
       />
-      <div className="ml-6">
+      <div className="ml-6 text-left">
         <p className="text-lg font-semibold text-gray-700">Questions Correct: {score} / {questionLimit}</p>
-        <p className="results-shared-at text-sm text-gray-500">Shared: {sharedAt ? new Date(sharedAt).toLocaleString() : 'Loading...'}</p>
+        <p className="results-shared-at text-sm text-gray-500">{sharedAt ? new Date(sharedAt).toLocaleString() : 'Loading...'}</p>
       </div>
     </div>
   );
