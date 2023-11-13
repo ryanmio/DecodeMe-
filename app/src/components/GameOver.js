@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, addDoc, doc, writeBatch, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, writeBatch, getDoc, updateDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
@@ -9,37 +9,36 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
   const [leaderboardName, setLeaderboardName] = useState('');
 
+  const fetchGameHistory = async () => {
+    if (!gameId || !userId) {
+      console.error('gameId or userId is not set:', { gameId, userId });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
+           const querySnapshot = await getDocs(historyCollectionRef);
+      const historyData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Sort the history data by timestamp in ascending order
+      const sortedHistoryData = historyData.sort((a, b) => a.timestamp - b.timestamp);
+
+      setGameHistory(sortedHistoryData);
+    } catch (error) {
+      console.error(`Error fetching game history for gameId: ${gameId} and userId: ${userId}`, error);
+      setError(`Failed to load game history for gameId: ${gameId} and userId: ${userId}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchGameHistory = async () => {
-      if (!gameId || !userId) {
-        console.error('gameId or userId is not set:', { gameId, userId });
-        return;
-      }
-
-      setLoading(true);
-      try {
-        const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
-        const querySnapshot = await getDocs(historyCollectionRef);
-        const historyData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-
-         // Sort the history data by timestamp in ascending order
-    const sortedHistoryData = historyData.sort((a, b) => a.timestamp - b.timestamp);
-
-    setGameHistory(sortedHistoryData);
-      } catch (error) {
-        console.error('Error fetching game history:', error);
-        setError('Failed to load game history.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchGameHistory();
   }, [db, gameId, userId]);
 
