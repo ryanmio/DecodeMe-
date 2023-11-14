@@ -139,7 +139,6 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
           Share Results
         </Button>
         {error && <p className="text-red-500">{error}</p>}
-       
       </motion.div>
     </div>
   );
