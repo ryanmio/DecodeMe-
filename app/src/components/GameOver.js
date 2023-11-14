@@ -20,7 +20,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
     setLoading(true);
     try {
       const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
-           const querySnapshot = await getDocs(historyCollectionRef);
+      const querySnapshot = await getDocs(historyCollectionRef);
       const historyData = querySnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
@@ -42,91 +42,76 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
     fetchGameHistory();
   }, [db, gameId, userId]);
 
+  const fetchLeaderboardName = async () => {
+    const userDocRef = doc(db, 'users', userId);
+    const userDoc = await getDoc(userDocRef);
+    const userData = userDoc.data();
+    if (userData && userData.leaderboardName) {
+      return userData.leaderboardName;
+    } else {
+      const inputName = prompt('Please enter your leaderboard name:');
+      if (inputName) {
+        await updateDoc(userDocRef, { leaderboardName: inputName });
+        return inputName;
+      }
+    }
+    return null;
+  };
+
+  const createShareDocument = async (finalLeaderboardName) => {
+    const shareId = `${finalLeaderboardName}_${Date.now()}`;
+    const shareCollectionRef = collection(db, 'sharedResults');
+    const shareDocRef = doc(shareCollectionRef, shareId);
+    const batch = writeBatch(db);
+    await batch.set(shareDocRef, {
+      gameId,
+      leaderboardName: finalLeaderboardName,
+      score,
+      questionLimit,
+      sharedAt: new Date(),
+    });
+    return { shareId, shareDocRef, batch };
+  };
+
+  const addHistoryToSharedDocument = async (shareDocRef, batch) => {
+    const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
+    const querySnapshot = await getDocs(historyCollectionRef);
+    querySnapshot.forEach((historyDoc) => {
+      const historyData = historyDoc.data();
+      const historyDocRef = doc(shareDocRef, 'history', historyDoc.id);
+      batch.set(historyDocRef, historyData);
+    });
+  };
+
+  const generateShareLink = async (shareId) => {
+    const shareLink = `http://localhost:3000/results?shareId=${shareId}`;
+    await navigator.clipboard.writeText(shareLink);
+    alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
+  };
+
   const handleShareResults = async () => {
     if (!gameId || !userId) {
       console.error('Cannot share results because gameId or userId is not set:', { gameId, userId });
       return;
     }
-  
+
     setLoading(true);
     setError('');
-  
-    let finalLeaderboardName = leaderboardName;
 
     try {
-      // Fetch the user's leaderboard name if it's not set
+      let finalLeaderboardName = leaderboardName || await fetchLeaderboardName();
       if (!finalLeaderboardName) {
-        const userDocRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userDocRef);
-        const userData = userDoc.data();
-        if (userData && userData.leaderboardName) {
-          finalLeaderboardName = userData.leaderboardName; // Use the leaderboard name directly from the user data
-          setLeaderboardName(finalLeaderboardName);
-        } else {
-          const inputName = prompt('Please enter your leaderboard name:');
-          if (inputName) {
-            finalLeaderboardName = inputName; // Use the input name directly
-            setLeaderboardName(finalLeaderboardName);
-            // Update the leaderboard name in Firebase
-            await updateDoc(userDocRef, { leaderboardName: inputName });
-          } else {
-            // If the user didn't enter a name, stop the function
-            setLoading(false);
-            return;
-          }
-        }
+        setLoading(false);
+        return;
       }
-  
-      console.log('Leaderboard name:', finalLeaderboardName); // Use finalLeaderboardName
-  
-      // Generate a unique identifier for the share
-      const shareId = `${finalLeaderboardName}_${Date.now()}`; // Use finalLeaderboardName
-  
-      // Start a batch
-      const batch = writeBatch(db);
-  
-      // Reference to the user's game history
-      const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
-  
-      // Fetch the user's game history
-      const querySnapshot = await getDocs(historyCollectionRef);
-  
-      console.log('Fetched game history:', querySnapshot.docs.map(doc => doc.data())); // Added console log
-  
-      // Reference to the public share collection
-      const shareCollectionRef = collection(db, 'sharedResults');
-  
-      // Create a new document for sharing with the generated unique identifier
-      const shareDocRef = doc(shareCollectionRef, shareId);
-      batch.set(shareDocRef, {
-        gameId,
-        leaderboardName: finalLeaderboardName, // Use finalLeaderboardName
-        score,
-        questionLimit,
-        sharedAt: new Date(),
-      });
-  
-      // Add each history item to the shared document
-      querySnapshot.forEach((historyDoc) => {
-        const historyData = historyDoc.data();
-        // We use `doc` function to create a reference to a new document inside the shared document
-        const historyDocRef = doc(shareDocRef, 'history', historyDoc.id);
-        batch.set(historyDocRef, historyData);
-      });
-  
-      // Commit the batch
+      setLeaderboardName(finalLeaderboardName);
+
+      const { shareId, shareDocRef, batch } = await createShareDocument(finalLeaderboardName);
+      await addHistoryToSharedDocument(shareDocRef, batch);
       await batch.commit();
-  
-      console.log('Batch committed'); // Added console log
-  
-      // Generate the share link
-      const shareLink = `http://localhost:3000/results?shareId=${shareId}`;
-  
-      // Copy the share link to the clipboard
-      await navigator.clipboard.writeText(shareLink);
-  
-      // Provide feedback to the user that their results are shared
-      alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
+      console.log('Batch committed');
+
+      await generateShareLink(shareId);
     } catch (error) {
       console.error('Error sharing game history:', error);
       setError('Failed to share game history.');
