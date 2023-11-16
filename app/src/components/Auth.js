@@ -46,8 +46,12 @@ export default function Auth({ onUserAuth }) {
   };
 
   const signUp = async () => {
-    const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
-    await setDoc(doc(db, 'users', user.uid), { email });
+    try {
+      const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
+      await setDoc(doc(db, 'users', user.uid), { email });
+    } catch (error) {
+      console.error('Failed to sign up:', error);
+    }
   };
   
   const signIn = () => {
