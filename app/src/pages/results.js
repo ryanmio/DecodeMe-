@@ -11,8 +11,8 @@ const ResultsPage = ({ gameData, gameHistory }) => {
   const metadata = {
     title: `Game Results for ${gameData?.leaderboardName}`,
     description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-    image: '/images/shareimage.jpeg', // Use the path to the image from the public directory
-    url: `https://yourwebsite.com/results/${gameData?.id}`, // Replace with the URL of the page
+    image: '/images/shareimage.jpeg',
+    url: `https://deocdeme.app/results/${gameData?.id}`,
   };
 
   return (
