@@ -5,7 +5,7 @@ export default function RootLayout({ children, metadata }) {
   const defaultMetadata = {
     title: 'Default Title',
     description: 'Default Description',
-    image: 'Default Image URL',
+    image: '/images/shareimage.jpeg',
     url: 'Default URL',
     // Add other default values as needed
   };
