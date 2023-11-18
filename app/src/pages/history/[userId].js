@@ -1,8 +1,8 @@
 // pages/history/[userId].js
 import React from 'react';
 import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { getFirebaseFirestore } from '../../firebase'; // Changed the relative path
-import GameHistory from '../../components/GameHistory'; // Changed the relative path
+import { getFirebaseFirestore } from '../../firebase';
+import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../layout';
 
 const HistoryPage = ({ userData, userHistory }) => {
@@ -36,8 +36,8 @@ const HistoryPage = ({ userData, userHistory }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const db = getFirebaseFirestore();
 
+  const db = getFirebaseFirestore();
   const { query: contextQuery } = context;
   const { userId } = contextQuery;
 
@@ -56,7 +56,7 @@ export const getServerSideProps = async (context) => {
 
       // Retrieve the games collection
       const gamesCollectionRef = collection(userDocRef, 'games');
-      const gamesQuery = query(gamesCollectionRef, orderBy('timestamp')); // replace 'createdAt' with 'timestamp'
+      const gamesQuery = query(gamesCollectionRef, orderBy('timestamp'));
       const gamesSnapshot = await getDocs(gamesQuery);
 
       userHistory = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
@@ -64,9 +64,8 @@ export const getServerSideProps = async (context) => {
 
         // Retrieve the history subcollection for each game
         const historyCollectionRef = collection(gameDocSnapshot.ref, 'history');
-        const historyQuery = query(historyCollectionRef, orderBy('timestamp')); // replace 'createdAt' with 'timestamp'
+        const historyQuery = query(historyCollectionRef, orderBy('timestamp'));
         const historySnapshot = await getDocs(historyQuery);
-
         const gameHistory = historySnapshot.docs.map(docSnapshot => ({
           id: docSnapshot.id,
           ...docSnapshot.data()
@@ -77,6 +76,7 @@ export const getServerSideProps = async (context) => {
           history: gameHistory,
         };
       }));
+
     }
   }
 
