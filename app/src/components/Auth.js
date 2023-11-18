@@ -8,6 +8,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false); // New state variable
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,6 +24,7 @@ export default function Auth({ onUserAuth }) {
       const unsubscribe = onAuthStateChanged(auth, user => {
         onUserAuth(user);
         setLoading(false);
+        setAuthChecked(true); // Set authChecked to true after checking auth status
       });
       return () => unsubscribe();
     }
@@ -90,7 +92,7 @@ export default function Auth({ onUserAuth }) {
     setShowErrorModal(false);
   };
 
-  if (!isClient) {
+  if (!isClient || !authChecked) { // Check if auth status has been checked before rendering
     return null;
   }
 
