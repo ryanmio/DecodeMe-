@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
-import { getAuth, isSignInWithEmailLink } from 'firebase/auth';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import { IoOptions } from "react-icons/io5";
 import { getFirebaseAuth } from '../firebase';
