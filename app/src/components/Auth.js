@@ -17,20 +17,28 @@ export default function Auth({ onUserAuth }) {
 
   useEffect(() => {
     setIsClient(true);
-    const unsubscribe = onAuthStateChanged(auth, user => {
-      onUserAuth(user);
-      setLoading(false);
-    });
-    return () => unsubscribe();
+    if (onUserAuth) {
+      const unsubscribe = onAuthStateChanged(auth, user => {
+        onUserAuth(user);
+        setLoading(false);
+      });
+      return () => unsubscribe();
+    }
   }, []);
 
   const handleAnonymousSignIn = async () => {
+    if (!leaderboardName) {
+      setError('Please enter a leaderboard name.');
+      return;
+    }
+
     setLoading(true);
     try {
       const { user } = await signInAnonymously(auth);
       await setDoc(doc(db, 'guests', user.uid), { leaderboardName });
     } catch (error) {
       setError(error.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -41,6 +49,7 @@ export default function Auth({ onUserAuth }) {
       return await authMethod();
     } catch (error) {
       setError(error.message);
+    } finally {
       setLoading(false);
     }
   };
@@ -50,24 +59,27 @@ export default function Auth({ onUserAuth }) {
     await setDoc(doc(db, 'users', user.uid), { email });
   };
   
-  const signIn = () => {
-    handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+  const signIn = async () => {
+    await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
   };
 
   const handleUpgradeAccount = async () => {
-    try {
-      const credential = EmailAuthProvider.credential(email, password);
-      const { user } = await linkWithCredential(auth.currentUser, credential);
-      const oldDocRef = doc(db, 'guests', user.uid);
-      const newDocRef = doc(db, 'users', user.uid);
-      const docData = (await oldDocRef.get()).data();
-      if (docData) {
-        await setDoc(newDocRef, docData);
-        await deleteDoc(oldDocRef);
+    if (auth.currentUser) {
+      try {
+        const credential = EmailAuthProvider.credential(email, password);
+        const { user } = await linkWithCredential(auth.currentUser, credential);
+        const oldDocRef = doc(db, 'guests', user.uid);
+        const newDocRef = doc(db, 'users', user.uid);
+        const docData = (await oldDocRef.get()).data();
+        if (docData) {
+          await setDoc(newDocRef, docData);
+          await deleteDoc(oldDocRef);
+        }
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
       }
-    } catch (error) {
-      setError(error.message);
-      setLoading(false);
     }
   };
 
