@@ -10,6 +10,7 @@ import { getFirebaseAuth, getFirebaseFirestore } from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
 import GameOver from '../components/GameOver';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -24,6 +25,7 @@ export default function Home() {
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
   const db = getFirebaseFirestore();
   const [gameId, setGameId] = useState(null);
+  const [showEndGameModal, setShowEndGameModal] = useState(false);
 
   const questionLimit = 2;
 
@@ -101,6 +103,23 @@ export default function Home() {
     setIsLoading(false);
   };
 
+  const handleHomeClick = () => {
+    if (questionsAnswered >= 1) {
+      setShowEndGameModal(true);
+    } else {
+      resetGame();
+    }
+  };
+
+  const confirmEndGame = () => {
+    resetGame();
+    setShowEndGameModal(false);
+  };
+
+  const cancelEndGame = () => {
+    setShowEndGameModal(false);
+  };
+
   useEffect(() => {
     if (score > 0) {
       setShowScoreSparkle(true);
@@ -120,7 +139,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <div className="absolute top-4 left-4 flex space-x-2">
-            <button onClick={resetGame} className="text-cyan-400"><FaHome size={24} /></button>
+            <button onClick={handleHomeClick} className="text-cyan-400"><FaHome size={24} /></button>
             <OptionsMenu />
           </div>
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
@@ -142,6 +161,18 @@ export default function Home() {
               setScore={setScore}
             />
           </>}
+          {showEndGameModal && (
+            <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
+              <ModalContent>
+                <ModalHeader>End Game</ModalHeader>
+                <ModalBody>Are you sure you want to end the current game?</ModalBody>
+                <ModalFooter>
+                  <Button color="primary" onClick={cancelEndGame}>Cancel</Button>
+                  <Button color="danger" onClick={confirmEndGame}>End Game</Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          )}
         </div>
       </div>
     </div>

@@ -4,6 +4,7 @@ import { getAuth, onAuthStateChanged, signInAnonymously, linkWithCredential, Ema
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../firebase';
 import { getFirebaseAuth } from '../firebase';
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
@@ -12,6 +13,7 @@ export default function Auth({ onUserAuth }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
@@ -29,6 +31,7 @@ export default function Auth({ onUserAuth }) {
   const handleAnonymousSignIn = async () => {
     if (!leaderboardName) {
       setError('Please enter a leaderboard name.');
+      setShowErrorModal(true);
       return;
     }
 
@@ -83,6 +86,10 @@ export default function Auth({ onUserAuth }) {
     }
   };
 
+  const closeErrorModal = () => {
+    setShowErrorModal(false);
+  };
+
   if (!isClient) {
     return null;
   }
@@ -118,7 +125,17 @@ export default function Auth({ onUserAuth }) {
         <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
       </div>
       {loading && <p className="mt-2 text-sm">Loading...</p>}
-      {error && <p className="mt-2 text-red-500 text-sm">Error: {error}</p>}
+      {error && showErrorModal && (
+        <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
+          <ModalContent>
+            <ModalHeader>Error</ModalHeader>
+            <ModalBody>{error}</ModalBody>
+            <ModalFooter>
+              <Button color="primary" onClick={closeErrorModal}>Close</Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+      )}
     </div>
   );
 }
