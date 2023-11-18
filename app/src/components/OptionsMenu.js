@@ -29,24 +29,19 @@ const OptionsMenu = () => {
   };
 
   const handleHistory = () => {
-    console.log('handleHistory called');
     const user = auth.currentUser;
-    console.log('Current user:', user);
     if (user) {
       if (!user.isAnonymous) {
         // User is signed in with email and password
-        console.log('Navigating to history page');
         router.push(`/history/${user.uid}`);
       } else {
         // User is signed in anonymously
         // Prompt them to create an account
-        console.log('Showing Auth modal');
         setShowAuthModal(true);
       }
     } else {
       // User is not signed in
       // Prompt them to sign in or create an account
-      console.log('Showing Auth modal');
       setShowAuthModal(true);
     }
   };
