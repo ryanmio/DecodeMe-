@@ -14,7 +14,7 @@ const GameHistory = ({ gameHistory }) => {
           exit: { y: -10, opacity: 0, height: 0, transition: { height: { easings: "ease", duration: 0.25 }, opacity: { easings: "ease", duration: 0.3 } } },
         },
       }}>
-        <AccordionItem key="full-results" aria-label="Full Results" title="Show Full Results">
+        <AccordionItem key="full-results" aria-label="Full Results" title="Show Responses">
           <div>
             {gameHistory.map((entry, index) => {
               const formattedQuestion = formatCodeSnippet(entry.question);
