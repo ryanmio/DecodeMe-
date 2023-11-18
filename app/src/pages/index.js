@@ -54,7 +54,16 @@ export default function Home() {
     // Log the answered question in Firestore
     const auth = await getFirebaseAuth();
     const questionId = uuidv4();
-    const questionDoc = doc(db, 'users', userId, 'games', gameId, 'history', questionId);
+
+    // Create a reference to the 'game' document
+    const gameDoc = doc(db, 'users', userId, 'games', gameId);
+
+    // Set the 'timestamp' field in the 'game' document
+    await setDoc(gameDoc, { timestamp: new Date() }, { merge: true });
+
+    // Create a reference to the 'history' document
+    const questionDoc = doc(gameDoc, 'history', questionId);
+
     setDoc(questionDoc, {
       question: question.codeSnippet,
       answer,
