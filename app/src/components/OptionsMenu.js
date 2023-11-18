@@ -15,7 +15,6 @@ const OptionsMenu = () => {
   const auth = getFirebaseAuth();
 
   const handleLogout = async () => {
-    console.log('handleLogout called');
     onOpen();
   };
 
