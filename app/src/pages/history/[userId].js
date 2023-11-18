@@ -12,8 +12,8 @@ const HistoryPage = ({ userData, userHistory }) => {
   const router = useRouter();
 
   const metadata = {
-    title: `Game History for ${userData?.leaderboardName}`,
-    description: `Check out the game history for ${userData?.leaderboardName} on DecodeMe!`,
+    title: `DecodeMe Game History for ${userData?.leaderboardName}`,
+    description: `Explore detailed game history for ${userData?.leaderboardName} on DecodeMe, the leading online gaming platform.`,
     image: '/images/shareimage.jpeg',
     url: `https://deocdeme.app/history/${userData?.id}`,
   };
@@ -29,8 +29,8 @@ const HistoryPage = ({ userData, userHistory }) => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
-            {userHistory.map((gameHistory, index) => (
-              <div key={index}>
+            {userHistory.map((gameHistory) => (
+              <div key={gameHistory.gameId}>
                 <h2>Played on: {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}</h2>
                 <GameHistory gameHistory={gameHistory.history} />
               </div>
@@ -42,60 +42,69 @@ const HistoryPage = ({ userData, userHistory }) => {
   );
 };
 
+async function fetchCollection(ref, collectionName) {
+  const collectionRef = collection(ref, collectionName);
+  const collectionQuery = query(collectionRef, orderBy('timestamp'));
+  return await getDocs(collectionQuery);
+}
+
 export const getServerSideProps = async (context) => {
-  const db = getFirebaseFirestore();
-  const { query: contextQuery } = context;
-  const { userId } = contextQuery;
+  try {
+    const db = getFirebaseFirestore();
+    const { query: contextQuery } = context;
+    const { userId } = contextQuery;
 
-  let userData = null;
-  let userHistory = [];
+    let userData = null;
+    let userHistory = [];
 
-  if (userId) {
-    const userDocRef = doc(db, 'users', userId);
-    const userDocSnap = await getDoc(userDocRef);
+    if (userId) {
+      const userDocRef = doc(db, 'users', userId);
+      const userDocSnap = await getDoc(userDocRef);
 
-    if (userDocSnap.exists()) {
-      userData = {
-        id: userDocSnap.id,
-        ...userDocSnap.data(),
-      };
+      if (userDocSnap.exists()) {
+        userData = {
+          id: userDocSnap.id,
+          ...userDocSnap.data(),
+        };
 
-      // Retrieve the games collection
-      const gamesCollectionRef = collection(userDocRef, 'games');
-      const gamesQuery = query(gamesCollectionRef, orderBy('timestamp'));
-      const gamesSnapshot = await getDocs(gamesQuery);
+        // Retrieve the games collection
+        const gamesSnapshot = await fetchCollection(userDocRef, 'games');
 
-      userHistory = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
-        const gameId = gameDocSnapshot.id;
-        const gameData = gameDocSnapshot.data();
+        userHistory = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
+          const gameId = gameDocSnapshot.id;
+          const gameData = gameDocSnapshot.data();
 
-        // Retrieve the history subcollection for each game
-        const historyCollectionRef = collection(gameDocSnapshot.ref, 'history');
-        const historyQuery = query(historyCollectionRef, orderBy('timestamp'));
-        const historySnapshot = await getDocs(historyQuery);
-        const gameHistory = historySnapshot.docs.map(docSnapshot => ({
-          id: docSnapshot.id,
-          ...docSnapshot.data()
+          // Retrieve the history subcollection for each game
+          const historySnapshot = await fetchCollection(gameDocSnapshot.ref, 'history');
+          const gameHistory = historySnapshot.docs.map(docSnapshot => ({
+            id: docSnapshot.id,
+            ...docSnapshot.data()
+          }));
+
+          return {
+            gameId,
+            timestamp: gameData.timestamp, // include the timestamp field
+            history: gameHistory,
+          };
         }));
 
-        return {
-          gameId,
-          timestamp: gameData.timestamp, // include the timestamp field
-          history: gameHistory,
-        };
-      }));
-
+      }
     }
-  }
 
-  return {
-    props: {
-      userData: userData ? {
-        ...JSON.parse(JSON.stringify(userData)),
-      } : null,
-      userHistory: JSON.parse(JSON.stringify(userHistory)),
-    },
-  };
+    return {
+      props: {
+        userData: JSON.parse(JSON.stringify(userData)) ?? null,
+        userHistory: JSON.parse(JSON.stringify(userHistory)),
+      },
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      props: {
+        error: 'Failed to fetch user data',
+      },
+    };
+  }
 };
 
 export default HistoryPage;
