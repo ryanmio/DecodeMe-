@@ -1,17 +1,15 @@
 // pages/history/[userId].js
 import React from 'react';
 import { useRouter } from 'next/router';
-import { FaHome } from 'react-icons/fa';
 import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../../firebase';
 import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../layout';
+import NavigationButtons from '../../components/NavigationButtons';
+import { format } from 'date-fns';
 
 const HistoryPage = ({ userData, userHistory }) => {
   const router = useRouter();
-  const handleHomeClick = () => {
-    router.push('/');
-  };
 
   const metadata = {
     title: `Game History for ${userData?.leaderboardName}`,
@@ -26,16 +24,14 @@ const HistoryPage = ({ userData, userHistory }) => {
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
-            <div className="absolute top-4 left-4 flex space-x-2">
-              <button onClick={handleHomeClick} className="text-cyan-400"><FaHome size={24} /></button>
-            </div>
+            <NavigationButtons />
             <div className="results-header mb-4">
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
             {userHistory.map((gameHistory, index) => (
               <div key={index}>
-                <h2>Game ID: {gameHistory.gameId}</h2>
+                <h2>Played on: {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}</h2>
                 <GameHistory gameHistory={gameHistory.history} />
               </div>
             ))}
@@ -71,6 +67,7 @@ export const getServerSideProps = async (context) => {
 
       userHistory = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
         const gameId = gameDocSnapshot.id;
+        const gameData = gameDocSnapshot.data();
 
         // Retrieve the history subcollection for each game
         const historyCollectionRef = collection(gameDocSnapshot.ref, 'history');
@@ -83,6 +80,7 @@ export const getServerSideProps = async (context) => {
 
         return {
           gameId,
+          timestamp: gameData.timestamp, // include the timestamp field
           history: gameHistory,
         };
       }));

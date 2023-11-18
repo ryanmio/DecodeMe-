@@ -58,10 +58,7 @@ const OptionsMenu = () => {
   };
 
   useHotkeys('shift+l', handleLogout);
-
-  // add other hotkeys here
-  // useHotkeys('command+s', handleSkip);
-  // useHotkeys('command+h', handleHistory);
+  useHotkeys('shift+h', handleHistory);
 
   return (
     <>
@@ -78,7 +75,7 @@ const OptionsMenu = () => {
         </DropdownTrigger>
         <DropdownMenu variant="shadow" aria-label="Options menu">
           <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>
-          <DropdownItem key="history" onClick={handleHistory}>Game History</DropdownItem>
+          <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <Modal 
