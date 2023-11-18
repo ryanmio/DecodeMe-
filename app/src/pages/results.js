@@ -59,7 +59,7 @@ export const getServerSideProps = async (context) => {
 
       // Retrieve the history subcollection
       const historyCollectionRef = collection(shareDocRef, 'history');
-      const historyQuery = query(historyCollectionRef, orderBy('timestamp')); // replace 'createdAt' with 'timestamp'
+      const historyQuery = query(historyCollectionRef, orderBy('timestamp'));
       const historySnapshot = await getDocs(historyQuery);
 
       gameHistory = historySnapshot.docs.map(docSnapshot => ({
