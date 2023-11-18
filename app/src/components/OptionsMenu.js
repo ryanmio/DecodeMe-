@@ -18,10 +18,9 @@ const OptionsMenu = () => {
   };
 
   const confirmLogout = async () => {
-    const auth = getFirebaseAuth();
     try {
       await signOut(auth);
-      window.location.href = '/';
+      router.push('/');
     } catch (error) {
       console.error('Failed to log out:', error);
     }
@@ -31,23 +30,16 @@ const OptionsMenu = () => {
     const user = auth.currentUser;
     if (user) {
       if (!user.isAnonymous) {
-        // User is signed in with email and password
         router.push(`/history/${user.uid}`);
       } else {
-        // User is signed in anonymously
-        // Prompt them to create an account
         setShowAuthModal(true);
       }
     } else {
-      // User is not signed in
-      // Prompt them to sign in or create an account
       setShowAuthModal(true);
     }
   };
 
   const handleUserAuth = (user) => {
-    // Update user state here
-    // Close the Auth modal
     setShowAuthModal(false);
   };
 
