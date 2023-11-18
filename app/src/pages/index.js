@@ -4,8 +4,7 @@ import GameModeSelection from '../components/GameModeSelection';
 import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
 import UserAnswerInput from '../components/UserAnswerInput';
 import Sparkle from '../components/Sparkle';
-import { FaHome } from 'react-icons/fa';
-import OptionsMenu from '../components/OptionsMenu';
+import NavigationButtons from '../components/NavigationButtons';
 import { getFirebaseAuth, getFirebaseFirestore } from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
@@ -147,10 +146,7 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <div className="absolute top-4 left-4 flex space-x-2">
-            <button onClick={handleHomeClick} className="text-cyan-400"><FaHome size={24} /></button>
-            <OptionsMenu />
-          </div>
+          <NavigationButtons />
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
