@@ -84,7 +84,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
   };
 
   const generateShareLink = async (shareId) => {
-    const shareLink = `http://localhost:3000/results?shareId=${shareId}`;
+    const shareLink = `${process.env.NEXT_PUBLIC_APP_URL}/results?shareId=${shareId}`;
     await navigator.clipboard.writeText(shareLink);
     alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
   };

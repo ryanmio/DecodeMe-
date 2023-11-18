@@ -15,7 +15,7 @@ const HistoryPage = ({ userData, userHistory }) => {
     title: `DecodeMe Game History for ${userData?.leaderboardName}`,
     description: `Explore detailed game history for ${userData?.leaderboardName} on DecodeMe, the leading online gaming platform.`,
     image: '/images/shareimage.jpeg',
-    url: `https://deocdeme.app/history/${userData?.id}`,
+    url: `${process.env.NEXT_PUBLIC_APP_URL}/history/${userData?.id}`,
   };
 
   return (
@@ -83,7 +83,7 @@ export const getServerSideProps = async (context) => {
 
           return {
             gameId,
-            timestamp: gameData.timestamp, // include the timestamp field
+            timestamp: gameData.timestamp,
             history: gameHistory,
           };
         }));
