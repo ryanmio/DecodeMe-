@@ -47,15 +47,15 @@ const LeaderboardPage = ({ leaderboardData }) => {
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8">
-            <h1 className="text-2xl font-bold text-center text-gray-900">Leaderboard</h1>
-            <div className="flex justify-between items-center mb-4">
+          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
+            <h1 className="text-2xl font-bold text-center text-gray-900 mb-4">Leaderboard</h1>
+            <div className="grid grid-cols-3 gap-4 mb-4">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">#</h2>
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Player</h2>
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Score</h2>
             </div>
             {currentItems.map((game, index) => (
-              <div key={game.id} className="flex justify-between items-center mb-4">
+              <div key={game.id} className="grid grid-cols-3 gap-4 mb-4">
                 <span className="text-lg text-gray-700">{index + 1}</span>
                 <span className="text-lg text-gray-700">{game.leaderboardName}</span>
                 <span className="text-lg text-gray-700">{game.score}</span>
