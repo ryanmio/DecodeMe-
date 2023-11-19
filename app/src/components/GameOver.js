@@ -80,7 +80,12 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak }) =
   const saveGameStatsToHistory = async () => {
     const gameNumber = await getAndIncrementGameNumber();
     const leaderboardName = await fetchLeaderboardName();
-
+  
+    // Check if the current streak is greater than the longest streak
+    if (currentStreak > longestStreak) {
+      setLongestStreak(currentStreak);
+    }
+  
     const gameStats = {
       gameId,
       leaderboardName,
@@ -90,10 +95,10 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak }) =
       sharedAt: new Date(),
       gameNumber,
     };
-
+  
     const gameDocRef = doc(db, 'users', userId, 'games', gameId);
     await setDoc(gameDocRef, gameStats, { merge: true });
-
+  
     return gameStats;
   };
 
