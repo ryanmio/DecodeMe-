@@ -4,9 +4,9 @@ import { collection, getDocs } from 'firebase/firestore';
 
 export const getServerSideProps = async () => {
   const db = getFirebaseFirestore();
-  const gamesCollectionRef = collection(db, 'games');
-  const gamesSnapshot = await getDocs(gamesCollectionRef);
-  let leaderboardData = gamesSnapshot.docs.map(docSnapshot => ({
+  const leaderboardCollectionRef = collection(db, 'leaderboard');
+  const leaderboardSnapshot = await getDocs(leaderboardCollectionRef);
+  let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => ({
     id: docSnapshot.id,
     ...docSnapshot.data()
   }));
