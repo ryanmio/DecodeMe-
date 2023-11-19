@@ -1,13 +1,14 @@
 // app/src/components/GameOver.js
 
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, writeBatch, getDoc, updateDoc } from 'firebase/firestore';
+import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
 import { Button } from "@nextui-org/react";
 
-const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
+// Include longestStreak in the GameOver component's props
+const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -60,18 +61,56 @@ const GameOver = ({ score, questionLimit, db, gameId, userId }) => {
     return null;
   };
 
+  const getAndIncrementGameNumber = async () => {
+    const userRef = doc(db, 'users', userId);
+    const userSnapshot = await getDoc(userRef);
+    const userData = userSnapshot.data();
+
+    // If it's the first game, the gameNumber would be 1
+    const gameNumber = (userData?.gameCount || 0) + 1;
+
+    // Increment the game count in the user's document
+    await updateDoc(userRef, {
+      gameCount: gameNumber
+    });
+
+    return gameNumber;
+  };
+
+  const saveGameStatsToHistory = async () => {
+    const gameNumber = await getAndIncrementGameNumber();
+    const leaderboardName = await fetchLeaderboardName();
+
+    const gameStats = {
+      gameId,
+      leaderboardName,
+      score,
+      questionLimit,
+      longestStreak,
+      sharedAt: new Date(),
+      gameNumber,
+    };
+
+    const gameDocRef = doc(db, 'users', userId, 'games', gameId);
+    await setDoc(gameDocRef, gameStats, { merge: true });
+
+    return gameStats;
+  };
+
+  useEffect(() => {
+    saveGameStatsToHistory();
+  }, []);
+
   const createShareDocument = async (finalLeaderboardName) => {
     const shareId = `${finalLeaderboardName}_${Date.now()}`;
     const shareCollectionRef = collection(db, 'sharedResults');
     const shareDocRef = doc(shareCollectionRef, shareId);
     const batch = writeBatch(db);
-    await batch.set(shareDocRef, {
-      gameId,
-      leaderboardName: finalLeaderboardName,
-      score,
-      questionLimit,
-      sharedAt: new Date(),
-    });
+
+    const gameStats = await saveGameStatsToHistory();
+
+    await batch.set(shareDocRef, gameStats);
+
     return { shareId, shareDocRef, batch };
   };
 
