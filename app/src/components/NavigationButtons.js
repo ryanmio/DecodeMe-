@@ -1,14 +1,12 @@
 // app/src/components/NavigationButtons.js
 
-import React, { useContext } from 'react';
+import React from 'react';
 import { useRouter } from 'next/router';
 import { FaHome } from 'react-icons/fa';
 import OptionsMenu from './OptionsMenu';
-import { GameStateContext } from '../contexts/GameStateContext';
 
-const NavigationButtons = () => {
+const NavigationButtons = ({ resetGame }) => {
   const router = useRouter();
-  const { resetGame } = useContext(GameStateContext);
 
   const handleHomeClick = () => {
     console.log('Home button clicked');
