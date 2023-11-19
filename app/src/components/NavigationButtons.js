@@ -4,15 +4,15 @@ import React, { useContext } from 'react';
 import { useRouter } from 'next/router';
 import { FaHome } from 'react-icons/fa';
 import OptionsMenu from './OptionsMenu';
-import { GameStateContext } from '../contexts/GameStateContext'; // Import GameStateContext
+import { GameStateContext } from '../contexts/GameStateContext';
 
 const NavigationButtons = () => {
   const router = useRouter();
-  const { resetGame } = useContext(GameStateContext); // Get resetGame from GameStateContext
+  const { resetGame } = useContext(GameStateContext);
 
   const handleHomeClick = () => {
     console.log('Home button clicked');
-    resetGame(); // Reset the game
+    resetGame();
     router.push('/'); // Navigate to home page
   };
 
