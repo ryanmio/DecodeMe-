@@ -23,6 +23,7 @@ const OptionsMenu = () => {
     try {
       await signOut(auth);
       router.push('/');
+      onOpenChange(false);
     } catch (error) {
       console.error('Failed to log out:', error);
     }
