@@ -41,19 +41,31 @@ const HistoryPage = ({ userData, userHistory }) => {
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
             {currentGames.map((gameHistory) => (
-              <div key={gameHistory.gameId}>
-                <h2>Game Number: {gameHistory.gameStats.gameNumber}</h2>
-                <h2>Played on: {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}</h2>
-                {gameHistory.gameStats && (
-                  <>
-                    <h3>Score: {gameHistory.gameStats.score}</h3>
-                    <h3>Question Limit: {gameHistory.gameStats.questionLimit}</h3>
-                    <h3>Longest Streak: {gameHistory.gameStats.longestStreak}</h3>
-                  </>
-                )}
-                <GameHistory gameHistory={gameHistory.history} />
-              </div>
-            ))}
+  <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
+    <div className="flex justify-between items-center mb-4">
+      <div className="text-xl font-bold text-gray-900">
+        Game {String(gameHistory.gameStats.gameNumber).padStart(3, '0')}
+      </div>
+      <div className="text-sm text-gray-500">
+        {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+      </div>
+    </div>
+    <div className="border-t pt-4">
+      <div className="flex justify-between">
+        <div className="text-lg text-gray-700">
+          Score: {gameHistory.gameStats.score}
+        </div>
+        <div className="text-lg text-gray-700">
+          Longest Streak: {gameHistory.gameStats.longestStreak}
+        </div>
+      </div>
+    </div>
+    <div className="mt-4">
+      <GameHistory gameHistory={gameHistory.history} />
+    </div>
+  </div>
+))}
+
             <Pagination
               total={Math.ceil(userHistory.length / gamesPerPage)}
               page={currentPage}
