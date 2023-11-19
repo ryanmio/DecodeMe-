@@ -78,7 +78,7 @@ const HistoryPage = ({ userData, userHistory }) => {
 
 async function fetchCollection(ref, collectionName) {
   const collectionRef = collection(ref, collectionName);
-  const collectionQuery = query(collectionRef, orderBy('timestamp', 'desc')); // Order by timestamp in descending order
+  const collectionQuery = query(collectionRef, orderBy('timestamp', 'desc'));
   return await getDocs(collectionQuery);
 }
 
