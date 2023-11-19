@@ -42,7 +42,7 @@ const LeaderboardPage = ({ leaderboardData }) => {
             <br />
             Longest Streak: {game.longestStreak || 0}
             <br />
-            Date: {game.date ? new Date(game.date).toLocaleString() : 'N/A'}
+            Date: {game.date ? new Date(game.date).toLocaleDateString() : 'N/A'}
             <br />
             Language: {game.language || 'N/A'}
           </li>
