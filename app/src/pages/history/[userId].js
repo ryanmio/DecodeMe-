@@ -42,6 +42,7 @@ const HistoryPage = ({ userData, userHistory }) => {
             </div>
             {currentGames.map((gameHistory) => (
               <div key={gameHistory.gameId}>
+                <h2>Game Number: {gameHistory.gameStats.gameNumber}</h2>
                 <h2>Played on: {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}</h2>
                 {gameHistory.gameStats && (
                   <>
