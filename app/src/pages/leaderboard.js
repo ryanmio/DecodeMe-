@@ -1,7 +1,6 @@
 // leaderboard.js
 import { getFirebaseFirestore } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
-import Link from 'next/link';
 
 export const getServerSideProps = async () => {
   const db = getFirebaseFirestore();
@@ -15,6 +14,8 @@ export const getServerSideProps = async () => {
   // Sort leaderboard data by score
   leaderboardData.sort((a, b) => b.score - a.score);
 
+  console.log(leaderboardData); // Debug log
+
   return {
     props: {
       leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
@@ -23,6 +24,8 @@ export const getServerSideProps = async () => {
 };
 
 const LeaderboardPage = ({ leaderboardData }) => {
+  console.log(leaderboardData); // Debug log
+
   return (
     <div>
       <h1>Leaderboard</h1>
@@ -33,7 +36,6 @@ const LeaderboardPage = ({ leaderboardData }) => {
           </li>
         ))}
       </ul>
-      <Link href="/leaderboard">Leaderboard</Link>
     </div>
   );
 };
