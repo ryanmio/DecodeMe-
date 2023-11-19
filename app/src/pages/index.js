@@ -29,6 +29,8 @@ export default function Home() {
   const db = getFirebaseFirestore();
   const [gameId, setGameId] = useState(null);
   const [showEndGameModal, setShowEndGameModal] = useState(false);
+  const [currentStreak, setCurrentStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
 
   const questionLimit = 2;
 
@@ -53,6 +55,15 @@ export default function Home() {
     setConversationHistory(newConversationHistory);
     await handleCodeSnippetFetch(newConversationHistory);
     setQuestionsAnswered(prev => prev + 1);
+
+    if (isCorrect) {
+      setCurrentStreak(prev => prev + 1);
+    } else {
+      if (currentStreak > longestStreak) {
+        setLongestStreak(currentStreak);
+      }
+      setCurrentStreak(0);
+    }
 
     // Log the answered question in Firestore
     const auth = await getFirebaseAuth();
@@ -113,6 +124,8 @@ export default function Home() {
     setQuestionsAnswered(0);
     setConversationHistory([]);
     setIsLoading(false);
+    setCurrentStreak(0);
+    setLongestStreak(0);
   };
 
   const handleHomeClick = () => {
@@ -150,7 +163,7 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <NavigationButtons />
+          <NavigationButtons questionsAnswered={questionsAnswered} setShowEndGameModal={setShowEndGameModal} resetGame={resetGame} />
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -160,7 +173,7 @@ export default function Home() {
               {score}
             </div>
           </h1>
-          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} /> : <>
+          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} longestStreak={longestStreak} /> : <>
             <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
             <UserAnswerInput
               options={question.options}
