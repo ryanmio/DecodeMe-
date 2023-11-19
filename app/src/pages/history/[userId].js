@@ -32,6 +32,13 @@ const HistoryPage = ({ userData, userHistory }) => {
             {userHistory.map((gameHistory) => (
               <div key={gameHistory.gameId}>
                 <h2>Played on: {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}</h2>
+                {gameHistory.gameStats && (
+                  <>
+                    <h3>Score: {gameHistory.gameStats.score}</h3>
+                    <h3>Question Limit: {gameHistory.gameStats.questionLimit}</h3>
+                    <h3>Longest Streak: {gameHistory.gameStats.longestStreak}</h3>
+                  </>
+                )}
                 <GameHistory gameHistory={gameHistory.history} />
               </div>
             ))}
@@ -85,6 +92,14 @@ export const getServerSideProps = async (context) => {
             gameId,
             timestamp: gameData.timestamp,
             history: gameHistory,
+            gameStats: {
+              leaderboardName: gameData.leaderboardName,
+              score: gameData.score,
+              questionLimit: gameData.questionLimit,
+              longestStreak: gameData.longestStreak,
+              sharedAt: gameData.sharedAt,
+              gameNumber: gameData.gameNumber,
+            },
           };
         }));
 
