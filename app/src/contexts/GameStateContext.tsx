@@ -1,3 +1,5 @@
+// nov 19 -- i stopped using this 
+
 // app/src/contexts/GameStateContext.tsx
 import React, { useState } from 'react';
 
