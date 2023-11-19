@@ -1,3 +1,7 @@
+// app/src/pages/index.js
+// This is the main page of the app. It handles user authentication, game mode selection, 
+// question fetching and answering, and game over conditions.
+
 import React, { useState, useEffect } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
