@@ -1,6 +1,8 @@
+// app/src/components/Auth.js
+
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { getAuth, onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../firebase';
 import { getFirebaseAuth } from '../firebase';
@@ -8,7 +10,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from
 
 export default function Auth({ onUserAuth }) {
   const [isClient, setIsClient] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false); // New state variable
+  const [authChecked, setAuthChecked] = useState(false);
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,7 +26,7 @@ export default function Auth({ onUserAuth }) {
       const unsubscribe = onAuthStateChanged(auth, user => {
         onUserAuth(user);
         setLoading(false);
-        setAuthChecked(true); // Set authChecked to true after checking auth status
+        setAuthChecked(true);
       });
       return () => unsubscribe();
     }
@@ -92,7 +94,7 @@ export default function Auth({ onUserAuth }) {
     setShowErrorModal(false);
   };
 
-  if (!isClient || !authChecked) { // Check if auth status has been checked before rendering
+  if (!isClient || !authChecked) {
     return null;
   }
 
