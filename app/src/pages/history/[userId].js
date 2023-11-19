@@ -1,15 +1,26 @@
 // pages/history/[userId].js
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, orderBy, query, desc } from 'firebase/firestore'; // Added desc import
 import { getFirebaseFirestore } from '../../firebase';
 import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
+import { Pagination } from '@nextui-org/react';
 
 const HistoryPage = ({ userData, userHistory }) => {
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const gamesPerPage = 3; // Change this to your desired games per page
+
+  const indexOfLastGame = currentPage * gamesPerPage;
+  const indexOfFirstGame = indexOfLastGame - gamesPerPage;
+  const currentGames = userHistory.slice(indexOfFirstGame, indexOfLastGame);
+
+  const handlePageChange = (newPage) => {
+    setCurrentPage(newPage);
+  };
 
   const metadata = {
     title: `DecodeMe Game History for ${userData?.leaderboardName}`,
@@ -29,7 +40,7 @@ const HistoryPage = ({ userData, userHistory }) => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
-            {userHistory.map((gameHistory) => (
+            {currentGames.map((gameHistory) => (
               <div key={gameHistory.gameId}>
                 <h2>Played on: {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}</h2>
                 {gameHistory.gameStats && (
@@ -42,6 +53,11 @@ const HistoryPage = ({ userData, userHistory }) => {
                 <GameHistory gameHistory={gameHistory.history} />
               </div>
             ))}
+            <Pagination
+              total={Math.ceil(userHistory.length / gamesPerPage)}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
           </div>
         </div>
       </div>
@@ -51,7 +67,7 @@ const HistoryPage = ({ userData, userHistory }) => {
 
 async function fetchCollection(ref, collectionName) {
   const collectionRef = collection(ref, collectionName);
-  const collectionQuery = query(collectionRef, orderBy('timestamp'));
+  const collectionQuery = query(collectionRef, orderBy('timestamp', 'desc')); // Order by timestamp in descending order
   return await getDocs(collectionQuery);
 }
 
