@@ -62,9 +62,6 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
   });
 });
 
-
-
-
 // This function is a Firestore Trigger that gets triggered when a document in the 'users/{userId}/games/{gameId}' path is written.
 // It extracts the game data from the written document and the user ID from the document path.
 // The game data and user ID are then used to update the leaderboard collection in Firestore.
@@ -78,6 +75,9 @@ exports.updateLeaderboard = functions.firestore
       leaderboardName: gameData.leaderboardName,
       score: gameData.score,
       userId,
+      date: gameData.timestamp, // Use the timestamp from the game data
+      longestStreak: gameData.longestStreak, // Assuming this data is available in gameData
+      language: 'python', // Hardcoded for now, you can modify this as per your application's needs
     };
 
     await admin.firestore().collection('leaderboard').add(leaderboardData);
