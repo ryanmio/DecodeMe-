@@ -1,7 +1,7 @@
 // pages/history/[userId].js
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
-import { doc, getDoc, collection, getDocs, orderBy, query, desc } from 'firebase/firestore'; // Added desc import
+import { doc, getDoc, collection, getDocs, orderBy, query, desc } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../../firebase';
 import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../layout';
