@@ -42,12 +42,17 @@ const OptionsMenu = () => {
     }
   };
 
+  const handleLeaderboard = () => {
+    router.push('/leaderboard');
+  };
+
   const handleUserAuth = (user) => {
     setShowAuthModal(false);
   };
 
   useHotkeys('shift+l', handleLogout);
   useHotkeys('shift+h', handleHistory);
+  useHotkeys('shift+b', handleLeaderboard);
 
   return (
     <>
@@ -65,6 +70,7 @@ const OptionsMenu = () => {
         <DropdownMenu variant="shadow" aria-label="Options menu">
           <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>
           <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>
+          <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <Modal 
