@@ -12,7 +12,7 @@ import { Pagination } from '@nextui-org/react';
 const HistoryPage = ({ userData, userHistory }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const gamesPerPage = 3; // Change this to your desired games per page
+  const gamesPerPage = 3;
 
   const indexOfLastGame = currentPage * gamesPerPage;
   const indexOfFirstGame = indexOfLastGame - gamesPerPage;
@@ -41,30 +41,29 @@ const HistoryPage = ({ userData, userHistory }) => {
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
             {currentGames.map((gameHistory) => (
-  <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
-    <div className="flex justify-between items-center mb-4">
-      <div className="text-xl font-bold text-gray-900">
-        Game {String(gameHistory.gameStats.gameNumber).padStart(3, '0')}
-      </div>
-      <div className="text-sm text-gray-500">
-        {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
-      </div>
-    </div>
-    <div className="border-t pt-4">
-      <div className="flex justify-between">
-        <div className="text-lg text-gray-700">
-          Score: {gameHistory.gameStats.score}
-        </div>
-        <div className="text-lg text-gray-700">
-          Longest Streak: {gameHistory.gameStats.longestStreak}
-        </div>
-      </div>
-    </div>
-    <div className="mt-4">
-      <GameHistory gameHistory={gameHistory.history} />
-    </div>
-  </div>
-))}
+              <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg sm:text-xl font-bold text-blue-600">
+                    Game {String(gameHistory.gameStats.gameNumber).padStart(3, '0')}
+                  </h2>
+                  <span className="text-sm text-gray-500">
+                    {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+                  </span>
+                </div>
+                <div className="border-t pt-4">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg text-gray-700">
+                      Score: {gameHistory.gameStats.score}
+                    </div>
+                    <div className="text-lg text-gray-700">
+                      Longest Streak: {gameHistory.gameStats.longestStreak}
+                    </div>
+                  </div>
+                </div>
+                <GameHistory gameHistory={gameHistory.history} />
+              </div>
+            ))}
+
 
             <Pagination
               total={Math.ceil(userHistory.length / gamesPerPage)}
@@ -131,7 +130,6 @@ export const getServerSideProps = async (context) => {
             },
           };
         }));
-
       }
     }
 
