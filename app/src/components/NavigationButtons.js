@@ -1,5 +1,4 @@
 // app/src/components/NavigationButtons.js
-
 import React from 'react';
 import { useRouter } from 'next/router';
 import { FaHome } from 'react-icons/fa';
@@ -9,7 +8,6 @@ const NavigationButtons = ({ resetGame }) => {
   const router = useRouter();
 
   const handleHomeClick = () => {
-    console.log('Home button clicked');
     resetGame();
     router.push('/'); // Navigate to home page
   };
