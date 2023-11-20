@@ -1,16 +1,35 @@
 // leaderboard.js
 import { getFirebaseFirestore } from '../firebase';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, startAfter } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
-import React, { useState } from 'react';
-import { NextUIProvider } from "@nextui-org/react";
+import React, { useState, useEffect } from 'react';
+import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from '../components/NavigationButtons';
 import { useRouter } from 'next/router';
 
-export const getServerSideProps = async () => {
+const fetchLeaderboardData = async (filter) => {
+  let startDate;
+  switch(filter) {
+    case 'weekly':
+      startDate = new Date();
+      startDate.setDate(startDate.getDate() - 7);
+      break;
+    case 'monthly':
+      startDate = new Date();
+      startDate.setMonth(startDate.getMonth() - 1);
+      break;
+    case 'lifetime':
+    default:
+      startDate = null;
+  }
+
   const db = getFirebaseFirestore();
   const leaderboardCollectionRef = collection(db, 'leaderboard');
-  const leaderboardSnapshot = await getDocs(leaderboardCollectionRef);
+  let leaderboardQuery = leaderboardCollectionRef;
+  if (startDate) {
+    leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), startAfter(startDate));
+  }
+  const leaderboardSnapshot = await getDocs(leaderboardQuery);
   let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
     let data = docSnapshot.data();
     if (data.date) {
@@ -25,6 +44,12 @@ export const getServerSideProps = async () => {
   // Sort leaderboard data by score
   leaderboardData.sort((a, b) => b.score - a.score);
 
+  return leaderboardData;
+};
+
+export const getServerSideProps = async () => {
+  const leaderboardData = await fetchLeaderboardData('lifetime');
+
   return {
     props: {
       leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
@@ -35,14 +60,22 @@ export const getServerSideProps = async () => {
 const LeaderboardPage = ({ leaderboardData }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
+  const [filter, setFilter] = useState('lifetime');
+  const [data, setData] = useState(leaderboardData);
   const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = leaderboardData.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+  };
+
+  const handleFilterChange = async (newFilter) => {
+    setFilter(newFilter);
+    const newLeaderboardData = await fetchLeaderboardData(newFilter);
+    setData(newLeaderboardData);
   };
 
   const getOrdinalSuffix = (i) => {
@@ -72,6 +105,15 @@ const LeaderboardPage = ({ leaderboardData }) => {
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
             <NavigationButtons resetGame={resetGame} />
             <h1 className="text-2xl font-bold text-center text-gray-900 mb-4">Leaderboard</h1>
+            <Tabs 
+              aria-label="Leaderboard Filter"         
+              selectedKey={filter}
+              onSelectionChange={handleFilterChange}
+            >
+              <Tab key="lifetime" title="Lifetime" />
+              <Tab key="monthly" title="Monthly" />
+              <Tab key="weekly" title="Weekly" />
+            </Tabs>
             <div className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">#</h2>
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Player</h2>
@@ -85,7 +127,7 @@ const LeaderboardPage = ({ leaderboardData }) => {
               </div>
             ))}
             <Pagination
-              total={Math.ceil(leaderboardData.length / itemsPerPage)}
+              total={Math.ceil(data.length / itemsPerPage)}
               page={currentPage}
               onChange={handlePageChange}
             />
