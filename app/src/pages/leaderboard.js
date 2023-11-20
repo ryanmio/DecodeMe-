@@ -1,6 +1,6 @@
 // leaderboard.js
 import { getFirebaseFirestore } from '../firebase';
-import { collection, getDocs, query, orderBy, startAfter } from 'firebase/firestore';
+import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
 import React, { useState, useEffect } from 'react';
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
@@ -27,9 +27,12 @@ const fetchLeaderboardData = async (filter) => {
   const leaderboardCollectionRef = collection(db, 'leaderboard');
   let leaderboardQuery = leaderboardCollectionRef;
   if (startDate) {
-    leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), startAfter(startDate));
+    const firestoreStartDate = Timestamp.fromDate(startDate);
+    leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
   }
+
   const leaderboardSnapshot = await getDocs(leaderboardQuery);
+
   let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
     let data = docSnapshot.data();
     if (data.date) {
@@ -105,15 +108,17 @@ const LeaderboardPage = ({ leaderboardData }) => {
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
             <NavigationButtons resetGame={resetGame} />
             <h1 className="text-2xl font-bold text-center text-gray-900 mb-4">Leaderboard</h1>
-            <Tabs 
-              aria-label="Leaderboard Filter"         
-              selectedKey={filter}
-              onSelectionChange={handleFilterChange}
-            >
-              <Tab key="lifetime" title="Lifetime" />
-              <Tab key="monthly" title="Monthly" />
-              <Tab key="weekly" title="Weekly" />
-            </Tabs>
+            <div className="flex justify-center mb-4">
+              <Tabs 
+                aria-label="Leaderboard Filter"         
+                selectedKey={filter}
+                onSelectionChange={handleFilterChange}
+              >
+                <Tab key="lifetime" title="Lifetime" />
+                <Tab key="monthly" title="Monthly" />
+                <Tab key="weekly" title="Weekly" />
+              </Tabs>
+            </div>
             <div className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">#</h2>
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Player</h2>
