@@ -181,7 +181,8 @@ export default function Home() {
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> : 
            !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : 
-           strikes >= 3 && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} longestStreak={longestStreak} incorrectAnswers={incorrectAnswers} /> : 
+           // strike limit
+           strikes >= 1 && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} longestStreak={longestStreak} incorrectAnswers={incorrectAnswers} currentStreak={currentStreak} /> : 
            <>
              <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
             <UserAnswerInput
