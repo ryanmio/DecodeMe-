@@ -46,6 +46,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 ### Scoring and Feedback
 - [x] Develop scoring algorithm
 - [x] Implement leaderboard functionality
+- [ ] New Scoring System with 3 strikes and unlimited questions
+- [ ] Implement Post-Game Review to provide feedback on wrong answers
 
 ### Core Features
 - [x] Add "Log out" button in options menu
