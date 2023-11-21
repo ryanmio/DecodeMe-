@@ -7,8 +7,8 @@ import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
 import { Button } from "@nextui-org/react";
 
-// Include longestStreak in the GameOver component's props
-const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak }) => {
+// Include longestStreak and incorrectAnswers in the GameOver component's props
+const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, incorrectAnswers }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -175,6 +175,12 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak }) =
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionLimit={questionLimit} sharedAt={new Date()} />
+        {incorrectAnswers.map((item, index) => (
+          <div key={index}>
+            <h3>Question: {item.question}</h3>
+            <p>Incorrect Answer: {item.answer}</p>
+          </div>
+        ))}
         <GameHistory gameHistory={gameHistory} />
         <Button 
           onClick={handleShareResults} 

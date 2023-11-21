@@ -31,6 +31,8 @@ export default function Home() {
   const [showEndGameModal, setShowEndGameModal] = useState(false);
   const [currentStreak, setCurrentStreak] = useState(0);
   const [longestStreak, setLongestStreak] = useState(0);
+  const [strikes, setStrikes] = useState(0);
+  const [incorrectAnswers, setIncorrectAnswers] = useState([]);
 
   const questionLimit = 2;
 
@@ -59,6 +61,8 @@ export default function Home() {
     if (isCorrect) {
       setCurrentStreak(prev => prev + 1);
     } else {
+      setStrikes(prev => prev + 1);
+      setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer }]);
       if (currentStreak > longestStreak) {
         setLongestStreak(currentStreak);
       }
@@ -126,6 +130,8 @@ export default function Home() {
     setIsLoading(false);
     setCurrentStreak(0);
     setLongestStreak(0);
+    setStrikes(0);
+    setIncorrectAnswers([]);
   };
 
   const handleHomeClick = () => {
@@ -173,8 +179,11 @@ export default function Home() {
               {score}
             </div>
           </h1>
-          {!user ? <Auth onUserAuth={handleUserAuth} /> : !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : questionsAnswered >= questionLimit && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} longestStreak={longestStreak} /> : <>
-            <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
+          {!user ? <Auth onUserAuth={handleUserAuth} /> : 
+           !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : 
+           strikes >= 3 && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} longestStreak={longestStreak} incorrectAnswers={incorrectAnswers} /> : 
+           <>
+             <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
             <UserAnswerInput
               options={question.options}
               onAnswerSubmit={handleAnswerSubmit}
