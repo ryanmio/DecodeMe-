@@ -53,6 +53,7 @@ export default function Home() {
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
     const answer = question.options[answerIndex];
+    const correctAnswer = question.options[correctAnswerIndex];
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
     await handleCodeSnippetFetch(newConversationHistory);
@@ -62,7 +63,7 @@ export default function Home() {
       setCurrentStreak(prev => prev + 1);
     } else {
       setStrikes(prev => prev + 1);
-      setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer }]);
+      setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       if (currentStreak > longestStreak) {
         setLongestStreak(currentStreak);
       }

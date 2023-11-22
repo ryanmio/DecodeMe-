@@ -6,9 +6,10 @@ import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
 import { Button } from "@nextui-org/react";
+import IncorrectReview from './IncorrectReview';
 
 // Include longestStreak and incorrectAnswers in the GameOver component's props
-const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, incorrectAnswers }) => {
+const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -78,6 +79,12 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, inc
   };
 
   const saveGameStatsToHistory = async () => {
+    console.log('saveGameStatsToHistory called, currentStreak:', currentStreak);
+    if (currentStreak === undefined) {
+      console.error('currentStreak is undefined');
+      return;
+    }
+
     const gameNumber = await getAndIncrementGameNumber();
     const leaderboardName = await fetchLeaderboardName();
   
@@ -103,8 +110,9 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, inc
   };
 
   useEffect(() => {
+    console.log('GameOver received new props, currentStreak:', currentStreak);
     saveGameStatsToHistory();
-  }, []);
+  }, [currentStreak]);
 
   const createShareDocument = async (finalLeaderboardName) => {
     const shareId = `${finalLeaderboardName}_${Date.now()}`;
@@ -175,12 +183,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, inc
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionLimit={questionLimit} sharedAt={new Date()} />
-        {incorrectAnswers.map((item, index) => (
-          <div key={index}>
-            <h3>Question: {item.question}</h3>
-            <p>Incorrect Answer: {item.answer}</p>
-          </div>
-        ))}
+        <IncorrectReview incorrectAnswers={incorrectAnswers} />
         <GameHistory gameHistory={gameHistory} />
         <Button 
           onClick={handleShareResults} 
