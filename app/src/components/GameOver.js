@@ -79,7 +79,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   };
 
   const saveGameStatsToHistory = async () => {
-    console.log('saveGameStatsToHistory called, currentStreak:', currentStreak);
     if (currentStreak === undefined) {
       console.error('currentStreak is undefined');
       return;
@@ -90,7 +89,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   
     // Check if the current streak is greater than the longest streak
     if (currentStreak > longestStreak) {
-      console.log('currentStreak', currentStreak, 'is greater than longestStreak', longestStreak, '. Updating longestStreak.');
       setLongestStreak(currentStreak);
     }
   
@@ -104,8 +102,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       gameNumber,
     };
 
-    console.log('Saving game stats to history:', gameStats);
-  
     const gameDocRef = doc(db, 'users', userId, 'games', gameId);
     await setDoc(gameDocRef, gameStats, { merge: true });
   
@@ -113,7 +109,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   };
 
   useEffect(() => {
-    console.log('GameOver received new props, currentStreak:', currentStreak);
     saveGameStatsToHistory();
   }, [currentStreak]);
 
@@ -166,7 +161,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       const { shareId, shareDocRef, batch } = await createShareDocument(finalLeaderboardName);
       await addHistoryToSharedDocument(shareDocRef, batch);
       await batch.commit();
-      console.log('Batch committed');
 
       await generateShareLink(shareId);
     } catch (error) {
