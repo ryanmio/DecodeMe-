@@ -61,15 +61,12 @@ export default function Home() {
 
     if (isCorrect) {
       setCurrentStreak(prev => {
-        console.log('Answer is correct, incrementing currentStreak from', prev, 'to', prev + 1);
         return prev + 1;
       });
     } else {
       if (currentStreak > longestStreak) {
-        console.log('Answer is incorrect and currentStreak', currentStreak, 'is greater than longestStreak', longestStreak, '. Updating longestStreak.');
         setLongestStreak(currentStreak);
       }
-      console.log('Answer is incorrect, resetting currentStreak to 0');
       setStrikes(prev => prev + 1);
       setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       setCurrentStreak(0);
