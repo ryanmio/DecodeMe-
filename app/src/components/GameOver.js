@@ -9,7 +9,7 @@ import { Button } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
 
 // Include longestStreak and incorrectAnswers in the GameOver component's props
-const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak }) => {
+const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -97,7 +97,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, inc
       gameId,
       leaderboardName,
       score,
-      questionLimit,
+      questionsAnswered,
       longestStreak,
       sharedAt: new Date(),
       gameNumber,
@@ -182,7 +182,7 @@ const GameOver = ({ score, questionLimit, db, gameId, userId, longestStreak, inc
         transition={{ duration: 0.5 }}
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
-        <FinalScore score={score} questionLimit={questionLimit} sharedAt={new Date()} />
+        <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
         <IncorrectReview incorrectAnswers={incorrectAnswers} />
         <GameHistory gameHistory={gameHistory} />
         <Button 

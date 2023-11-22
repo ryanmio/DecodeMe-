@@ -34,7 +34,7 @@ export default function Home() {
   const [strikes, setStrikes] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
 
-  const questionLimit = 2;
+  const questionLimit = 20;
 
   const handleUserUpdate = (user) => {
     setUser(user);
@@ -180,20 +180,31 @@ export default function Home() {
               {score}
             </div>
           </h1>
-          {!user ? <Auth onUserAuth={handleUserAuth} /> : 
-           !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> : 
-           // strike limit
-           strikes >= 1 && userId ? <GameOver score={score} questionLimit={questionLimit} conversationHistory={conversationHistory} gameId={gameId} userId={userId} db={db} longestStreak={longestStreak} incorrectAnswers={incorrectAnswers} currentStreak={currentStreak} /> : 
-           <>
-             <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
-            <UserAnswerInput
-              options={question.options}
-              onAnswerSubmit={handleAnswerSubmit}
-              disabled={isLoading}
-              correctAnswerIndex={correctAnswerIndex}
-              setScore={setScore}
-            />
-          </>}
+          {!user ? <Auth onUserAuth={handleUserAuth} /> :
+            !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
+              // strike limit
+              strikes >= 1 && userId && gameId ?
+                <GameOver
+                  score={score}
+                  questionsAnswered={questionsAnswered}
+                  conversationHistory={conversationHistory}
+                  gameId={gameId}
+                  userId={userId}
+                  db={db}
+                  longestStreak={longestStreak}
+                  incorrectAnswers={incorrectAnswers}
+                  currentStreak={currentStreak}
+                /> :
+                <>
+                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
+                  <UserAnswerInput
+                    options={question.options}
+                    onAnswerSubmit={handleAnswerSubmit}
+                    disabled={isLoading}
+                    correctAnswerIndex={correctAnswerIndex}
+                    setScore={setScore}
+                  />
+                </>}
           {showEndGameModal && (
             <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
               <ModalContent>
