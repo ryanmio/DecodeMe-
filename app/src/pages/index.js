@@ -62,11 +62,11 @@ export default function Home() {
     if (isCorrect) {
       setCurrentStreak(prev => prev + 1);
     } else {
-      setStrikes(prev => prev + 1);
-      setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       if (currentStreak > longestStreak) {
         setLongestStreak(currentStreak);
       }
+      setStrikes(prev => prev + 1);
+      setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       setCurrentStreak(0);
     }
 
