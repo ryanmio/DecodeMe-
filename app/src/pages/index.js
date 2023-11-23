@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc } from 'firebase/firestore';
 import GameOver from '../components/GameOver';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import StrikeIndicator from '../components/StrikeIndicator';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -35,6 +36,7 @@ export default function Home() {
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
 
   const questionLimit = 20;
+  const strikeLimit = 1;
 
   const handleUserUpdate = (user) => {
     setUser(user);
@@ -181,11 +183,11 @@ export default function Home() {
               </div>
               {score}
             </div>
+            <StrikeIndicator strikes={strikes} limit={strikeLimit} />
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
-              // strike limit
-              strikes >= 1 && userId && gameId ?
+              strikes >= strikeLimit && userId && gameId ?
                 <GameOver
                   score={score}
                   questionsAnswered={questionsAnswered}
