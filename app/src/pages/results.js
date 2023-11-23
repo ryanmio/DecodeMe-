@@ -25,7 +25,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
             </div>
-            <FinalScore score={gameData?.score} questionLimit={gameData?.questionLimit} sharedAt={gameData?.sharedAt} />
+            <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} />
             <GameHistory gameHistory={gameHistory} />
           </div>
         </div>
