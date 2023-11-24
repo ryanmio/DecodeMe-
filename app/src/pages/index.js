@@ -183,7 +183,7 @@ export default function Home() {
               </div>
               {score}
             </div>
-            {gameMode && <StrikeIndicator strikes={strikes} limit={strikeLimit} />}
+            {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
@@ -215,7 +215,7 @@ export default function Home() {
                 <ModalHeader>End Game</ModalHeader>
                 <ModalBody>Are you sure you want to end the current game?</ModalBody>
                 <ModalFooter>
-                  <Button color="primary" onClick={cancelEndGame}>Cancel</Button>
+                  <Button color="priåmary" onClick={cancelEndGame}>Cancel</Button>
                   <Button color="danger" onClick={confirmEndGame}>End Game</Button>
                 </ModalFooter>
               </ModalContent>
