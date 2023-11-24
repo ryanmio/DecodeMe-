@@ -183,7 +183,7 @@ export default function Home() {
               </div>
               {score}
             </div>
-            <StrikeIndicator strikes={strikes} limit={strikeLimit} />
+            {gameMode && <StrikeIndicator strikes={strikes} limit={strikeLimit} />}
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
