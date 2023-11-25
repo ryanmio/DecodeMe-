@@ -35,6 +35,7 @@ export default function Home() {
   const [strikes, setStrikes] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [isFirebaseUpdated, setIsFirebaseUpdated] = useState(false);
+  const [isGameOver, setIsGameOver] = useState(false);
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -59,6 +60,8 @@ export default function Home() {
     const answer = question.options[answerIndex];
     const correctAnswer = question.options[correctAnswerIndex];
 
+    let gameOver = false;
+
     if (isCorrect) {
       setCurrentStreak(prev => prev + 1);
     } else {
@@ -68,17 +71,21 @@ export default function Home() {
       setStrikes(prev => prev + 1);
       setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       setCurrentStreak(0);
+      if (strikes + 1 >= strikeLimit) {
+        gameOver = true;
+      }
     }
 
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
 
     // Only fetch the next question if the game has not ended
-    if (strikes < strikeLimit) {
+    if (!gameOver) {
       await handleCodeSnippetFetch(newConversationHistory);
     }
 
     setQuestionsAnswered(prev => prev + 1);
+    setIsGameOver(gameOver);
 
     // Log the answered question in Firestore
     const auth = await getFirebaseAuth();
@@ -113,7 +120,7 @@ export default function Home() {
     setConversationHistory(newConversationHistory);
 
     // Only fetch the next question if the game has not ended
-    if (strikes < strikeLimit) {
+    if (!isGameOver) {
       await handleCodeSnippetFetch(newConversationHistory);
     }
   };
@@ -157,6 +164,7 @@ export default function Home() {
     setLongestStreak(0);
     setStrikes(0);
     setIncorrectAnswers([]);
+    setIsGameOver(false);
   };
 
   const handleHomeClick = () => {
@@ -207,7 +215,7 @@ export default function Home() {
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
-              strikes >= strikeLimit && userId && gameId && isFirebaseUpdated ?
+              isGameOver && userId && gameId && isFirebaseUpdated ?
                 <GameOver
                   score={score}
                   questionsAnswered={questionsAnswered}
