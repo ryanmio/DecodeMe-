@@ -36,7 +36,7 @@ export default function Home() {
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
 
   const questionLimit = 20;
-  const strikeLimit = 3;
+  const strikeLimit = 1;
 
   const handleUserUpdate = (user) => {
     setUser(user);
