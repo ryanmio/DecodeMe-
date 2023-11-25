@@ -25,7 +25,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
             </div>
-            <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} />
+            <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} strikes={gameData?.strikes} strikeLimit={gameData?.strikeLimit} />
             <GameHistory gameHistory={gameHistory} />
           </div>
         </div>
@@ -54,7 +54,9 @@ export const getServerSideProps = async (context) => {
       gameData = {
         id: shareDocSnap.id,
         ...shareDocSnap.data(),
-        sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString()
+        sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString(),
+        strikes: shareDocSnap.data().strikes,
+        strikeLimit: shareDocSnap.data().strikeLimit,
       };
 
       // Retrieve the history subcollection
