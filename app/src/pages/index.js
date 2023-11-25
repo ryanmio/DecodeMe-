@@ -112,8 +112,6 @@ export default function Home() {
     if (strikes < strikeLimit) {
       await handleCodeSnippetFetch(newConversationHistory);
     }
-
-    setQuestionsAnswered(prev => prev + 1);
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
@@ -192,13 +190,7 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-        <NavigationButtons 
-  questionsAnswered={questionsAnswered} 
-  setShowEndGameModal={setShowEndGameModal} 
-  resetGame={resetGame} 
-  onSkipSubmit={handleSkipSubmit} 
-  question={question} 
-/>
+        <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} />
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>

@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { FaHome } from 'react-icons/fa';
 import OptionsMenu from './OptionsMenu';
 
-const NavigationButtons = ({ resetGame, question }) => {
+const NavigationButtons = ({ resetGame, question, onSkipSubmit }) => {
   const router = useRouter();
 
   const handleHomeClick = () => {
@@ -15,7 +15,7 @@ const NavigationButtons = ({ resetGame, question }) => {
   return (
     <div className="absolute top-4 left-4 flex space-x-2">
       <button onClick={handleHomeClick} className="text-cyan-400"><FaHome size={24} /></button>
-      <OptionsMenu isCodeSnippetDisplayed={!!question.codeSnippet} />
+      <OptionsMenu onSkipSubmit={onSkipSubmit} isCodeSnippetDisplayed={!!question.codeSnippet} />
     </div>
   );
 };

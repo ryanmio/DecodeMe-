@@ -53,7 +53,10 @@ const OptionsMenu = ({ onSkipSubmit, isCodeSnippetDisplayed }) => {
   useHotkeys('shift+l', handleLogout);
   useHotkeys('shift+h', handleHistory);
   useHotkeys('shift+b', handleLeaderboard);
-  useHotkeys('shift+s', onSkipSubmit);
+  useHotkeys('shift+s', () => {
+    console.log('Skip hotkey pressed');
+    onSkipSubmit();
+  });
 
   return (
     <>
@@ -72,7 +75,10 @@ const OptionsMenu = ({ onSkipSubmit, isCodeSnippetDisplayed }) => {
           <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>
           <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>
           <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
-          {isCodeSnippetDisplayed && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
+          {isCodeSnippetDisplayed && <DropdownItem key="skip" shortcut="⇧S" onClick={() => {
+            console.log('Skip button clicked');
+            onSkipSubmit();
+          }}>Skip</DropdownItem>}
         </DropdownMenu>
       </Dropdown>
       <Modal 
