@@ -56,14 +56,16 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement history of past questions in options menu
 - [x] Style the game history
 - [ ] Add "Give me a hint" button in options menu
-- [ ] Add "Skip this/Refresh" button in options menu
+- [x] Add "Skip this/Refresh" button in options menu
 - [x] Add daily, weekly, lifetime scores in leaderboards
 - [ ] Implement shareable score previews
 - [ ] Implement challenge mode for friends
 - [ ] Implement daily streaks
 - [ ] Implement language selector
 - [ ] Add more stats to the history page like accuracy
-
+- [ ] Finalize the system message
+- [ ] Finalize the initial user message
+ 
 ### Testing
 - [ ] Unit tests for backend functions
 - [ ] UI tests for frontend
