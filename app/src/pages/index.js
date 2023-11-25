@@ -70,7 +70,12 @@ export default function Home() {
 
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
-    await handleCodeSnippetFetch(newConversationHistory);
+
+    // Only fetch the next question if the game has not ended
+    if (strikes < strikeLimit) {
+      await handleCodeSnippetFetch(newConversationHistory);
+    }
+
     setQuestionsAnswered(prev => prev + 1);
 
     // Log the answered question in Firestore
