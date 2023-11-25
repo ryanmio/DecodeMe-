@@ -56,15 +56,9 @@ export default function Home() {
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
     const answer = question.options[answerIndex];
     const correctAnswer = question.options[correctAnswerIndex];
-    const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
-    setConversationHistory(newConversationHistory);
-    await handleCodeSnippetFetch(newConversationHistory);
-    setQuestionsAnswered(prev => prev + 1);
 
     if (isCorrect) {
-      setCurrentStreak(prev => {
-        return prev + 1;
-      });
+      setCurrentStreak(prev => prev + 1);
     } else {
       if (currentStreak > longestStreak) {
         setLongestStreak(currentStreak);
@@ -73,6 +67,11 @@ export default function Home() {
       setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       setCurrentStreak(0);
     }
+
+    const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
+    setConversationHistory(newConversationHistory);
+    await handleCodeSnippetFetch(newConversationHistory);
+    setQuestionsAnswered(prev => prev + 1);
 
     // Log the answered question in Firestore
     const auth = await getFirebaseAuth();
