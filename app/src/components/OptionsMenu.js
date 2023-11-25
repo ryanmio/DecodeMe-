@@ -9,7 +9,7 @@ import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from './Auth';
 
-const OptionsMenu = () => {
+const OptionsMenu = ({ onSkipSubmit }) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const router = useRouter();
@@ -53,6 +53,7 @@ const OptionsMenu = () => {
   useHotkeys('shift+l', handleLogout);
   useHotkeys('shift+h', handleHistory);
   useHotkeys('shift+b', handleLeaderboard);
+  useHotkeys('shift+s', onSkipSubmit);
 
   return (
     <>
@@ -71,6 +72,7 @@ const OptionsMenu = () => {
           <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>
           <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>
           <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
+          <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <Modal 
