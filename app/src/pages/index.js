@@ -34,6 +34,7 @@ export default function Home() {
   const [longestStreak, setLongestStreak] = useState(0);
   const [strikes, setStrikes] = useState(0);
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
+  const [isFirebaseUpdated, setIsFirebaseUpdated] = useState(false);
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -54,6 +55,7 @@ export default function Home() {
   };
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
+    setIsFirebaseUpdated(false);
     const answer = question.options[answerIndex];
     const correctAnswer = question.options[correctAnswerIndex];
 
@@ -91,7 +93,7 @@ export default function Home() {
     // Create a reference to the 'history' document
     const questionDoc = doc(gameDoc, 'history', questionId);
 
-    setDoc(questionDoc, {
+    await setDoc(questionDoc, {
       question: question.codeSnippet,
       answer,
       isCorrect,
@@ -102,6 +104,8 @@ export default function Home() {
     }).catch((error) => {
       console.error('Failed to log answer:', error);
     });
+
+    setIsFirebaseUpdated(true);
   };
 
   const handleSkipSubmit = async () => {
@@ -203,7 +207,7 @@ export default function Home() {
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
-              strikes >= strikeLimit && userId && gameId ?
+              strikes >= strikeLimit && userId && gameId && isFirebaseUpdated ?
                 <GameOver
                   score={score}
                   questionsAnswered={questionsAnswered}
