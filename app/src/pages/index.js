@@ -92,7 +92,9 @@ export default function Home() {
       answer,
       isCorrect,
       gameId,
-      timestamp: new Date()
+      timestamp: new Date(),
+      strikes,
+      strikeLimit,
     }).catch((error) => {
       console.error('Failed to log answer:', error);
     });
