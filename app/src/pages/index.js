@@ -15,6 +15,7 @@ import { doc, setDoc } from 'firebase/firestore';
 import GameOver from '../components/GameOver';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
+import ChatWithScript from '../components/ChatWithScript';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -36,6 +37,7 @@ export default function Home() {
   const [incorrectAnswers, setIncorrectAnswers] = useState([]);
   const [isFirebaseUpdated, setIsFirebaseUpdated] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
+  const [showChatWindow, setShowChatWindow] = useState(false);
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -184,6 +186,10 @@ export default function Home() {
     setShowEndGameModal(false);
   };
 
+  const toggleChatWindow = () => {
+    setShowChatWindow(prevState => !prevState);
+  };
+
   useEffect(() => {
     if (score > 0) {
       setShowScoreSparkle(true);
@@ -203,6 +209,8 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
         <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} />
+          <Button onClick={toggleChatWindow}>Chat with Script</Button> {/* New button to open the chat window */}
+          <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} /> {/* New chat window */}
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -254,3 +262,4 @@ export default function Home() {
     </div>
   );
 }
+
