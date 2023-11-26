@@ -28,11 +28,11 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
             />
             <NextUIButton
               type="submit"
+              className="send-button"
               auto
               size="small"
               color="primary"
               bordered
-              className="p-2"
             >
               Send
             </NextUIButton>

@@ -72,10 +72,18 @@
   .chat-input {
     display: flex;
     border-top: 1px solid #ccc;
+    align-items: center; /* Add this line */
   }
   
   .message-input {
     flex: 1;
     margin-right: 10px;
     padding: 8px;
+  }
+
+  .chat-input .send-button {
+    width: 80px; /* Adjust width as needed */
+    height: 35px; /* Adjust height as needed */
+    margin-right: 8px;
+    align-items: center;
   }
