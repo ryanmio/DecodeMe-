@@ -74,21 +74,23 @@
 .chat-input {
   display: flex;
   border-top: 1px solid #ccc;
-  align-items: flex-start; /* Align items to the start */
+  align-items: flex-start;
   gap: 10px;
   padding: 10px;
+  align-items: center;
 }
 
 .message-input {
   flex-grow: 1;
-  font-size: 16px; /* Match font size of chat history text */
-  border-radius: 8px; /* Optional: to match the button's rounded corners */
-  /* Removed min-height and max-height */
+  font-size: 16px;
 }
 
-.chat-input .send-button {
-  width: 80px; /* Adjust width as needed */
-  height: 35px; /* Adjust height as needed */
-  margin-right: 8px;
+.send-button {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
+  background: transparent;
+  border: none;
+  white-space: nowrap;
 }
