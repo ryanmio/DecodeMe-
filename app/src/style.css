@@ -34,56 +34,61 @@
 
   /* Chat window styles */
   
-  .chat-window {
-    position: fixed;
-    bottom: 0;
-    right: 20px;
-    width: 300px;
-    z-index: 1000;
-    background-color: white;
-    border: 1px solid #ccc;
-  }
-  
-  .chat-window.collapsed {
-    height: 40px;
-    border-radius: 10px 10px 0 0;
-  }
-  
-  .chat-window.expanded {
-    height: 400px;
-    border-radius: 10px 10px 0 0;
-  }
-  
-  .chat-header {
-    padding: 10px;
-    border-bottom: 1px solid #ccc;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  }
-  
-  .chat-history {
-    height: calc(100% - 86px);
-    overflow-y: scroll;
-  }
-  
-  .chat-input {
-    display: flex;
-    border-top: 1px solid #ccc;
-    align-items: center; /* Add this line */
-  }
-  
-  .message-input {
-    flex: 1;
-    margin-right: 10px;
-    padding: 8px;
-  }
+.chat-window {
+  position: fixed;
+  bottom: 0;
+  right: 20px;
+  width: 300px;
+  z-index: 1000;
+  background-color: white;
+  border: 1px solid #ccc;
+  display: flex;
+  flex-direction: column;
+}
 
-  .chat-input .send-button {
-    width: 80px; /* Adjust width as needed */
-    height: 35px; /* Adjust height as needed */
-    margin-right: 8px;
-    align-items: center;
-  }
+.chat-window.collapsed {
+  height: 50px;
+  border-radius: 10px 10px 0 0;
+}
+
+.chat-window.expanded {
+  height: 400px;
+  border-radius: 10px 10px 0 0;
+}
+
+.chat-header {
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.chat-history {
+  height: calc(100% - 86px);
+  overflow-y: scroll;
+}
+
+.chat-input {
+  display: flex;
+  border-top: 1px solid #ccc;
+  align-items: flex-start; /* Align items to the start */
+  gap: 10px;
+  padding: 10px;
+}
+
+.message-input {
+  flex-grow: 1;
+  font-size: 16px; /* Match font size of chat history text */
+  border-radius: 8px; /* Optional: to match the button's rounded corners */
+  /* Removed min-height and max-height */
+}
+
+.chat-input .send-button {
+  width: 80px; /* Adjust width as needed */
+  height: 35px; /* Adjust height as needed */
+  margin-right: 8px;
+  align-items: center;
+}
