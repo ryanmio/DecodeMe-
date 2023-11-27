@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollShadow, Textarea, Button as NextUIButton } from "@nextui-org/react";
+import { FaPlus } from 'react-icons/fa';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
@@ -22,6 +23,10 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     } catch (error) {
       console.error('Failed to send message:', error);
     }
+  };
+
+  const handleNewChat = () => {
+    setChatHistory([]);
   };
 
   return (
@@ -55,6 +60,16 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               bordered
             >
               <span>Send</span>
+            </NextUIButton>
+            <NextUIButton
+              className="new-chat-button"
+              auto
+              size="small"
+              color="primary"
+              bordered
+              onClick={handleNewChat}
+            >
+              <FaPlus className="h-5 w-5" />
             </NextUIButton>
           </form>
         </>
