@@ -15,14 +15,19 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   useEffect(() => {
     if (!textAreaRef.current) return;
 
-    const scrollHeight = textAreaRef.current.scrollHeight;
-    const lineHeight = parseInt(window.getComputedStyle(textAreaRef.current).lineHeight, 10);
+    const style = window.getComputedStyle(textAreaRef.current);
+    const lineHeight = parseInt(style.lineHeight, 10);
+    const paddingTop = parseInt(style.paddingTop, 10);
+    const paddingBottom = parseInt(style.paddingBottom, 10);
+    const borderTop = parseInt(style.borderTopWidth, 10);
+    const borderBottom = parseInt(style.borderBottomWidth, 10);
 
     const lines = userMessage.split('\n').length || 1;
-    const newHeight = `${Math.min(lines * lineHeight, 3 * lineHeight)}px`;
+    const newHeight = `${lineHeight * lines + paddingTop + paddingBottom + borderTop + borderBottom}px`;
 
     setTextAreaHeight(newHeight);
   }, [userMessage]);
+
 
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'}`}>
@@ -41,6 +46,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               placeholder="Your message..."
               className="message-input"
             />
+
             <NextUIButton
               type="submit"
               className="send-button"
