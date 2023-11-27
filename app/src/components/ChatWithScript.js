@@ -13,7 +13,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: codeSnippet, userMessage }),
+        body: JSON.stringify({ script: codeSnippet, userMessage, chatHistory }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();

@@ -94,6 +94,7 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const script = request.body.script;
     const userMessage = request.body.userMessage;
+    const chatHistory = request.body.chatHistory || [];
     if (!script) {
       console.error('No script provided.');
       return response.status(400).send('Please provide a script.');
@@ -116,6 +117,7 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
       model: 'gpt-3.5-turbo',
       messages: [
         { role: 'system', content: `You are a helpful assistant. The user is currently looking at the following Python script: ${script}` },
+        ...chatHistory,
         { role: 'user', content: userMessage },
       ]
     };
