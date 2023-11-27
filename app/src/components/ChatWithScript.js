@@ -5,29 +5,19 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
   const textAreaRef = useRef(null);
-  const [textAreaHeight, setTextAreaHeight] = useState('auto');
+
+  // No need to manage the height state manually if using maxRows
+  // const [textAreaHeight, setTextAreaHeight] = useState(null);
 
   const handleChatSubmit = async (event) => {
     event.preventDefault();
     // Call the new Firebase Cloud Function and update chatHistory
   };
 
-  useEffect(() => {
-    if (!textAreaRef.current) return;
-
-    const style = window.getComputedStyle(textAreaRef.current);
-    const lineHeight = parseInt(style.lineHeight, 10);
-    const paddingTop = parseInt(style.paddingTop, 10);
-    const paddingBottom = parseInt(style.paddingBottom, 10);
-    const borderTop = parseInt(style.borderTopWidth, 10);
-    const borderBottom = parseInt(style.borderBottomWidth, 10);
-
-    const lines = userMessage.split('\n').length || 1;
-    const newHeight = `${lineHeight * lines + paddingTop + paddingBottom + borderTop + borderBottom}px`;
-
-    setTextAreaHeight(newHeight);
-  }, [userMessage]);
-
+  // This effect is unnecessary if maxRows is used
+  // useEffect(() => {
+  //   calculateHeight();
+  // }, [userMessage]);
 
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'}`}>
@@ -40,13 +30,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
           <form onSubmit={handleChatSubmit} className="chat-input">
             <Textarea
               ref={textAreaRef}
-              style={{ height: textAreaHeight }}
               value={userMessage}
               onChange={e => setUserMessage(e.target.value)}
               placeholder="Your message..."
               className="message-input"
+              minRows={1} // Start with a single line
+              maxRows={3} // Expand up to three lines before scrolling
             />
-
             <NextUIButton
               type="submit"
               className="send-button"
