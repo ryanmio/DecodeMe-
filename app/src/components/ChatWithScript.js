@@ -6,18 +6,23 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [userMessage, setUserMessage] = useState('');
   const textAreaRef = useRef(null);
 
-  // No need to manage the height state manually if using maxRows
-  // const [textAreaHeight, setTextAreaHeight] = useState(null);
-
   const handleChatSubmit = async (event) => {
     event.preventDefault();
     // Call the new Firebase Cloud Function and update chatHistory
+    try {
+      const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ script: codeSnippet, userMessage }),
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      setChatHistory([...chatHistory, { role: 'user', content: userMessage }, { role: 'assistant', content: data.response }]);
+      setUserMessage('');
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
   };
-
-  // This effect is unnecessary if maxRows is used
-  // useEffect(() => {
-  //   calculateHeight();
-  // }, [userMessage]);
 
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'}`}>
@@ -25,7 +30,11 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       {isOpen && (
         <>
           <ScrollShadow className="chat-history">
-            {/* Map through chatHistory and display each message */}
+            {chatHistory.map((message, index) => (
+              <div key={index} className={`message ${message.role}`}>
+                {message.content}
+              </div>
+            ))}
           </ScrollShadow>
           <form onSubmit={handleChatSubmit} className="chat-input">
             <Textarea
