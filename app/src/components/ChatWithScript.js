@@ -55,7 +55,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               color="primary"
               bordered
             >
-              Send
+              <span>Send</span>
             </NextUIButton>
           </form>
         </>
