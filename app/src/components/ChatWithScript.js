@@ -31,7 +31,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
         <>
           <ScrollShadow className="chat-history">
             {chatHistory.map((message, index) => (
-              <div key={index} className={`message ${message.role}`}>
+              <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
                 {message.content}
               </div>
             ))}

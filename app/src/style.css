@@ -94,3 +94,15 @@
   border: none;
   white-space: nowrap;
 }
+
+.user-message {
+  background-color: blue;
+  color: white;
+  /* Add other styles as needed */
+}
+
+.assistant-message {
+  background-color: gray;
+  color: black;
+  /* Add other styles as needed */
+}
