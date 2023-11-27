@@ -95,14 +95,24 @@
   white-space: nowrap;
 }
 
+.message {
+  padding: 10px;
+  margin: 5px;
+  border-radius: 10px;
+  width: fit-content;
+  clear: both;
+}
+
 .user-message {
-  background-color: blue;
+  background-color: #007BFF;
   color: white;
-  /* Add other styles as needed */
+  align-self: flex-end;
+  float: right;
 }
 
 .assistant-message {
-  background-color: gray;
+  background-color: #E0E0E0;
   color: black;
-  /* Add other styles as needed */
+  align-self: flex-start;
+  float: left;
 }
