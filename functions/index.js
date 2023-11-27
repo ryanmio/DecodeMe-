@@ -82,3 +82,55 @@ exports.updateLeaderboard = functions.firestore
 
     await admin.firestore().collection('leaderboard').add(leaderboardData);
   });
+
+
+
+// Chat with Script Function -- This function is a HTTP Trigger that gets triggered when a POST request is made to the '/chatWithScript' endpoint.
+// It extracts the script and user message from the request body.
+// The script and user message are then used to generate a response from OpenAI's GPT-3.5-turbo model.
+// The generated response is sent back in the HTTP response.
+
+exports.chatWithScript = functions.https.onRequest((request, response) => {
+  cors(request, response, async () => {
+    const script = request.body.script;
+    const userMessage = request.body.userMessage;
+    if (!script) {
+      console.error('No script provided.');
+      return response.status(400).send('Please provide a script.');
+    }
+    console.log(`Received script: ${script}`);
+
+    const openaiKey = functions.config().openai?.key;
+    if (!openaiKey) {
+      console.error('OpenAI key missing from Firebase function configuration.');
+      return response.status(500).send('Server configuration error.');
+    }
+
+    const apiUrl = 'https://api.openai.com/v1/chat/completions';
+    const headers = {
+      'Authorization': `Bearer ${openaiKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    const data = {
+      model: 'gpt-3.5-turbo',
+      messages: [
+        { role: 'system', content: `You are a helpful assistant. The user is currently looking at the following Python script: ${script}` },
+        { role: 'user', content: userMessage },
+      ]
+    };
+
+    try {
+      const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
+      console.log(`Received response from OpenAI: ${JSON.stringify(openaiResponse.data)}`);
+      const responseText = openaiResponse.data.choices[0].message.content.trim();
+      response.send({ response: responseText });
+    } catch (error) {
+      console.error('Error occurred while communicating with OpenAI:', error);
+      if (error.response) {
+        console.error('Error Response:', error.response.data);
+      }
+      response.status(500).send('An error occurred while communicating with OpenAI.');
+    }
+  });
+});
