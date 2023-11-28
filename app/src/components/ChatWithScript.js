@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollShadow, Textarea, Button as NextUIButton } from "@nextui-org/react";
+import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip } from "@nextui-org/react";
 import { FaPlus } from 'react-icons/fa';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
@@ -31,7 +31,14 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
 
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'}`}>
-      <div onClick={onClose} className="chat-header">Chat with Script</div>
+      <div className="chat-header flex justify-between items-center">
+        <div className="flex-grow cursor-pointer" onClick={onClose}>Chat with Script</div>
+        <Tooltip content="New Chat" placement="top">
+  <div className="cursor-pointer">
+    <FaPlus className="text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform" onClick={handleNewChat} />
+  </div>
+</Tooltip>
+      </div>
       {isOpen && (
         <>
           <ScrollShadow className="chat-history">
@@ -60,16 +67,6 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               bordered
             >
               <span>Send</span>
-            </NextUIButton>
-            <NextUIButton
-              className="new-chat-button"
-              auto
-              size="small"
-              color="primary"
-              bordered
-              onClick={handleNewChat}
-            >
-              <FaPlus className="h-5 w-5" />
             </NextUIButton>
           </form>
         </>
