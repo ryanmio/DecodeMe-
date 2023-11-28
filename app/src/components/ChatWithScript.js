@@ -9,7 +9,9 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
 
   const handleChatSubmit = async (event) => {
     event.preventDefault();
-    // Call the new Firebase Cloud Function and update chatHistory
+    // Add user's message to chatHistory immediately
+  setChatHistory(prevChatHistory => [...prevChatHistory, { role: 'user', content: userMessage }]);
+  // Call the new Firebase Cloud Function and update chatHistory
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
