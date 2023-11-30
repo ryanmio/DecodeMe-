@@ -6,21 +6,31 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
   const textAreaRef = useRef(null);
+  const chatHistoryRef = useRef(null); // Ref for the chat history container
+
+  // Effect to scroll to bottom of chat history when it updates
+  useEffect(() => {
+    if (chatHistoryRef.current) {
+      const { current } = chatHistoryRef;
+      current.scrollTop = current.scrollHeight;
+    }
+  }, [chatHistory]);
 
   const handleChatSubmit = async (event) => {
     event.preventDefault();
-    // Add user's message to chatHistory immediately
-  setChatHistory(prevChatHistory => [...prevChatHistory, { role: 'user', content: userMessage }]);
-  // Call the new Firebase Cloud Function and update chatHistory
+    const updatedChatHistory = [...chatHistory, { role: 'user', content: userMessage }];
+    
+    setChatHistory(updatedChatHistory);
+    // Call the new Firebase Cloud Function and update chatHistory
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: codeSnippet, userMessage, chatHistory }),
+        body: JSON.stringify({ script: codeSnippet, userMessage, chatHistory: updatedChatHistory }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      setChatHistory([...chatHistory, { role: 'user', content: userMessage }, { role: 'assistant', content: data.response }]);
+      setChatHistory(prevHistory => [...prevHistory, { role: 'assistant', content: data.response }]);
       setUserMessage('');
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -36,14 +46,14 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       <div className="chat-header flex justify-between items-center">
         <div className="flex-grow cursor-pointer" onClick={onClose}>Chat with Script</div>
         <Tooltip content="New Chat" placement="top">
-  <div className="cursor-pointer">
-    <FaPlus className="text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform" onClick={handleNewChat} />
-  </div>
-</Tooltip>
+          <div className="cursor-pointer">
+            <FaPlus className="text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform" onClick={handleNewChat} />
+          </div>
+        </Tooltip>
       </div>
       {isOpen && (
         <>
-          <ScrollShadow className="chat-history">
+          <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
                 {message.content}
@@ -57,8 +67,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               onChange={e => setUserMessage(e.target.value)}
               placeholder="Your message..."
               className="message-input"
-              minRows={1} // Start with a single line
-              maxRows={3} // Expand up to three lines before scrolling
+              minRows={1}
+              maxRows={3}
             />
             <NextUIButton
               type="submit"
