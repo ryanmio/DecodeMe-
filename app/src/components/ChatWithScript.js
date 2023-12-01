@@ -47,8 +47,11 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const handleHeaderClick = () => {
     if (isMaximized) {
       setIsMaximized(false);
+      if (!isOpen) {
+        onClose(); // This will close/minimize the chat window.
+      }
     } else {
-      onClose(); // Assuming onClose is meant to handle the collapsing of the chat window
+      onClose(); // If it's not maximized, we just call onClose to toggle between expanded and collapsed.
     }
   };
 
