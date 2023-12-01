@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip } from "@nextui-org/react";
 import { FaPlus } from 'react-icons/fa';
+import ReactMarkdown from 'react-markdown';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
@@ -56,7 +57,9 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
-                {message.content}
+                <ReactMarkdown>
+                  {message.content}
+                </ReactMarkdown>
               </div>
             ))}
           </ScrollShadow>
