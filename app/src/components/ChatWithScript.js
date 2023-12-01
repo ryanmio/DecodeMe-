@@ -4,6 +4,9 @@ import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../icons/newChatIcon'; // Import the NewChatIcon
 
+// Define your conversation starters
+const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain like I'm 5"];
+
 export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
@@ -19,28 +22,30 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     }
   }, [chatHistory]);
 
-  const handleChatSubmit = async (event) => {
+  const handleChatSubmit = async (event, messageToSend = userMessage) => {
     event.preventDefault();
-    const updatedChatHistory = [...chatHistory, { role: 'user', content: userMessage }];
+    const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     
     setChatHistory(updatedChatHistory);
+    setUserMessage(''); // Clear the input field immediately after sending the message
+
     // Call the new Firebase Cloud Function and update chatHistory
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: codeSnippet, userMessage, chatHistory: updatedChatHistory }),
+        body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       setChatHistory(prevHistory => [...prevHistory, { role: 'assistant', content: data.response }]);
-      setUserMessage('');
     } catch (error) {
       console.error('Failed to send message:', error);
     }
   };
 
   const handleNewChat = () => {
+    console.log('New chat started'); // This will log to the console when the function is called
     setChatHistory([]);
   };
 
@@ -59,10 +64,15 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     setIsMaximized(!isMaximized);
   };
 
+  // Function to handle sending a starter message
+  const sendStarterMessage = (message) => {
+    handleChatSubmit({ preventDefault: () => {} }, message); // Pass the message directly
+  };
+
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
       <div className="chat-header flex justify-between items-center" onClick={handleHeaderClick}>
-        <div className="flex-grow cursor-pointer">Chat with Script</div>
+        <div className="flex-grow cursor-pointer">Virtual Coach</div>
         {isOpen && (
           <>
             <Tooltip content={isMaximized ? "Minimize" : "Maximize"} placement="top">
@@ -71,8 +81,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               </div>
             </Tooltip>
             <Tooltip content="New Chat" placement="top">
-              <div className="cursor-pointer">
-                <NewChatIcon className="w-8 h-8 icon-color transform hover:scale-110 transition-transform opacity-80" onClick={handleNewChat} />
+              <div className="cursor-pointer icon-container" onClick={handleNewChat}>
+                <NewChatIcon className="w-8 h-8 icon-color transform hover:scale-110 transition-transform opacity-80" />
               </div>
             </Tooltip>
           </>
@@ -89,6 +99,15 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
               </div>
             ))}
           </ScrollShadow>
+          {chatHistory.length === 0 && (
+            <div className="conversation-starters">
+              {conversationStarters.map((starter, index) => (
+                <div key={index} className="starter-bubble" onClick={() => sendStarterMessage(starter)}>
+                  {starter}
+                </div>
+              ))}
+            </div>
+          )}
           <form onSubmit={handleChatSubmit} className="chat-input">
             <Textarea
               ref={textAreaRef}

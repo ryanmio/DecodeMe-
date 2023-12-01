@@ -153,3 +153,39 @@
   color: #141414; /* This is an example color that matches Tailwind's text-gray-400 */
   fill: currentColor; /* This ensures that the SVG's fill color is the same as its text color */
 }
+
+.icon-container {
+  pointer-events: auto;
+}
+
+.icon-container svg {
+  pointer-events: none;
+}
+
+.conversation-starters {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+
+.starter-bubble {
+  padding: 8px 16px;
+  border-radius: 20px;
+  background-color: #f0f0f0; /* Light neutral background */
+  color: #333; /* Darker text for contrast */
+  cursor: pointer;
+  user-select: none; /* Prevents the text within the bubble from being selectable */
+  margin-bottom: 10px; /* Space between the bubbles and the input field */
+  border: 1px solid #d0d0d0; /* Subtle border */
+  text-align: center;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.starter-bubble:hover {
+  background-color: #e8e8e8; /* Slightly darker background on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
