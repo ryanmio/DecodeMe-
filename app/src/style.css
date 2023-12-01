@@ -60,8 +60,8 @@
   position: fixed;
   top: 50%;
   left: 50%;
-  width: 80%; /* Example width, adjust as needed */
-  height: 80%; /* Example height, adjust as needed */
+  width: 80%; /* Adjust the width as needed */
+  height: 80%; /* Adjust the height as needed */
   transform: translate(-50%, -50%); /* Center the window */
   z-index: 1001; /* Ensure it's above everything else */
   border-radius: 10px; /* Optional: add border radius for aesthetics */
