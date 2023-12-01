@@ -63,16 +63,20 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
       <div className="chat-header flex justify-between items-center" onClick={handleHeaderClick}>
         <div className="flex-grow cursor-pointer">Chat with Script</div>
-        <Tooltip content={isMaximized ? "Minimize" : "Maximize"} placement="top">
-          <div className="cursor-pointer">
-            <FaExpand className="w-6 h-6 icon-color scale-90 transform hover:scale-110 transition-transform opacity-80" onClick={toggleMaximize} />
-          </div>
-        </Tooltip>
-        <Tooltip content="New Chat" placement="top">
-          <div className="cursor-pointer">
-          <NewChatIcon className="w-8 h-8 icon-color transform hover:scale-110 transition-transform opacity-80" onClick={handleNewChat} />
-          </div>
-        </Tooltip>
+        {isOpen && (
+          <>
+            <Tooltip content={isMaximized ? "Minimize" : "Maximize"} placement="top">
+              <div className="cursor-pointer">
+                <FaExpand className="w-6 h-6 icon-color scale-90 transform hover:scale-110 transition-transform opacity-80" onClick={toggleMaximize} />
+              </div>
+            </Tooltip>
+            <Tooltip content="New Chat" placement="top">
+              <div className="cursor-pointer">
+                <NewChatIcon className="w-8 h-8 icon-color transform hover:scale-110 transition-transform opacity-80" onClick={handleNewChat} />
+              </div>
+            </Tooltip>
+          </>
+        )}
       </div>
       {isOpen && (
         <>
