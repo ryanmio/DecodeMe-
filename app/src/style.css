@@ -149,6 +149,6 @@
 }
 
 .icon-color {
-  color: #2d2d2d; /* This is an example color that matches Tailwind's text-gray-400 */
+  color: #141414; /* This is an example color that matches Tailwind's text-gray-400 */
   fill: currentColor; /* This ensures that the SVG's fill color is the same as its text color */
 }

@@ -55,13 +55,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
         {isOpen && !isMaximized && (
           <Tooltip content="Maximize" placement="top">
             <div className="cursor-pointer">
-              <FaExpand className="w-6 h-6 text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform opacity-80" onClick={toggleMaximize} />
+            <FaExpand className="w-6 h-6 icon-color scale-90 transform hover:scale-110 transition-transform opacity-80" onClick={toggleMaximize} />
             </div>
           </Tooltip>
         )}
         <Tooltip content="New Chat" placement="top">
           <div className="cursor-pointer">
-          <NewChatIcon className="w-8 h-8 text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform opacity-80" onClick={handleNewChat} />
+          <NewChatIcon className="w-8 h-8 icon-color transform hover:scale-110 transition-transform opacity-80" onClick={handleNewChat} />
           </div>
         </Tooltip>
       </div>
