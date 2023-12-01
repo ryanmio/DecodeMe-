@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip } from "@nextui-org/react";
-import { FaPlus } from 'react-icons/fa';
+import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
+import NewChatIcon from '../icons/newChatIcon'; // Import the NewChatIcon
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
+  const [isMaximized, setIsMaximized] = useState(false);
   const textAreaRef = useRef(null);
   const chatHistoryRef = useRef(null); // Ref for the chat history container
 
@@ -42,13 +44,24 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     setChatHistory([]);
   };
 
+  const toggleMaximize = () => {
+    setIsMaximized(!isMaximized);
+  };
+
   return (
-    <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'}`}>
+    <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
       <div className="chat-header flex justify-between items-center">
         <div className="flex-grow cursor-pointer" onClick={onClose}>Chat with Script</div>
+        {isOpen && !isMaximized && (
+          <Tooltip content="Maximize" placement="top">
+            <div className="cursor-pointer">
+              <FaExpand className="w-6 h-6 text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform opacity-80" onClick={toggleMaximize} />
+            </div>
+          </Tooltip>
+        )}
         <Tooltip content="New Chat" placement="top">
           <div className="cursor-pointer">
-            <FaPlus className="text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform" onClick={handleNewChat} />
+          <NewChatIcon className="w-8 h-8 text-gray-400 hover:text-gray-600 transform hover:scale-110 transition-transform opacity-80" onClick={handleNewChat} />
           </div>
         </Tooltip>
       </div>
