@@ -44,14 +44,22 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     setChatHistory([]);
   };
 
+  const handleHeaderClick = () => {
+    if (isMaximized) {
+      setIsMaximized(false);
+    } else {
+      onClose(); // Assuming onClose is meant to handle the collapsing of the chat window
+    }
+  };
+
   const toggleMaximize = () => {
     setIsMaximized(!isMaximized);
   };
 
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
-      <div className="chat-header flex justify-between items-center">
-        <div className="flex-grow cursor-pointer" onClick={onClose}>Chat with Script</div>
+      <div className="chat-header flex justify-between items-center" onClick={handleHeaderClick}>
+        <div className="flex-grow cursor-pointer">Chat with Script</div>
         <Tooltip content={isMaximized ? "Minimize" : "Maximize"} placement="top">
           <div className="cursor-pointer">
             <FaExpand className="w-6 h-6 icon-color scale-90 transform hover:scale-110 transition-transform opacity-80" onClick={toggleMaximize} />
