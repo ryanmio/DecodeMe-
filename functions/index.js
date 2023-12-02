@@ -83,9 +83,6 @@ exports.updateLeaderboard = functions.firestore
     await admin.firestore().collection('leaderboard').add(leaderboardData);
   });
 
-
-
-  
 // Chat with Script Function -- This function is a HTTP Trigger that gets triggered when a POST request is made to the '/chatWithScript' endpoint.
 // It extracts the script and user message from the request body.
 // The script and user message are then used to generate a response from OpenAI's GPT-3.5-turbo model.
@@ -114,10 +111,23 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
       'Content-Type': 'application/json',
     };
 
+    // Determine the tone and verbosity of the assistant based on learning level
+    let assistantBehavior;
+    switch (learningLevel) {
+      case 'beginner':
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Speak as if you are explaining to a user in elementary school, assuming no prior knowledge of coding.`;
+        break;
+      case 'expert':
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Assume the user has an advanced engineering degree and is seeking a quick response with no need to explain basic concepts.`;
+        break;
+      default:
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}.`;
+    }
+
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. The user's learning level is: ${learningLevel}` },
+        { role: 'system', content: assistantBehavior },
         ...chatHistory,
         { role: 'user', content: userMessage },
       ]
