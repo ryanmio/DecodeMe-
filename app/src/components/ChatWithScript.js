@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../icons/newChatIcon'; // Import the NewChatIcon
 
 // Define your conversation starters
-const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain like I'm 5"];
+const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
   const [chatHistory, setChatHistory] = useState([]);
