@@ -55,6 +55,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log('Assistant message:', data.response); // Log the assistant message
       setChatHistory(prevHistory => [...prevHistory, { role: 'assistant', content: data.response }]);
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -185,3 +186,4 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
     </div>
   );
 }
+
