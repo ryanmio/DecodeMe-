@@ -1,16 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip } from "@nextui-org/react";
+import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Listbox, ListboxItem } from "@nextui-org/react";
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../icons/newChatIcon'; // Import the NewChatIcon
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 // Define your conversation starters
 const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
-export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
+export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, db }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
+  const [learningLevel, setLearningLevel] = useState('intermediate');
+  const [showDropdown, setShowDropdown] = useState(false);
   const textAreaRef = useRef(null);
   const chatHistoryRef = useRef(null); // Ref for the chat history container
 
@@ -21,6 +24,20 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       current.scrollTop = current.scrollHeight;
     }
   }, [chatHistory]);
+
+  // Fetch learning level from Firebase when the component mounts
+  useEffect(() => {
+    const fetchLearningLevel = async () => {
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      const userData = userDoc.data();
+      if (userData && userData.learningLevel) {
+        setLearningLevel(userData.learningLevel);
+      }
+    };
+
+    fetchLearningLevel();
+  }, [userId, db]);
 
   const handleChatSubmit = async (event, messageToSend = userMessage) => {
     event.preventDefault();
@@ -34,7 +51,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory }),
+        body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory, learningLevel }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -69,6 +86,28 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
     handleChatSubmit({ preventDefault: () => {} }, message); // Pass the message directly
   };
 
+  // Function to update learning level in Firebase
+  const updateLearningLevelInFirebase = async (level) => {
+    const userDocRef = doc(db, 'users', userId);
+    await updateDoc(userDocRef, { learningLevel: level });
+    setLearningLevel(level);
+    setShowDropdown(false); // Close the dropdown
+  };
+
+  const LearningLevelDropdown = () => (
+    <Listbox
+      aria-label="Learning Level"
+      value={learningLevel}
+      isOpen={showDropdown}
+      onOpenChange={setShowDropdown}
+      onChange={value => updateLearningLevelInFirebase(value)}
+    >
+      <ListboxItem value="beginner" onPress={() => updateLearningLevelInFirebase('beginner')}>Beginner</ListboxItem>
+      <ListboxItem value="intermediate" onPress={() => updateLearningLevelInFirebase('intermediate')}>Intermediate</ListboxItem>
+      <ListboxItem value="expert" onPress={() => updateLearningLevelInFirebase('expert')}>Expert</ListboxItem>
+    </Listbox>
+  );
+
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
       <div className="chat-header flex justify-between items-center" onClick={handleHeaderClick}>
@@ -90,6 +129,15 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       </div>
       {isOpen && (
         <>
+          <div 
+            className="learning-level-display flex justify-center items-center" 
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            <div className="italic cursor-pointer">
+              Learning Level: <span style={{ textDecoration: "underline dotted" }}>{learningLevel || 'Set Level'}</span>
+            </div>
+            {showDropdown && <LearningLevelDropdown />}
+          </div>
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
