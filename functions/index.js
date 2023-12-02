@@ -115,13 +115,13 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     let assistantBehavior;
     switch (learningLevel) {
       case 'beginner':
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Speak as if you are explaining to a user in elementary school, assuming no prior knowledge of coding.`;
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Speak as if you are explaining to a user in elementary school, assuming no prior knowledge of coding. Keep your responses concise and avoid long sentences for mobile-friendly experience.`;
         break;
       case 'expert':
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Assume the user has an advanced engineering degree and is seeking a quick response with no need to explain basic concepts.`;
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Assume the user has an advanced engineering degree and is seeking a quick response with no need to explain basic concepts. Keep your responses brief and to the point.`;
         break;
       default:
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}.`;
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Please keep your responses concise and mobile-friendly.`;
     }
 
     const data = {
