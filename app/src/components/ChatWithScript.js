@@ -101,6 +101,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
       isOpen={showDropdown}
       onOpenChange={setShowDropdown}
       onChange={value => updateLearningLevelInFirebase(value)}
+      style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1000 }}
     >
       <ListboxItem value="beginner" onPress={() => updateLearningLevelInFirebase('beginner')}>Beginner</ListboxItem>
       <ListboxItem value="intermediate" onPress={() => updateLearningLevelInFirebase('intermediate')}>Intermediate</ListboxItem>
@@ -129,15 +130,18 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
       </div>
       {isOpen && (
         <>
-          <div 
-            className="learning-level-display flex justify-center items-center" 
-            onClick={() => setShowDropdown(!showDropdown)}
-          >
-            <div className="italic cursor-pointer">
-              Learning Level: <span style={{ textDecoration: "underline dotted" }}>{learningLevel || 'Set Level'}</span>
+          {/* Only show the learning level display if chatHistory is empty */}
+          {chatHistory.length === 0 && (
+            <div 
+              className="learning-level-display flex justify-center items-center" 
+              onClick={() => setShowDropdown(!showDropdown)}
+            >
+              <div className="italic cursor-pointer">
+                Learning Level: <span style={{ textDecoration: "underline dotted" }}>{learningLevel || 'Set Level'}</span>
+              </div>
+              {showDropdown && <LearningLevelDropdown />}
             </div>
-            {showDropdown && <LearningLevelDropdown />}
-          </div>
+          )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
