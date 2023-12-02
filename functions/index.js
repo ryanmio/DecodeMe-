@@ -85,15 +85,16 @@ exports.updateLeaderboard = functions.firestore
 
 
 
+  
 // Chat with Script Function -- This function is a HTTP Trigger that gets triggered when a POST request is made to the '/chatWithScript' endpoint.
 // It extracts the script and user message from the request body.
 // The script and user message are then used to generate a response from OpenAI's GPT-3.5-turbo model.
 // The generated response is sent back in the HTTP response.
-
 exports.chatWithScript = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const script = request.body.script;
     const userMessage = request.body.userMessage;
+    const learningLevel = request.body.learningLevel;
     const chatHistory = request.body.chatHistory || [];
     if (!script) {
       console.error('No script provided.');
@@ -116,7 +117,7 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: `You are a helpful assistant. The user is currently looking at the following Python script: ${script}` },
+        { role: 'system', content: `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. The user's learning level is: ${learningLevel}` },
         ...chatHistory,
         { role: 'user', content: userMessage },
       ]
