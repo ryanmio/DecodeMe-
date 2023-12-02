@@ -101,7 +101,6 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
       isOpen={showDropdown}
       onOpenChange={setShowDropdown}
       onChange={value => updateLearningLevelInFirebase(value)}
-      style={{ position: 'absolute', top: '100%', left: 0, zIndex: 1000 }}
     >
       <ListboxItem value="beginner" onPress={() => updateLearningLevelInFirebase('beginner')}>Beginner</ListboxItem>
       <ListboxItem value="intermediate" onPress={() => updateLearningLevelInFirebase('intermediate')}>Intermediate</ListboxItem>
