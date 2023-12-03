@@ -28,11 +28,15 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   // Fetch learning level from Firebase when the component mounts
   useEffect(() => {
     const fetchLearningLevel = async () => {
-      const userDocRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userDocRef);
-      const userData = userDoc.data();
-      if (userData && userData.learningLevel) {
-        setLearningLevel(userData.learningLevel);
+      try {
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+        const userData = userDoc.data();
+        if (userData && userData.learningLevel) {
+          setLearningLevel(userData.learningLevel);
+        }
+      } catch (error) {
+        console.error('Failed to fetch learning level:', error);
       }
     };
 
@@ -89,10 +93,14 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
 
   // Function to update learning level in Firebase
   const updateLearningLevelInFirebase = async (level) => {
-    const userDocRef = doc(db, 'users', userId);
-    await updateDoc(userDocRef, { learningLevel: level });
-    setLearningLevel(level);
-    setShowDropdown(false); // Close the dropdown
+    try {
+      const userDocRef = doc(db, 'users', userId);
+      await updateDoc(userDocRef, { learningLevel: level });
+      setLearningLevel(level);
+      setShowDropdown(false); // Close the dropdown
+    } catch (error) {
+      console.error('Failed to update learning level:', error);
+    }
   };
 
   const LearningLevelIndicator = () => (
