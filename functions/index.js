@@ -124,6 +124,8 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
         assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Please keep your responses concise and mobile-friendly.`;
     }
 
+    console.log(`System message: ${assistantBehavior}`);
+
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
