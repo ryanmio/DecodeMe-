@@ -95,6 +95,21 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
     setShowDropdown(false); // Close the dropdown
   };
 
+  const LearningLevelIndicator = () => (
+    <div 
+      className="learning-level-indicator" 
+      onClick={() => setShowDropdown(true)}
+      style={{ cursor: 'pointer' }}
+    >
+      <span style={{ fontWeight: 'normal', color: '#666' }}>Learning Level:</span>
+      <span 
+        style={{ textDecoration: 'underline dotted', color: '#333', marginLeft: '5px', fontWeight: 'bold' }}
+      >
+        {learningLevel}
+      </span>
+    </div>
+  );
+
   const LearningLevelDropdown = () => (
     <Listbox
       aria-label="Learning Level"
@@ -132,13 +147,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
         <>
           {/* Only show the learning level display if chatHistory is empty */}
           {chatHistory.length === 0 && (
-            <div 
-              className="learning-level-display flex justify-center items-center" 
-              onClick={() => setShowDropdown(!showDropdown)}
-            >
-              <div className="italic cursor-pointer">
-                Learning Level: <span style={{ textDecoration: "underline dotted" }}>{learningLevel || 'Set Level'}</span>
-              </div>
+            <div className="flex justify-between items-center p-2">
+              <LearningLevelIndicator />
               {showDropdown && <LearningLevelDropdown />}
             </div>
           )}
@@ -186,4 +196,3 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
     </div>
   );
 }
-
