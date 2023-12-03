@@ -113,13 +113,13 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     let assistantBehavior;
     switch (learningLevel) {
       case 'beginner':
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Speak as if you are explaining to a user in elementary school, assuming no prior knowledge of coding. Keep your responses concise and avoid long sentences for mobile-friendly experience.`;
+        assistantBehavior = `You are an assistant explaining Python scripts to a young beginner with no coding background. Presently, the user is viewing the script: ${script}. Use very simple language suitable for an elementary school student. Break down coding concepts into easy-to-understand parts. Be patient and clear, using short sentences for a mobile-friendly experience. Avoid technical jargon and explain each step as if it's the user's first encounter with coding.`;
         break;
       case 'expert':
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Assume the user has an advanced engineering degree and is seeking a quick response with no need to explain basic concepts. Keep your responses brief and to the point.`;
+        assistantBehavior = `You are a helpful assistant. The user, with an advanced engineering degree, is viewing the Python script: ${script}. Assume deep technical knowledge and provide quick, direct responses. Focus on expert-level insights, omitting basic explanations. Keep responses brief, precise, and to the point, suitable for a quick mobile review.`;
         break;
       default:
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Please keep your responses concise and mobile-friendly.`;
+        assistantBehavior = `You are an assistant guiding an intermediate learner through Python scripts. The user is looking at the script: ${script}. Assume basic familiarity with programming but explain more advanced concepts. Use clear, concise language that bridges fundamental understanding to more complex ideas. Keep explanations detailed yet accessible, and maintain mobile-friendly sentence lengths.`;
     }
 
     const data = {
