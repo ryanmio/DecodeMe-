@@ -47,7 +47,6 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
 
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
-      console.log(`Received response from OpenAI: ${JSON.stringify(openaiResponse.data)}`);
       const responseText = openaiResponse.data.choices[0].message.content.trim();
       const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
       const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
@@ -97,7 +96,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
       console.error('No script provided.');
       return response.status(400).send('Please provide a script.');
     }
-    console.log(`Received script: ${script}`);
 
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
@@ -124,8 +122,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
         assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Please keep your responses concise and mobile-friendly.`;
     }
 
-    console.log(`System message: ${assistantBehavior}`);
-
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -137,7 +133,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
-      console.log(`Received response from OpenAI: ${JSON.stringify(openaiResponse.data)}`);
       const responseText = openaiResponse.data.choices[0].message.content.trim();
       response.send({ response: responseText });
     } catch (error) {
