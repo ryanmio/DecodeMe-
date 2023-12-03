@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Listbox, ListboxItem } from "@nextui-org/react";
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
-import NewChatIcon from '../icons/newChatIcon'; // Import the NewChatIcon
+import NewChatIcon from '../icons/newChatIcon';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 // Define your conversation starters
@@ -15,7 +15,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   const [learningLevel, setLearningLevel] = useState('intermediate');
   const [showDropdown, setShowDropdown] = useState(false);
   const textAreaRef = useRef(null);
-  const chatHistoryRef = useRef(null); // Ref for the chat history container
+  const chatHistoryRef = useRef(null);
 
   // Effect to scroll to bottom of chat history when it updates
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
 
   // Function to handle sending a starter message
   const sendStarterMessage = (message) => {
-    handleChatSubmit({ preventDefault: () => {} }, message); // Pass the message directly
+    handleChatSubmit({ preventDefault: () => {} }, message);
   };
 
   // Function to update learning level in Firebase
@@ -112,15 +112,16 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
 
   const LearningLevelDropdown = () => (
     <Listbox
+      className="listbox"
       aria-label="Learning Level"
       value={learningLevel}
       isOpen={showDropdown}
       onOpenChange={setShowDropdown}
       onChange={value => updateLearningLevelInFirebase(value)}
     >
-      <ListboxItem value="beginner" onPress={() => updateLearningLevelInFirebase('beginner')}>Beginner</ListboxItem>
-      <ListboxItem value="intermediate" onPress={() => updateLearningLevelInFirebase('intermediate')}>Intermediate</ListboxItem>
-      <ListboxItem value="expert" onPress={() => updateLearningLevelInFirebase('expert')}>Expert</ListboxItem>
+      <ListboxItem className="listbox-item" value="beginner" onPress={() => updateLearningLevelInFirebase('beginner')}>Beginner</ListboxItem>
+      <ListboxItem className="listbox-item" value="intermediate" onPress={() => updateLearningLevelInFirebase('intermediate')}>Intermediate</ListboxItem>
+      <ListboxItem className="listbox-item" value="expert" onPress={() => updateLearningLevelInFirebase('expert')}>Expert</ListboxItem>
     </Listbox>
   );
 
