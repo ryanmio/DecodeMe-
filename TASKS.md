@@ -68,6 +68,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement 'Chat with Code' feature
 - [x] Implement learning levels in chat
 - [ ] Implement learning levels in scripts
+- [ ] Implement custom instructions
  
 ### Testing
 - [ ] Unit tests for backend functions
@@ -209,3 +210,4 @@ Moving forward, we need to:
   
 ### Scoring
 - Opted for a simple, flat point system due to constraints with dynamically generated questions.
+
