@@ -54,7 +54,7 @@
 }
 
 .chat-window.expanded {
-  height: 400px;
+  height: 450px;
   border-radius: 10px 10px 0 0;
 }
 
@@ -188,4 +188,45 @@
   background-color: #e8e8e8;
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.learning-level-indicator {
+  font-size: 0.85rem;
+  color: #888;
+  display: flex;
+  align-items: center;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 1000;
+}
+
+/* Base Listbox styling */
+.listbox {
+  border: 1px solid #ccc; /* match to your input field border */
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.1); /* subtle shadow for depth */
+  border-radius: 4px; /* match to your input field border-radius */
+  background-color: #fff; /* background of the dropdown */
+}
+
+/* ListboxItem base styling */
+.listbox-item {
+  font-family: 'Your font family', sans-serif;
+  font-size: 0.9rem; /* match to your input field font size */
+  color: #333; /* match to your input field text color */
+  padding: 8px 12px; /* match to your input field padding */
+}
+
+/* ListboxItem hover and active state styling */
+.listbox-item:hover, .listbox-item:active {
+  background-color: #f2f2f2; /* a light grey for hover state */
+  color: #000; /* optional: change text color on hover */
+}
+
+/* ListboxItem selected state styling */
+.listbox-item.selected {
+  background-color: #ddd; /* a darker grey to indicate selection */
 }

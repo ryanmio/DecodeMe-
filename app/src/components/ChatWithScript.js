@@ -1,18 +1,21 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip } from "@nextui-org/react";
+import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Listbox, ListboxItem } from "@nextui-org/react";
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
-import NewChatIcon from '../icons/newChatIcon'; // Import the NewChatIcon
+import NewChatIcon from '../icons/newChatIcon';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 // Define your conversation starters
 const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
-export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
+export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, db }) {
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
+  const [learningLevel, setLearningLevel] = useState('intermediate');
+  const [showDropdown, setShowDropdown] = useState(false);
   const textAreaRef = useRef(null);
-  const chatHistoryRef = useRef(null); // Ref for the chat history container
+  const chatHistoryRef = useRef(null);
 
   // Effect to scroll to bottom of chat history when it updates
   useEffect(() => {
@@ -21,6 +24,20 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       current.scrollTop = current.scrollHeight;
     }
   }, [chatHistory]);
+
+  // Fetch learning level from Firebase when the component mounts
+  useEffect(() => {
+    const fetchLearningLevel = async () => {
+      const userDocRef = doc(db, 'users', userId);
+      const userDoc = await getDoc(userDocRef);
+      const userData = userDoc.data();
+      if (userData && userData.learningLevel) {
+        setLearningLevel(userData.learningLevel);
+      }
+    };
+
+    fetchLearningLevel();
+  }, [userId, db]);
 
   const handleChatSubmit = async (event, messageToSend = userMessage) => {
     event.preventDefault();
@@ -34,10 +51,11 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory }),
+        body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory, learningLevel }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
+      console.log('Assistant message:', data.response); // Log the assistant message
       setChatHistory(prevHistory => [...prevHistory, { role: 'assistant', content: data.response }]);
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -66,8 +84,53 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
 
   // Function to handle sending a starter message
   const sendStarterMessage = (message) => {
-    handleChatSubmit({ preventDefault: () => {} }, message); // Pass the message directly
+    handleChatSubmit({ preventDefault: () => {} }, message);
   };
+
+  // Function to update learning level in Firebase
+  const updateLearningLevelInFirebase = async (level) => {
+    const userDocRef = doc(db, 'users', userId);
+    await updateDoc(userDocRef, { learningLevel: level });
+    setLearningLevel(level);
+    setShowDropdown(false); // Close the dropdown
+  };
+
+  const LearningLevelIndicator = () => (
+    <div 
+      className="learning-level-indicator" 
+      onClick={() => setShowDropdown(!showDropdown)} // Toggle showDropdown state
+      style={{ cursor: 'pointer' }}
+    >
+      <span style={{ fontWeight: 'normal', color: '#666' }}>Learning Level:</span>
+      <span 
+        style={{ textDecoration: 'underline dotted', color: '#333', marginLeft: '5px', fontWeight: 'bold' }}
+      >
+        {learningLevel}
+      </span>
+    </div>
+  );
+
+  const LearningLevelDropdown = () => (
+    <Listbox
+      className="listbox"
+      aria-label="Learning Level"
+      value={learningLevel}
+      isOpen={showDropdown}
+      onOpenChange={setShowDropdown}
+      onChange={value => updateLearningLevelInFirebase(value)}
+    >
+      <ListboxItem className="listbox-item" value="beginner" onPress={() => updateLearningLevelInFirebase('beginner')}>Beginner</ListboxItem>
+      <ListboxItem className="listbox-item" value="intermediate" onPress={() => updateLearningLevelInFirebase('intermediate')}>Intermediate</ListboxItem>
+      <ListboxItem className="listbox-item" value="expert" onPress={() => updateLearningLevelInFirebase('expert')}>Expert</ListboxItem>
+    </Listbox>
+  );
+
+  const LearningLevelSelector = () => (
+    <div className="learning-level-selector">
+      <LearningLevelIndicator />
+      {showDropdown && <LearningLevelDropdown />}
+    </div>
+  );
 
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
@@ -90,6 +153,12 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet }) {
       </div>
       {isOpen && (
         <>
+          {/* Only show the learning level display if chatHistory is empty */}
+          {chatHistory.length === 0 && (
+            <div className="flex justify-between items-center p-2">
+              <LearningLevelSelector />
+            </div>
+          )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>

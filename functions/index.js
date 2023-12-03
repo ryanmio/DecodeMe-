@@ -83,17 +83,15 @@ exports.updateLeaderboard = functions.firestore
     await admin.firestore().collection('leaderboard').add(leaderboardData);
   });
 
-
-
 // Chat with Script Function -- This function is a HTTP Trigger that gets triggered when a POST request is made to the '/chatWithScript' endpoint.
 // It extracts the script and user message from the request body.
 // The script and user message are then used to generate a response from OpenAI's GPT-3.5-turbo model.
 // The generated response is sent back in the HTTP response.
-
 exports.chatWithScript = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const script = request.body.script;
     const userMessage = request.body.userMessage;
+    const learningLevel = request.body.learningLevel;
     const chatHistory = request.body.chatHistory || [];
     if (!script) {
       console.error('No script provided.');
@@ -113,10 +111,25 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
       'Content-Type': 'application/json',
     };
 
+    // Determine the tone and verbosity of the assistant based on learning level
+    let assistantBehavior;
+    switch (learningLevel) {
+      case 'beginner':
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Speak as if you are explaining to a user in elementary school, assuming no prior knowledge of coding. Keep your responses concise and avoid long sentences for mobile-friendly experience.`;
+        break;
+      case 'expert':
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Assume the user has an advanced engineering degree and is seeking a quick response with no need to explain basic concepts. Keep your responses brief and to the point.`;
+        break;
+      default:
+        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Please keep your responses concise and mobile-friendly.`;
+    }
+
+    console.log(`System message: ${assistantBehavior}`);
+
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: `You are a helpful assistant. The user is currently looking at the following Python script: ${script}` },
+        { role: 'system', content: assistantBehavior },
         ...chatHistory,
         { role: 'user', content: userMessage },
       ]
