@@ -98,7 +98,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   const LearningLevelIndicator = () => (
     <div 
       className="learning-level-indicator" 
-      onClick={() => setShowDropdown(true)}
+      onClick={() => setShowDropdown(!showDropdown)} // Toggle showDropdown state
       style={{ cursor: 'pointer' }}
     >
       <span style={{ fontWeight: 'normal', color: '#666' }}>Learning Level:</span>
