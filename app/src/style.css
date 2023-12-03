@@ -204,10 +204,6 @@
   z-index: 1000;
 }
 
-.listbox-container {
-  display: block;
-}
-
 /* Base Listbox styling */
 .listbox {
   border: 1px solid #ccc; /* match to your input field border */

@@ -125,6 +125,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
     </Listbox>
   );
 
+  const LearningLevelSelector = () => (
+    <div className="learning-level-selector">
+      <LearningLevelIndicator />
+      {showDropdown && <LearningLevelDropdown />}
+    </div>
+  );
+
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
       <div className="chat-header flex justify-between items-center" onClick={handleHeaderClick}>
@@ -149,8 +156,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
           {/* Only show the learning level display if chatHistory is empty */}
           {chatHistory.length === 0 && (
             <div className="flex justify-between items-center p-2">
-              <LearningLevelIndicator />
-              {showDropdown && <LearningLevelDropdown />}
+              <LearningLevelSelector />
             </div>
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
