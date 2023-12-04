@@ -192,6 +192,7 @@ export default function Home() {
   };
 
   const updateLearningLevelInFirebase = async (level) => {
+    console.log('updateLearningLevelInFirebase called with level:', level);
     if (userId && db) {
       try {
         const userDocRef = doc(db, 'users', userId);
@@ -207,6 +208,7 @@ export default function Home() {
   };
 
   useEffect(() => {
+    console.log('Component mounted');
     if (score > 0) {
       setShowScoreSparkle(true);
       setTimeout(() => setShowScoreSparkle(false), 1000);
@@ -214,6 +216,9 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
+    console.log('userId or db changed');
+    console.log('userId:', userId);
+    console.log('db:', db);
     if (userId && db) {
       const fetchLearningLevel = async () => {
         try {
@@ -259,7 +264,10 @@ export default function Home() {
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? (
               <>
-                <Tabs value={learningLevel} onChange={updateLearningLevelInFirebase}>
+                <Tabs value={learningLevel} onChange={(value) => {
+                  console.log('Tab changed to:', value);
+                  updateLearningLevelInFirebase(value);
+                }}>
                   <Tab value="beginner">Beginner</Tab>
                   <Tab value="intermediate">Intermediate</Tab>
                   <Tab value="expert">Expert</Tab>
