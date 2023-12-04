@@ -264,13 +264,14 @@ export default function Home() {
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
             !gameMode ? (
               <>
-                <Tabs value={learningLevel} onChange={(value) => {
-                  console.log('Tab changed to:', value);
-                  updateLearningLevelInFirebase(value);
-                }}>
-                  <Tab value="beginner">Beginner</Tab>
-                  <Tab value="intermediate">Intermediate</Tab>
-                  <Tab value="expert">Expert</Tab>
+                <Tabs 
+                  aria-label="Learning Level" 
+                  selectedKey={learningLevel} 
+                  onSelectionChange={updateLearningLevelInFirebase}
+                >
+                  <Tab key="beginner" title="Beginner" />
+                  <Tab key="intermediate" title="Regular" />
+                  <Tab key="expert" title="Expert" />
                 </Tabs>
                 <GameModeSelection onGameModeSelect={handleGameModeSelect} />
               </>
