@@ -192,12 +192,17 @@ export default function Home() {
   };
 
   const updateLearningLevelInFirebase = async (level) => {
-    try {
-      const userDocRef = doc(db, 'users', userId);
-      await updateDoc(userDocRef, { learningLevel: level });
-      setLearningLevel(level);
-    } catch (error) {
-      console.error('Failed to update learning level:', error);
+    if (userId && db) {
+      try {
+        const userDocRef = doc(db, 'users', userId);
+        await updateDoc(userDocRef, { learningLevel: level });
+        setLearningLevel(level);
+        console.log(`Learning level updated to ${level}`);
+      } catch (error) {
+        console.error('Failed to update learning level:', error);
+      }
+    } else {
+      console.log('userId or db is not available');
     }
   };
 
@@ -217,6 +222,9 @@ export default function Home() {
           const userData = userDoc.data();
           if (userData && userData.learningLevel) {
             setLearningLevel(userData.learningLevel);
+            console.log(`Fetched learning level: ${userData.learningLevel}`);
+          } else {
+            console.log('No learning level found in user data');
           }
         } catch (error) {
           console.error('Failed to fetch learning level:', error);
