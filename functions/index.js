@@ -13,7 +13,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     const gameMode = request.query.gameMode;
     let conversationHistory = request.body.conversationHistory || [];
     const userMessage = request.body.userMessage;
-    const learningLevel = request.body.learningLevel; // Extract learning level from request body
+    const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
 
     if (!gameMode) {
       console.error('No game mode provided.');
@@ -39,7 +39,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     }
 
     // Determine the code snippet difficulty based on learning level
-    let difficultyAdjustment;
+    let difficultyAdjustment = '';
     switch (learningLevel) {
       case 'beginner':
         difficultyAdjustment = 'The code snippet should be simple and easy to understand, suitable for a beginner.';
@@ -48,7 +48,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         difficultyAdjustment = 'The code snippet should be complex and challenging, suitable for an expert.';
         break;
       default:
-        difficultyAdjustment = 'The code snippet should be of moderate difficulty, suitable for an intermediate learner.';
+        // No specific instruction for 'intermediate' or any other value
     }
 
     const data = {
