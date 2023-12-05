@@ -60,6 +60,8 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
       ]
     };
 
+    console.log('Data sent to OpenAI:', data);
+
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
       const responseText = openaiResponse.data.choices[0].message.content.trim();
