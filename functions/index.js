@@ -15,6 +15,8 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
 
+    console.log(`Received learning level: ${learningLevel}`); // Added console log to check received learning level
+
     if (!gameMode) {
       console.error('No game mode provided.');
       return response.status(400).send('Please provide a game mode.');
@@ -51,6 +53,8 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         // No specific instruction for 'intermediate' or any other value
     }
 
+    console.log(`Difficulty adjustment based on learning level: ${difficultyAdjustment}`); // Added console log to check difficulty adjustment
+
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -60,6 +64,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
       ]
     };
 
+    console.log('System message:', data.messages[0].content); // Added console log to check system message
     console.log('Data sent to OpenAI:', data);
 
     try {
