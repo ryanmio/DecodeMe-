@@ -54,7 +54,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: `You are a coding challenge generator. After each user response, generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Make both options reasonable so the game is challenging. Adjust the difficulty based on the user\'s previous answer: make it slightly harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user\'s answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment}` },
+        { role: 'system', content: `You are a coding challenge generator. After each user response, generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Make both options reasonable so the game is challenging. Adjust the difficulty based on the user\'s previous answer: make it slightly harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment}` },
         ...(conversationHistory.length === 0 ? [{ role: 'user', content: `Generate a short python script in a code block and two multiple choice options for what the script does. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". Both answer options should be reasonable to make it challenging. Start super simple – when I respond correctly, increase the difficulty of the next script, otherwise generate a similar script. Incorporate fun elements like emojis, humor, and creative puzzles. Only respond with scripts and answer choices, no small talk or narration or comments.` }] : []),
         ...conversationHistory,
       ]
@@ -147,6 +147,8 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
         { role: 'user', content: userMessage },
       ]
     };
+
+    console.log('Data sent to OpenAI:', data);
 
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
