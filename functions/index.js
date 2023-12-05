@@ -105,7 +105,7 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const script = request.body.script;
     const userMessage = request.body.userMessage;
-    const learningLevel = request.body.learningLevel;
+    const learningLevel = request.body.learningLevel || 'intermediate';
     const chatHistory = request.body.chatHistory || [];
     if (!script) {
       console.error('No script provided.');
