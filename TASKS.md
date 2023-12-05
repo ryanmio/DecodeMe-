@@ -51,6 +51,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Add streaks to UI
 - [x] Add strikes to UI
 - [ ] Implement daily streaks
+- [ ] Implement high scores
+- [ ] Implement badges
 
 ### Core Features
 - [x] Add "Log out" button in options menu
