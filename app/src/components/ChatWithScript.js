@@ -213,3 +213,4 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
     </div>
   );
 }
+
