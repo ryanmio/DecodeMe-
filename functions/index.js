@@ -14,6 +14,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     let conversationHistory = request.body.conversationHistory || [];
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
+    console.log('Received learning level:', learningLevel); // Add this line
 
     console.log(`Received learning level: ${learningLevel}`); // Added console log to check received learning level
 
