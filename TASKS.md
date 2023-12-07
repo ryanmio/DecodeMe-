@@ -73,6 +73,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Implement custom instructions
  
 ### Testing
+- [ ] Test anonymous user flow
 - [ ] Unit tests for backend functions
 - [ ] UI tests for frontend
 - [ ] End-to-end tests
