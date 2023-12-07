@@ -14,19 +14,13 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     let conversationHistory = request.body.conversationHistory || [];
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
-    console.log('Received learning level:', learningLevel); // Add this line
-
-    console.log(`Received learning level: ${learningLevel}`); // Added console log to check received learning level
 
     if (!gameMode) {
-      console.error('No game mode provided.');
       return response.status(400).send('Please provide a game mode.');
     }
-    console.log(`Received game mode: ${gameMode}`);
 
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
-      console.error('OpenAI key missing from Firebase function configuration.');
       return response.status(500).send('Server configuration error.');
     }
 
@@ -54,8 +48,6 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         // No specific instruction for 'intermediate' or any other value
     }
 
-    console.log(`Difficulty adjustment based on learning level: ${difficultyAdjustment}`); // Added console log to check difficulty adjustment
-
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
@@ -65,9 +57,6 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
       ]
     };
 
-    console.log('System message:', data.messages[0].content); // Added console log to check system message
-    console.log('Data sent to OpenAI:', data);
-
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
       const responseText = openaiResponse.data.choices[0].message.content.trim();
@@ -75,11 +64,9 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
       const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
       response.send({ codeSnippet, conversationHistory: [...conversationHistory, { role: 'assistant', content: responseText }] });
     } catch (error) {
-      console.error('Error occurred while communicating with OpenAI:', error);
       if (error.response) {
-        console.error('Error Response:', error.response.data);
+        response.status(500).send('An error occurred while communicating with OpenAI.');
       }
-      response.status(500).send('An error occurred while communicating with OpenAI.');
     }
   });
 });
@@ -153,8 +140,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
         { role: 'user', content: userMessage },
       ]
     };
-
-    console.log('Data sent to OpenAI:', data);
 
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
