@@ -11,9 +11,9 @@ import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
 import { getFirebaseAuth, getFirebaseFirestore } from '../firebase';
 import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import GameOver from '../components/GameOver';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
 import ChatWithScript from '../components/ChatWithScript';
 
@@ -38,6 +38,7 @@ export default function Home() {
   const [isFirebaseUpdated, setIsFirebaseUpdated] = useState(false);
   const [isGameOver, setIsGameOver] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
+  const [learningLevel, setLearningLevel] = useState('intermediate');
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -133,7 +134,7 @@ export default function Home() {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationHistory }),
+        body: JSON.stringify({ conversationHistory, learningLevel }), // Include learningLevel in the request body
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -190,7 +191,24 @@ export default function Home() {
     setShowChatWindow(prevState => !prevState);
   };
 
+  const updateLearningLevelInFirebase = async (level) => {
+    console.log('updateLearningLevelInFirebase called with level:', level);
+    if (userId && db) {
+      try {
+        const userDocRef = doc(db, 'users', userId);
+        await updateDoc(userDocRef, { learningLevel: level });
+        setLearningLevel(level);
+        console.log(`Learning level updated to ${level}`);
+      } catch (error) {
+        console.error('Failed to update learning level:', error);
+      }
+    } else {
+      console.log('userId or db is not available');
+    }
+  };
+
   useEffect(() => {
+    console.log('Component mounted');
     if (score > 0) {
       setShowScoreSparkle(true);
       setTimeout(() => setShowScoreSparkle(false), 1000);
@@ -198,10 +216,33 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
+    console.log('userId or db changed');
+    console.log('userId:', userId);
+    console.log('db:', db);
+    if (userId && db) {
+      const fetchLearningLevel = async () => {
+        try {
+          const userDocRef = doc(db, 'users', userId);
+          const userDoc = await getDoc(userDocRef);
+          const userData = userDoc.data();
+          if (userData && userData.learningLevel) {
+            setLearningLevel(userData.learningLevel);
+            console.log(`Fetched learning level: ${userData.learningLevel}`);
+          } else {
+            console.log('No learning level found in user data');
+          }
+        } catch (error) {
+          console.error('Failed to fetch learning level:', error);
+        }
+      };
+
+      fetchLearningLevel();
+    }
+
     const auth = getFirebaseAuth();
     const unsubscribe = auth.onAuthStateChanged(handleUserUpdate);
     return unsubscribe;
-  }, []);
+  }, [userId, db]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
@@ -221,7 +262,20 @@ export default function Home() {
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           {!user ? <Auth onUserAuth={handleUserAuth} /> :
-            !gameMode ? <GameModeSelection onGameModeSelect={handleGameModeSelect} /> :
+            !gameMode ? (
+              <>
+                <Tabs 
+                  aria-label="Learning Level" 
+                  selectedKey={learningLevel} 
+                  onSelectionChange={updateLearningLevelInFirebase}
+                >
+                  <Tab key="beginner" title="Beginner" />
+                  <Tab key="intermediate" title="Regular" />
+                  <Tab key="expert" title="Expert" />
+                </Tabs>
+                <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+              </>
+            ) : 
               isGameOver && userId && gameId && isFirebaseUpdated ?
                 <GameOver
                   score={score}

@@ -28,11 +28,16 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   // Fetch learning level from Firebase when the component mounts
   useEffect(() => {
     const fetchLearningLevel = async () => {
-      const userDocRef = doc(db, 'users', userId);
-      const userDoc = await getDoc(userDocRef);
-      const userData = userDoc.data();
-      if (userData && userData.learningLevel) {
-        setLearningLevel(userData.learningLevel);
+      try {
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+        const userData = userDoc.data();
+        if (userData && userData.learningLevel) {
+          console.log('Fetched learning level:', userData.learningLevel); // Add this line
+          setLearningLevel(userData.learningLevel);
+        }
+      } catch (error) {
+        console.error('Failed to fetch learning level:', error);
       }
     };
 
@@ -42,7 +47,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   const handleChatSubmit = async (event, messageToSend = userMessage) => {
     event.preventDefault();
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
-    
+
     setChatHistory(updatedChatHistory);
     setUserMessage(''); // Clear the input field immediately after sending the message
 
@@ -53,6 +58,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory, learningLevel }),
       });
+      console.log('Sent learning level:', learningLevel); // Add this line
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       console.log('Assistant message:', data.response); // Log the assistant message
@@ -84,25 +90,29 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
 
   // Function to handle sending a starter message
   const sendStarterMessage = (message) => {
-    handleChatSubmit({ preventDefault: () => {} }, message);
+    handleChatSubmit({ preventDefault: () => { } }, message);
   };
 
   // Function to update learning level in Firebase
   const updateLearningLevelInFirebase = async (level) => {
-    const userDocRef = doc(db, 'users', userId);
-    await updateDoc(userDocRef, { learningLevel: level });
-    setLearningLevel(level);
-    setShowDropdown(false); // Close the dropdown
+    try {
+      const userDocRef = doc(db, 'users', userId);
+      await updateDoc(userDocRef, { learningLevel: level });
+      setLearningLevel(level);
+      setShowDropdown(false); // Close the dropdown
+    } catch (error) {
+      console.error('Failed to update learning level:', error);
+    }
   };
 
   const LearningLevelIndicator = () => (
-    <div 
-      className="learning-level-indicator" 
+    <div
+      className="learning-level-indicator"
       onClick={() => setShowDropdown(!showDropdown)} // Toggle showDropdown state
       style={{ cursor: 'pointer' }}
     >
       <span style={{ fontWeight: 'normal', color: '#666' }}>Learning Level:</span>
-      <span 
+      <span
         style={{ textDecoration: 'underline dotted', color: '#333', marginLeft: '5px', fontWeight: 'bold' }}
       >
         {learningLevel}
@@ -203,3 +213,4 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
     </div>
   );
 }
+

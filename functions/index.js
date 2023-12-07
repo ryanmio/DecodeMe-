@@ -13,15 +13,14 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     const gameMode = request.query.gameMode;
     let conversationHistory = request.body.conversationHistory || [];
     const userMessage = request.body.userMessage;
+    const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
+
     if (!gameMode) {
-      console.error('No game mode provided.');
       return response.status(400).send('Please provide a game mode.');
     }
-    console.log(`Received game mode: ${gameMode}`);
 
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
-      console.error('OpenAI key missing from Firebase function configuration.');
       return response.status(500).send('Server configuration error.');
     }
 
@@ -36,10 +35,23 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
       conversationHistory = [...conversationHistory, { role: 'user', content: userMessage }];
     }
 
+    // Determine the code snippet difficulty based on learning level
+    let difficultyAdjustment = '';
+    switch (learningLevel) {
+      case 'beginner':
+        difficultyAdjustment = 'The code snippet should be simple and easy to understand, suitable for a beginner.';
+        break;
+      case 'expert':
+        difficultyAdjustment = 'The code snippet should be complex and challenging, suitable for an expert.';
+        break;
+      default:
+        // No specific instruction for 'intermediate' or any other value
+    }
+
     const data = {
       model: 'gpt-3.5-turbo',
       messages: [
-        { role: 'system', content: 'You are a coding challenge generator. After each user response, generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Make both options reasonable so the game is challenging. Adjust the difficulty based on the user\'s previous answer: make it slightly harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user\'s answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments.' },
+        { role: 'system', content: `You are a coding challenge generator. After each user response, generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Make both options reasonable so the game is challenging. Adjust the difficulty based on the user's previous answer: make it slightly harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment}` },
         ...(conversationHistory.length === 0 ? [{ role: 'user', content: `Generate a short python script in a code block and two multiple choice options for what the script does. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". Both answer options should be reasonable to make it challenging. Start super simple – when I respond correctly, increase the difficulty of the next script, otherwise generate a similar script. Incorporate fun elements like emojis, humor, and creative puzzles. Only respond with scripts and answer choices, no small talk or narration or comments.` }] : []),
         ...conversationHistory,
       ]
@@ -47,17 +59,14 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
 
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
-      console.log(`Received response from OpenAI: ${JSON.stringify(openaiResponse.data)}`);
       const responseText = openaiResponse.data.choices[0].message.content.trim();
       const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
       const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
       response.send({ codeSnippet, conversationHistory: [...conversationHistory, { role: 'assistant', content: responseText }] });
     } catch (error) {
-      console.error('Error occurred while communicating with OpenAI:', error);
       if (error.response) {
-        console.error('Error Response:', error.response.data);
+        response.status(500).send('An error occurred while communicating with OpenAI.');
       }
-      response.status(500).send('An error occurred while communicating with OpenAI.');
     }
   });
 });
@@ -91,13 +100,12 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const script = request.body.script;
     const userMessage = request.body.userMessage;
-    const learningLevel = request.body.learningLevel;
+    const learningLevel = request.body.learningLevel || 'intermediate';
     const chatHistory = request.body.chatHistory || [];
     if (!script) {
       console.error('No script provided.');
       return response.status(400).send('Please provide a script.');
     }
-    console.log(`Received script: ${script}`);
 
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
@@ -115,16 +123,14 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     let assistantBehavior;
     switch (learningLevel) {
       case 'beginner':
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Speak as if you are explaining to a user in elementary school, assuming no prior knowledge of coding. Keep your responses concise and avoid long sentences for mobile-friendly experience.`;
+        assistantBehavior = `You are an assistant explaining Python scripts to a young beginner with no coding background. Presently, the user is viewing the script: ${script}. Use very simple language suitable for an elementary school student. Break down coding concepts into easy-to-understand parts. Be patient and clear, using short sentences for a mobile-friendly experience. Avoid technical jargon and explain each step as if it's the user's first encounter with coding.`;
         break;
       case 'expert':
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Assume the user has an advanced engineering degree and is seeking a quick response with no need to explain basic concepts. Keep your responses brief and to the point.`;
+        assistantBehavior = `You are a helpful assistant. The user, with an advanced engineering degree, is viewing the Python script: ${script}. Assume deep technical knowledge and provide quick, direct responses. Focus on expert-level insights, omitting basic explanations. Keep responses brief, precise, and to the point, suitable for a quick mobile review.`;
         break;
       default:
-        assistantBehavior = `You are a helpful assistant. The user is currently looking at the following Python script: ${script}. Please keep your responses concise and mobile-friendly.`;
+        assistantBehavior = `You are an assistant guiding an intermediate learner through Python scripts. The user is looking at the script: ${script}. Assume basic familiarity with programming but explain more advanced concepts. Use clear, concise language that bridges fundamental understanding to more complex ideas. Keep explanations detailed yet accessible, and maintain mobile-friendly sentence lengths.`;
     }
-
-    console.log(`System message: ${assistantBehavior}`);
 
     const data = {
       model: 'gpt-3.5-turbo',
@@ -137,7 +143,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
-      console.log(`Received response from OpenAI: ${JSON.stringify(openaiResponse.data)}`);
       const responseText = openaiResponse.data.choices[0].message.content.trim();
       response.send({ response: responseText });
     } catch (error) {
