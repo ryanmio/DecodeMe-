@@ -33,7 +33,6 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
         const userDoc = await getDoc(userDocRef);
         const userData = userDoc.data();
         if (userData && userData.learningLevel) {
-          console.log('Fetched learning level:', userData.learningLevel); // Add this line
           setLearningLevel(userData.learningLevel);
         }
       } catch (error) {
@@ -58,10 +57,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ script: codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory, learningLevel }),
       });
-      console.log('Sent learning level:', learningLevel); // Add this line
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
-      console.log('Assistant message:', data.response); // Log the assistant message
       setChatHistory(prevHistory => [...prevHistory, { role: 'assistant', content: data.response }]);
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -69,7 +66,6 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   };
 
   const handleNewChat = () => {
-    console.log('New chat started'); // This will log to the console when the function is called
     setChatHistory([]);
   };
 
