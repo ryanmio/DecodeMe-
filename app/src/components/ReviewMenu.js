@@ -40,10 +40,10 @@ const ReviewMenu = () => {
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>
             {labelsMap["chat"]}
           </DropdownItem>
-          <DropdownItem key="explain" description={descriptionsMap["explain"]}>
+          <DropdownItem key="explain" description={descriptionsMap["explain"]} disabled>
             {labelsMap["explain"]}
           </DropdownItem>
-          <DropdownItem key="play" description={descriptionsMap["play"]}>
+          <DropdownItem key="play" description={descriptionsMap["play"]} disabled>
             {labelsMap["play"]}
           </DropdownItem>
         </DropdownMenu>
