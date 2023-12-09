@@ -3,6 +3,7 @@ import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { Tooltip } from "@nextui-org/react";
+import ReviewMenu from './ReviewMenu';
 
 const IncorrectReview = ({ incorrectAnswers }) => {
   const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
@@ -54,6 +55,7 @@ const IncorrectReview = ({ incorrectAnswers }) => {
                 </div>
               );
             })}
+            <ReviewMenu /> {/* Render the ReviewMenu component */}
           </div>
         </AccordionItem>
       </Accordion>
