@@ -52,10 +52,11 @@ const IncorrectReview = ({ incorrectAnswers }) => {
                   <div className="correct-answer text-gray-800 p-2">
                     Correct Answer: {item.correctAnswer}
                   </div>
+                  {/* Include the ReviewMenu component here, passing the item as a prop */}
+                  <ReviewMenu incorrectItem={item} />
                 </div>
               );
             })}
-            <ReviewMenu /> {/* Render the ReviewMenu component */}
           </div>
         </AccordionItem>
       </Accordion>

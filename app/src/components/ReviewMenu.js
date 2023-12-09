@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 
-const ReviewMenu = () => {
+const ReviewMenu = ({ incorrectItem }) => {
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
   const descriptionsMap = {
@@ -21,7 +21,7 @@ const ReviewMenu = () => {
   const selectedOptionValue = Array.from(selectedOption)[0];
 
   return (
-    <ButtonGroup variant="flat">
+    <ButtonGroup variant="flat" className="review-menu">
       <Button>{labelsMap[selectedOptionValue]}</Button>
       <Dropdown placement="bottom-end">
         <DropdownTrigger>

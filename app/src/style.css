@@ -230,3 +230,39 @@
 .listbox-item.selected {
   background-color: #ddd; /* a darker grey to indicate selection */
 }
+
+
+ /* AI After-Actions */
+
+.review-menu {
+  width: 100%; /* Full width of the parent container */
+  margin: 0; /* Remove any default margin */
+}
+
+.review-menu button {
+  width: 100%; /* Full width for the button */
+  border-radius: 0; /* Match the card's border-radius */
+  box-shadow: none; /* Remove any default box-shadow */
+  border: none; /* Remove borders to blend with the card */
+}
+
+/* Adjust the dropdown menu styling */
+.dropdown-menu {
+  width: calc(100% - 2px); /* Full width minus border */
+  margin-top: 0; /* Align with the button */
+  border-radius: 0 0 4px 4px; /* Only round the bottom corners */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: match card's shadow */
+}
+
+/* Adjust the dropdown button width and center it */
+.review-menu-button {
+  max-width: 200px; /* Adjust this value as needed */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Ensure the dropdown menu expands to the full width of the card */
+.dropdown-menu {
+  width: 100%;
+  /* Add any additional styling here to ensure the menu aligns with the card */
+}
