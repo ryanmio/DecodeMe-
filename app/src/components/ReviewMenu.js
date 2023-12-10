@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 
-const ReviewMenu = ({ incorrectItem }) => {
+const ReviewMenu = ({ selectedScript, onChatWithTutor }) => { // Accept the onChatWithTutor prop
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
   const descriptionsMap = {
@@ -22,7 +22,10 @@ const ReviewMenu = ({ incorrectItem }) => {
 
   return (
     <ButtonGroup variant="flat" className="review-menu">
-      <Button>{labelsMap[selectedOptionValue]}</Button>
+      <Button onClick={() => {
+        console.log('Chat with Tutor button clicked');
+        onChatWithTutor(selectedScript);
+      }}>{labelsMap[selectedOptionValue]}</Button> {/* Modify the button to use the onChatWithTutor function */}
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
           <Button isIconOnly>

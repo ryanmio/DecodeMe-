@@ -39,6 +39,7 @@ export default function Home() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [learningLevel, setLearningLevel] = useState('intermediate');
+  const [selectedScript, setSelectedScript] = useState(null); // New state variable for selected script
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -56,6 +57,11 @@ export default function Home() {
     setGameMode(mode);
     setGameId(uuidv4());
     handleCodeSnippetFetch([]);
+  };
+
+  const handleChatWithTutor = (script) => {
+    console.log('handleChatWithTutor called with script:', script);
+    setSelectedScript(script);
   };
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
@@ -283,6 +289,7 @@ export default function Home() {
                   longestStreak={longestStreak}
                   incorrectAnswers={incorrectAnswers}
                   currentStreak={currentStreak}
+                  handleChatWithTutor={handleChatWithTutor}
                 /> :
                 <>
                   <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
