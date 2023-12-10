@@ -208,7 +208,6 @@ export default function Home() {
   };
 
   useEffect(() => {
-    console.log('Component mounted');
     if (score > 0) {
       setShowScoreSparkle(true);
       setTimeout(() => setShowScoreSparkle(false), 1000);
@@ -216,9 +215,6 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
-    console.log('userId or db changed');
-    console.log('userId:', userId);
-    console.log('db:', db);
     if (userId && db) {
       const fetchLearningLevel = async () => {
         try {
