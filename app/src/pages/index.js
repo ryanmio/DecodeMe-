@@ -62,6 +62,7 @@ export default function Home() {
   const handleChatWithTutor = (script) => {
     console.log('handleChatWithTutor called with script:', script);
     setSelectedScript(script);
+    setShowChatWindow(true); // Open the chat window
   };
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
@@ -318,3 +319,4 @@ export default function Home() {
     </div>
   );
 }
+

@@ -12,6 +12,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
   const [chatHistory, setChatHistory] = useState([]);
   const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(false); // Add isMinimized state
   const [learningLevel, setLearningLevel] = useState('intermediate');
   const [showDropdown, setShowDropdown] = useState(false);
   const textAreaRef = useRef(null);
@@ -67,6 +68,16 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, userId, d
 
   const handleNewChat = () => {
     setChatHistory([]);
+  };
+
+  const handleMinimize = () => { // Add handleMinimize function
+    setIsMinimized(true);
+    setIsMaximized(false);
+  };
+
+  const handleMaximize = () => { // Add handleMaximize function
+    setIsMaximized(true);
+    setIsMinimized(false);
   };
 
   const handleHeaderClick = () => {
