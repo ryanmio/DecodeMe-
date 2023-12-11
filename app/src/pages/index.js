@@ -39,10 +39,14 @@ export default function Home() {
   const [isGameOver, setIsGameOver] = useState(false);
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [learningLevel, setLearningLevel] = useState('intermediate');
-  const [selectedScript, setSelectedScript] = useState(null); // New state variable for selected script
+  const [selectedScript, setSelectedScript] = useState(null);
+  const [chatHistory, setChatHistory] = useState([]);
 
   const questionLimit = 20;
   const strikeLimit = 1;
+
+  // Define your conversation starters
+  const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
   const handleUserUpdate = (user) => {
     setUser(user);
@@ -63,6 +67,23 @@ export default function Home() {
     console.log('handleChatWithTutor called with script:', script);
     setSelectedScript(script);
     setShowChatWindow(true); // Open the chat window
+  };
+
+  const handleMessageSubmit = async (messageToSend, updatedChatHistory) => {
+    try {
+      const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ script: question.codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory, learningLevel }),
+      });
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const data = await response.json();
+      const newChatHistory = [...updatedChatHistory, { role: 'assistant', content: data.response }];
+      setChatHistory(newChatHistory);
+      return newChatHistory;
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
   };
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
@@ -253,7 +274,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
         <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} />
-        {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} userId={userId} db={db} learningLevel={learningLevel} />}
+        {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} userId={userId} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} />}
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -319,4 +340,3 @@ export default function Home() {
     </div>
   );
 }
-
