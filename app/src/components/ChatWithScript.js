@@ -6,7 +6,6 @@ import NewChatIcon from '../icons/newChatIcon';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory }) {
-  console.log('ChatWithScript props:', { isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory });
 
   const userMessageRef = useRef('');
   const [isMaximized, setIsMaximized] = useState(false);
@@ -26,15 +25,18 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     event.preventDefault();
     const messageToSend = userMessageRef.current;
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
-    const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory);
-    setChatHistory(newChatHistory);
+    setChatHistory(updatedChatHistory);
     userMessageRef.current = '';
     textAreaRef.current.value = '';
+    try {
+      const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory);
+      setChatHistory(newChatHistory);
+    } catch (error) {
+      console.error('Failed to send message:', error);
+    }
   };
-
-  const handleNewChat = () => {
-    setChatHistory([]);
-  };
+  
+  const handleNewChat = () => setChatHistory([]);
 
   const handleMinimize = () => {
     setIsMinimized(true);
@@ -47,23 +49,14 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   };
 
   const handleHeaderClick = () => {
-    if (isMaximized) {
-      setIsMaximized(false);
-      if (!isOpen) {
-        onClose();
-      }
-    } else {
-      onClose();
-    }
+    if (isMaximized && !isOpen) onClose();
+    else onClose();
+    setIsMaximized(false);
   };
 
-  const toggleMaximize = () => {
-    setIsMaximized(!isMaximized);
-  };
+  const toggleMaximize = () => setIsMaximized(!isMaximized);
 
-  const sendStarterMessage = (message) => {
-    handleChatSubmit({ preventDefault: () => { } }, message);
-  };
+  const sendStarterMessage = (message) => handleChatSubmit({ preventDefault: () => { } }, message);
 
   const updateLearningLevelInFirebase = async (level) => {
     try {
