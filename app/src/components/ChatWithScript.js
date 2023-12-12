@@ -29,7 +29,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     userMessageRef.current = '';
     textAreaRef.current.value = '';
     try {
-      const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory);
+      const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
+      const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
       setChatHistory(newChatHistory);
     } catch (error) {
       console.error('Failed to send message:', error);
@@ -131,6 +132,9 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
             </div>
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
+            <div className="system-message">
+              Script: {selectedScript ? selectedScript.question : codeSnippet.question}
+            </div>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
                 <ReactMarkdown>

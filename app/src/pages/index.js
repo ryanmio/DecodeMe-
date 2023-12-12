@@ -43,7 +43,7 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState([]);
 
   const questionLimit = 20;
-  const strikeLimit = 1;
+  const strikeLimit = 2;
 
   // Define your conversation starters
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
@@ -69,7 +69,7 @@ export default function Home() {
     setShowChatWindow(true); // Open the chat window
   };
 
-  const handleMessageSubmit = async (messageToSend, updatedChatHistory) => {
+  const handleMessageSubmit = async (messageToSend, updatedChatHistory, selectedScript) => {
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
@@ -340,3 +340,4 @@ export default function Home() {
     </div>
   );
 }
+
