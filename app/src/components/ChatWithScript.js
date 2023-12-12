@@ -5,7 +5,7 @@ import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../icons/newChatIcon';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
-export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory }) {
+export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
 
   const userMessageRef = useRef('');
   const [isMaximized, setIsMaximized] = useState(false);
@@ -37,7 +37,10 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     }
   };
   
-  const handleNewChat = () => setChatHistory([]);
+  const handleNewChat = () => {
+    setChatHistory([]);
+    onNewChat(); // Clear the selected script
+  };
 
   const handleMinimize = () => {
     setIsMinimized(true);
@@ -133,7 +136,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             <div className="system-message">
-              Script: {selectedScript ? selectedScript.question : codeSnippet.question}
+              Script: {selectedScript && selectedScript.question ? selectedScript.question : codeSnippet.question}
             </div>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>

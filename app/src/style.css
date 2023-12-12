@@ -204,6 +204,22 @@
   z-index: 1000;
 }
 
+.system-message {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #e7f3fe; /* Soft blue background for a friendly note */
+  color: #333;
+  text-align: left; /* Align to the left for a less formal appearance */
+  max-width: 80%;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 1px solid #b3d4fc; /* Light blue border to match the background */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
+  position: relative; /* For absolute positioning of icon */
+}
+
+
 /* Base Listbox styling */
 .listbox {
   border: 1px solid #ccc; /* match to your input field border */
