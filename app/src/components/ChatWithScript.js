@@ -7,6 +7,8 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
 
+  console.log('Received codeSnippet:', codeSnippet); // Added console.log to check received codeSnippet
+
   const userMessageRef = useRef('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -136,7 +138,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             <div className="system-message">
-              Script: {selectedScript && selectedScript.question ? selectedScript.question : codeSnippet.question}
+              Script: {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : (selectedScript || codeSnippet || ''))}
             </div>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
