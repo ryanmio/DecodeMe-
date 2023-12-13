@@ -141,7 +141,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
             <div className="system-message">
-              Script: {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : (selectedScript || codeSnippet || ''))}
+              {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : (selectedScript || codeSnippet || ''))}
             </div>
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
