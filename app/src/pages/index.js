@@ -74,6 +74,7 @@ export default function Home() {
   };
 
   const handleMessageSubmit = async (messageToSend, updatedChatHistory, selectedScript) => {
+    console.log('Message to send:', messageToSend); // Added this line
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
@@ -83,6 +84,7 @@ export default function Home() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       const newChatHistory = [...updatedChatHistory, { role: 'assistant', content: data.response }];
+      console.log('New chat history:', newChatHistory); // Added this line
       setChatHistory(newChatHistory);
       return newChatHistory;
     } catch (error) {
@@ -344,3 +346,4 @@ export default function Home() {
     </div>
   );
 }
+

@@ -7,8 +7,6 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
 
-  console.log('Received codeSnippet:', codeSnippet); // Added console.log to check received codeSnippet
-
   const userMessageRef = useRef('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -25,6 +23,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const handleChatSubmit = async (event) => {
     event.preventDefault();
+    console.log('Message to send:', userMessageRef.current); // Added this line
     const messageToSend = userMessageRef.current;
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
@@ -62,7 +61,11 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const toggleMaximize = () => setIsMaximized(!isMaximized);
 
-  const sendStarterMessage = (message) => handleChatSubmit({ preventDefault: () => { } }, message);
+  const sendStarterMessage = (starter) => {
+    console.log('Starter message:', starter); // Added this line
+    userMessageRef.current = starter;
+    handleChatSubmit({ preventDefault: () => { } });
+  };
 
   const updateLearningLevelInFirebase = async (level) => {
     try {
