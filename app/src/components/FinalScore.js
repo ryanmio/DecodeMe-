@@ -16,7 +16,7 @@ const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
       />
       <div className="ml-6 text-left">
         <p className="text-lg font-semibold text-gray-700">Questions Correct: {score} / {questionsAnswered}</p>
-        <p className="results-shared-at text-sm text-gray-500">{sharedAt ? new Date(sharedAt).toLocaleString() : 'Loading...'}</p>
+        <p className="results-shared-at text-sm text-gray-500">{sharedAt ? new Date(sharedAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Loading...'}</p>
       </div>
     </div>
   );
