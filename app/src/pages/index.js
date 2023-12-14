@@ -200,14 +200,6 @@ export default function Home() {
     setSelectedScript(null);
   };
 
-  const handleHomeClick = () => {
-    if (questionsAnswered >= 1) {
-      setShowEndGameModal(true);
-    } else {
-      resetGame();
-    }
-  };
-
   const confirmEndGame = () => {
     resetGame();
     setShowEndGameModal(false);
@@ -342,3 +334,4 @@ export default function Home() {
     </div>
   );
 }
+
