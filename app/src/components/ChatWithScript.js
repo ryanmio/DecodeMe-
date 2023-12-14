@@ -23,7 +23,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const handleChatSubmit = async (event) => {
     event.preventDefault();
-    console.log('Message to send:', userMessageRef.current); // Added this line
+    console.log('Message to send:', userMessageRef.current);
     const messageToSend = userMessageRef.current;
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
@@ -40,17 +40,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   
   const handleNewChat = () => {
     setChatHistory([]);
-    onNewChat(); // Clear the selected script
-  };
-
-  const handleMinimize = () => {
-    setIsMinimized(true);
-    setIsMaximized(false);
-  };
-
-  const handleMaximize = () => {
-    setIsMaximized(true);
-    setIsMinimized(false);
+    onNewChat();
   };
 
   const handleHeaderClick = () => {
@@ -62,7 +52,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   const toggleMaximize = () => setIsMaximized(!isMaximized);
 
   const sendStarterMessage = (starter) => {
-    console.log('Starter message:', starter); // Added this line
+    console.log('Starter message:', starter);
     userMessageRef.current = starter;
     handleChatSubmit({ preventDefault: () => { } });
   };
