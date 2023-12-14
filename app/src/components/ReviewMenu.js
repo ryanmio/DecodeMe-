@@ -8,20 +8,20 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
 
   const descriptionsMap = {
     chat: "Chat with a virtual tutor about the scripts you got wrong.",
-    explain: "Get a detailed explanation of the incorrect scripts.",
+    annotate: "Click to annotate the script with inline code comments that describe each line.", // Updated description
     play: "Play similar scripts. (This feature will be available in a future release.)",
   };
 
   const labelsMap = {
     chat: "Chat with Virtual Tutor",
-    explain: "Explain this in detail",
+    annotate: "Annotate Lines", // Updated label
     play: "Play similar scripts",
   };
 
   // Define a map of functions for each option
   const actionsMap = {
     chat: onChatWithTutor,
-    explain: () => {}, // No-op function
+    annotate: () => {}, // No-op function
     play: () => {}, // No-op function
   };
 
@@ -46,14 +46,15 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
           selectionMode="single"
           onSelectionChange={setSelectedOption}
           className="max-w-[300px]"
+          disabledKeys={['annotate', 'play']} // Ensure 'annotate' is included in the disabled keys
         >
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>
             {labelsMap["chat"]}
           </DropdownItem>
-          <DropdownItem key="explain" description={descriptionsMap["explain"]} disabled className="disabledDropdownItem">
-            {labelsMap["explain"]}
+          <DropdownItem key="annotate" description={descriptionsMap["annotate"]} className="disabledDropdownItem">
+            {labelsMap["annotate"]}
           </DropdownItem>
-          <DropdownItem key="play" description={descriptionsMap["play"]} disabled className="disabledDropdownItem">
+          <DropdownItem key="play" description={descriptionsMap["play"]} className="disabledDropdownItem">
             {labelsMap["play"]}
           </DropdownItem>
         </DropdownMenu>
