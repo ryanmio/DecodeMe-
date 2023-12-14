@@ -50,10 +50,10 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>
             {labelsMap["chat"]}
           </DropdownItem>
-          <DropdownItem key="explain" description={descriptionsMap["explain"]} disabled>
+          <DropdownItem key="explain" description={descriptionsMap["explain"]} disabled className="disabledDropdownItem">
             {labelsMap["explain"]}
           </DropdownItem>
-          <DropdownItem key="play" description={descriptionsMap["play"]} disabled>
+          <DropdownItem key="play" description={descriptionsMap["play"]} disabled className="disabledDropdownItem">
             {labelsMap["play"]}
           </DropdownItem>
         </DropdownMenu>

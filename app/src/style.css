@@ -284,3 +284,10 @@
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: match card's shadow */
 }
 
+/* styles.css */
+.disabledDropdownItem {
+  color: #ccc !important; /* Example color for disabled state */
+  cursor: not-allowed !important;
+  background-color: #f0f0f0 !important; /* Example background color for disabled state */
+}
+
