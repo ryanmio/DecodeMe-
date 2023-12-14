@@ -3,7 +3,7 @@ import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import ChevronDownIcon from '../icons/ChevronDownIcon';
 
-const ReviewMenu = ({ selectedScript, onChatWithTutor }) => { // Accept the onChatWithTutor prop
+const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
   const descriptionsMap = {
@@ -16,16 +16,23 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => { // Accept the onCh
     chat: "Chat with Virtual Tutor",
     explain: "Explain this in detail",
     play: "Play similar scripts",
-  }
+  };
+
+  // Define a map of functions for each option
+  const actionsMap = {
+    chat: onChatWithTutor,
+    explain: () => {}, // No-op function
+    play: () => {}, // No-op function
+  };
 
   const selectedOptionValue = Array.from(selectedOption)[0];
 
   return (
     <ButtonGroup variant="flat" className="review-menu">
       <Button onClick={() => {
-        console.log('Chat with Tutor button clicked');
-        onChatWithTutor(selectedScript);
-      }}>{labelsMap[selectedOptionValue]}</Button> {/* Modify the button to use the onChatWithTutor function */}
+        console.log(`${labelsMap[selectedOptionValue]} button clicked`);
+        actionsMap[selectedOptionValue](selectedScript);
+      }}>{labelsMap[selectedOptionValue]}</Button>
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
           <Button isIconOnly>
