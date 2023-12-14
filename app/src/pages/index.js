@@ -202,6 +202,8 @@ export default function Home() {
     setStrikes(0);
     setIncorrectAnswers([]);
     setIsGameOver(false);
+    setChatHistory([]);
+    setSelectedScript(null);
   };
 
   const handleHomeClick = () => {
@@ -346,4 +348,3 @@ export default function Home() {
     </div>
   );
 }
-
