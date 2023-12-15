@@ -14,7 +14,7 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
 
   const labelsMap = {
     chat: "Chat with Virtual Tutor",
-    annotate: "Annotate Lines", // Updated label
+    annotate: "Annotate Lines",
     play: "Play similar scripts",
   };
 
@@ -46,7 +46,7 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
           selectionMode="single"
           onSelectionChange={setSelectedOption}
           className="max-w-[300px]"
-          disabledKeys={['annotate', 'play']} // Ensure 'annotate' is included in the disabled keys
+          disabledKeys={['annotate', 'play']}
         >
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>
             {labelsMap["chat"]}

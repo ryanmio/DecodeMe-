@@ -1,3 +1,4 @@
+// app/src/components/CodeSnippetDisplay.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CodeBlock, dracula } from 'react-code-blocks';
@@ -8,7 +9,6 @@ import PythonChip from './PythonChip';
 export default function CodeSnippetDisplay({ codeSnippet, loading }) {
   const formattedCodeSnippet = codeSnippet?.replace(/```python\n|```python|```/g, '').trim() || '';
   const fadeLoading = useSpring({ from: { opacity: 0 }, to: { opacity: 1 }, delay: 200, config: { tension: 200, friction: 20 } });
-
   const placeholder = " ".repeat(70) + "\n".repeat(4);
 
   return (

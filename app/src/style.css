@@ -206,88 +206,83 @@
 
 .system-message {
   border-radius: 10px;
-  background-color: #e7f3fe; /* Soft blue background for a friendly note */
+  background-color: #e7f3fe;
   color: #333;
-  text-align: left; /* Align to the left for a less formal appearance */
-  max-width: 95%; /* Increased from 80% to 95% */
+  text-align: left;
+  max-width: 95%;
   margin-top: 10px;
   margin-left: auto;
   margin-right: auto;
-  border: 1px solid #b3d4fc; /* Light blue border to match the background */
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
-  position: relative; /* For absolute positioning of icon */
-  display: flex; /* Added to center the pre tag */
-  justify-content: center; /* Added to center the pre tag */
-  align-items: center; /* Added to center the pre tag */
+  border: 1px solid #b3d4fc;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .system-message pre {
-  width: 100%; /* Ensure the pre tag takes full width */
-  margin: 0; /* Remove default margin */
-  box-sizing: border-box; /* Include padding and border in the element's total width and height */
+  width: 100%;
+  margin: 0;
+  box-sizing: border-box;
 }
 
 .system-message .message {
-  margin: 10px; /* Override any existing margin */
-  padding: 10px; /* Override any existing padding */
-  width: 95%; /* Make sure it fills the container */
-  box-sizing: border-box; /* Include padding and borders in the width */
+  margin: 10px;
+  padding: 10px;
+  width: 95%;
+  box-sizing: border-box;
 }
 
 
 /* Base Listbox styling */
 .listbox {
-  border: 1px solid #ccc; /* match to your input field border */
-  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.1); /* subtle shadow for depth */
-  border-radius: 4px; /* match to your input field border-radius */
-  background-color: #fff; /* background of the dropdown */
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.1);
+  border-radius: 4px;
+  background-color: #fff;
 }
 
-/* ListboxItem base styling */
 .listbox-item {
   font-family: 'Your font family', sans-serif;
-  font-size: 0.9rem; /* match to your input field font size */
-  color: #333; /* match to your input field text color */
-  padding: 8px 12px; /* match to your input field padding */
+  font-size: 0.9rem;
+  color: #333;
+  padding: 8px 12px;
 }
 
-/* ListboxItem hover and active state styling */
 .listbox-item:hover, .listbox-item:active {
-  background-color: #f2f2f2; /* a light grey for hover state */
-  color: #000; /* optional: change text color on hover */
+  background-color: #f2f2f2;
+  color: #000;
 }
 
-/* ListboxItem selected state styling */
 .listbox-item.selected {
-  background-color: #ddd; /* a darker grey to indicate selection */
+  background-color: #ddd;
 }
 
 
  /* AI After-Actions */
 
 .review-menu {
-  width: 100%; /* Full width of the parent container */
-  margin: 0; /* Remove any default margin */
+  width: 100%;
+  margin: 0;
 }
 
 .review-menu button {
-  border-radius: 0; /* Match the card's border-radius */
-  box-shadow: none; /* Remove any default box-shadow */
-  border: none; /* Remove borders to blend with the card */
+  border-radius: 0;
+  box-shadow: none;
+  border: none;
 }
 
-/* Adjust the dropdown menu styling */
 .dropdown-menu {
-  width: calc(100% - 2px); /* Full width minus border */
-  margin-top: 0; /* Align with the button */
-  border-radius: 0 0 4px 4px; /* Only round the bottom corners */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Optional: match card's shadow */
+  width: calc(100% - 2px);
+  margin-top: 0;
+  border-radius: 0 0 4px 4px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-/* styles.css */
 .disabledDropdownItem {
-  color: #ccc !important; /* Example color for disabled state */
+  color: #ccc !important;
   cursor: not-allowed !important;
-  background-color: #f0f0f0 !important; /* Example background color for disabled state */
+  background-color: #f0f0f0 !important;
 }
 

@@ -5,7 +5,7 @@ import { Accordion, AccordionItem } from "@nextui-org/react";
 import { Tooltip } from "@nextui-org/react";
 import ReviewMenu from './ReviewMenu';
 
-const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => { // Remove selectedScript prop
+const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => {
   const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
   return (
@@ -52,7 +52,6 @@ const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => { // Remove s
                   <div className="correct-answer text-gray-800 p-2">
                     Correct Answer: {item.correctAnswer}
                   </div>
-                  {/* Include the ReviewMenu component here, passing the item as a prop */}
                   <ReviewMenu selectedScript={item} onChatWithTutor={onChatWithTutor} /> {/* Pass the item as the selectedScript prop */}
                 </div>
               );

@@ -1,11 +1,9 @@
 // app/src/components/Auth.js
-
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { getFirebaseFirestore } from '../firebase';
-import { getFirebaseAuth } from '../firebase';
+import { getFirebaseFirestore, getFirebaseAuth } from '../firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 export default function Auth({ onUserAuth }) {
@@ -65,7 +63,7 @@ export default function Auth({ onUserAuth }) {
     const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
     await setDoc(doc(db, 'users', user.uid), { email });
   };
-  
+
   const signIn = async () => {
     await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
   };
@@ -100,10 +98,10 @@ export default function Auth({ onUserAuth }) {
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
-      <input 
-        type="text" 
-        value={leaderboardName} 
-        onChange={(e) => setLeaderboardName(e.target.value)} 
+      <input
+        type="text"
+        value={leaderboardName}
+        onChange={(e) => setLeaderboardName(e.target.value)}
         className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
         placeholder="Leaderboard Name"
       />
@@ -111,17 +109,17 @@ export default function Auth({ onUserAuth }) {
       <div className="w-full border-b border-gray-300 my-4"></div>
       <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
       <div className="flex flex-col space-y-2">
-        <input 
-          type="email" 
-          value={email} 
-          onChange={(e) => setEmail(e.target.value)} 
+        <input
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
           placeholder="Email"
         />
-        <input 
-          type="password" 
-          value={password} 
-          onChange={(e) => setPassword(e.target.value)} 
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
           placeholder="Password"
         />

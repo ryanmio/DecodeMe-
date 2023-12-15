@@ -1,7 +1,5 @@
 // app/src/pages/index.js
-// This is the main page of the app. It handles user authentication, game mode selection, 
-// question fetching and answering, and game over conditions.
-
+// This is the home component or page of the app.
 import React, { useState, useEffect } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
@@ -45,16 +43,12 @@ export default function Home() {
   const questionLimit = 20;
   const strikeLimit = 2;
 
-  // Define your conversation starters
+  // Conversation starters
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
   const handleUserUpdate = (user) => {
     setUser(user);
     setUserId(user?.uid || null);
-  };
-
-  const handleUserAuth = (user) => {
-    handleUserUpdate(user);
   };
 
   const handleGameModeSelect = mode => {
@@ -66,7 +60,7 @@ export default function Home() {
   const handleChatWithTutor = (script) => {
     console.log('handleChatWithTutor called with script:', script);
     setSelectedScript(script);
-    setShowChatWindow(true); // Open the chat window
+    setShowChatWindow(true);
   };
 
   const handleNewChat = () => {
@@ -74,7 +68,7 @@ export default function Home() {
   };
 
   const handleMessageSubmit = async (messageToSend, updatedChatHistory, selectedScript) => {
-    console.log('Message to send:', messageToSend); // Added this line
+    console.log('Message to send:', messageToSend);
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
@@ -84,7 +78,7 @@ export default function Home() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       const newChatHistory = [...updatedChatHistory, { role: 'assistant', content: data.response }];
-      console.log('New chat history:', newChatHistory); // Added this line
+      console.log('New chat history:', newChatHistory);
       setChatHistory(newChatHistory);
       return newChatHistory;
     } catch (error) {
@@ -206,14 +200,6 @@ export default function Home() {
     setSelectedScript(null);
   };
 
-  const handleHomeClick = () => {
-    if (questionsAnswered >= 1) {
-      setShowEndGameModal(true);
-    } else {
-      resetGame();
-    }
-  };
-
   const confirmEndGame = () => {
     resetGame();
     setShowEndGameModal(false);
@@ -293,7 +279,7 @@ export default function Home() {
             </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
-          {!user ? <Auth onUserAuth={handleUserAuth} /> :
+          {!user ? <Auth onUserAuth={handleUserUpdate} /> :
             !gameMode ? (
               <>
                 <Tabs 
@@ -348,3 +334,4 @@ export default function Home() {
     </div>
   );
 }
+

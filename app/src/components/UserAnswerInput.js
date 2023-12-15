@@ -37,10 +37,10 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
       setScore(prevScore => prevScore + 1);
       onAnswerSubmit(originalIndex, true);
       setShowSparkle(true);
-      setShake(false);  // Reset shake state
+      setShake(false);
     } else {
       onAnswerSubmit(originalIndex, false);
-      setShake(true);  // Trigger shake animation
+      setShake(true);
     }
   };
 
