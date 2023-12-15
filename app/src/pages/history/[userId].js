@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import { Pagination } from '@nextui-org/react';
 
 const HistoryPage = ({ userData, userHistory }) => {
+  console.log('HistoryPage userHistory:', userHistory);
+  console.log('HistoryPage userData:', userData);
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 3;
@@ -92,12 +94,16 @@ export const getServerSideProps = async (context) => {
     const { query: contextQuery } = context;
     const { userId } = contextQuery;
 
+    console.log('context.query:', contextQuery);
+
     let userData = null;
     let userHistory = [];
 
     if (userId) {
       const userDocRef = doc(db, 'users', userId);
       const userDocSnap = await getDoc(userDocRef);
+
+      console.log('User document exists:', userDocSnap.exists());
 
       if (userDocSnap.exists()) {
         userData = {
@@ -133,20 +139,28 @@ export const getServerSideProps = async (context) => {
             },
           };
         }));
+      } else {
+        console.log(`No user data found for userId: ${userId}`);
       }
+    } else {
+      console.log('No userId provided in the query');
     }
+
+    console.log('userData:', userData);
+    console.log('userHistory:', userHistory);
 
     return {
       props: {
         userData: JSON.parse(JSON.stringify(userData)) ?? null,
-        userHistory: JSON.parse(JSON.stringify(userHistory)),
+        userHistory: JSON.parse(JSON.stringify(userHistory)) ?? [],
       },
     };
   } catch (error) {
-    console.error(error);
+    console.error('Error fetching user data:', error);
     return {
       props: {
         error: 'Failed to fetch user data',
+        userHistory: [],
       },
     };
   }
