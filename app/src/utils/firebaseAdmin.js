@@ -1,19 +1,25 @@
-// app/src/utils/firebaseAdmin.js
+// utils/firebaseAdmin.js
 import admin from 'firebase-admin';
 
+// Initialize Firebase Admin SDK if it hasn't been initialized yet
 if (!admin.apps.length) {
-  try {
-    const serviceAccount = JSON.parse(process.env.FIREBASE_ADMIN_SDK);
-
-    admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      // Uncomment the following line if you are using Firebase Realtime Database
-      // databaseURL: 'https://decodeme-1f38e-default-rtdb.firebaseio.com'
-    });
-  } catch (error) {
-    // In production, you might want to log this error to an error reporting service instead
-    console.error('Firebase admin initialization error', error);
-  }
+  admin.initializeApp({
+    credential: admin.credential.cert({
+      projectId: process.env.FIREBASE_PROJECT_ID,
+      clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+      privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    }),
+    databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
+  });
 }
 
-export default admin.firestore();
+const db = admin.firestore();
+
+async function fetchCollection(docRef, collectionName) {
+  const collectionRef = docRef.collection(collectionName);
+  const collectionQuery = collectionRef.orderBy('timestamp', 'desc');
+  const querySnapshot = await collectionQuery.get();
+  return querySnapshot.docs.map(doc => doc.data());
+}
+
+export default db;

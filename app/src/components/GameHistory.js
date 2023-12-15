@@ -1,9 +1,12 @@
+// app/src/components/GameHistory.js
+
 import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { Tooltip } from "@nextui-org/react";
 
-const GameHistory = ({ gameHistory }) => {
+const GameHistory = ({ gameHistory, timestamp }) => {
+  console.log('timestamp:', timestamp); // Log the timestamp
   const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
   return (
