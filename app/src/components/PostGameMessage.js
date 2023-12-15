@@ -53,9 +53,10 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
   }, []);
 
   return (
-    <div>
-      {postGameMessage}
-    </div>
+    <div class="speech-bubble">
+    <button class="close-button">&times;</button>
+    {postGameMessage}
+  </div>  
   );
 };
 
