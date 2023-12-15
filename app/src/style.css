@@ -286,3 +286,37 @@
   background-color: #f0f0f0 !important;
 }
 
+
+
+
+/* Post Game Message */
+.speech-bubble {
+  background-color: #ffffff; /* White background for a clean look */
+  color: #5c5c5c; /* A grey that matches the app's text color for consistency */
+  padding: 16px 20px; /* Optimized padding */
+  border-radius: 12px; /* Smooth rounded corners */
+  border: 1px solid #d1d1d1; /* Light grey border for subtle definition */
+  max-width: 300px; /* Maximum width of the message box */
+  box-sizing: border-box; /* Include padding and border in the width */
+  font-family: 'Helvetica Neue', Arial, sans-serif; /* Modern sans-serif font */
+  font-size: 14px; /* Standard font size for readability */
+  line-height: 1.6; /* Spacious line height for better readability */
+  position: fixed; /* Positioned to be fixed */
+  top: 20px; /* Positioned from the top */
+  right: 20px; /* Positioned to the right, pinned to the side */
+  z-index: 10; /* Above other elements */
+  display: flex; /* Flex display to position the close button */
+  justify-content: space-between; /* Justify content for internal spacing */
+  align-items: start; /* Align items to the start */
+}
+
+.close-button {
+  font-size: 1rem; /* Size of the close button */
+  color: #5c5c5c; /* Color of the close button to match the text */
+  cursor: pointer; /* Cursor pointer for interactivity */
+  background: transparent; /* No background */
+  border: none; /* No border */
+  padding: 0 5px; /* Padding for clickable area */
+  margin: -5px 0 -5px auto; /* Align close button to the right */
+  display: block; /* Ensure button does not shrink */
+}
