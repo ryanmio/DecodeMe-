@@ -3,7 +3,6 @@ import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, Drop
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../icons/newChatIcon';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
 
