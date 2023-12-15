@@ -164,7 +164,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
 exports.fetchPostGameMessage = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
-    console.log('Received request to fetch post game message.');
     const { score, incorrectAnswers, gameHistory, userStats } = request.body;
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
@@ -189,10 +188,8 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
     };
 
     try {
-      console.log('Sending request to OpenAI...');
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
       const postGameMessage = openaiResponse.data.choices[0].message.content.trim();
-      console.log('Received response from OpenAI.');
       response.send({ postGameMessage });
     } catch (error) {
       console.error('Error occurred while communicating with OpenAI:', error);
