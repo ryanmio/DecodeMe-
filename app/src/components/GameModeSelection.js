@@ -1,7 +1,7 @@
+// app/src/components/GameModeSelection.js
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-// GameModeSelection component
 function GameModeSelection({ onGameModeSelect }) {
   const gameModes = ['Multiple Choice', 'Short Answer', 'Daily Challenge'];
   const [selectedMode, setSelectedMode] = useState(null);

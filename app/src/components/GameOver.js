@@ -1,5 +1,4 @@
 // app/src/components/GameOver.js
-
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
@@ -7,9 +6,7 @@ import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
 import { Button } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
-import ReviewMenu from './ReviewMenu';
 
-// Include longestStreak and incorrectAnswers in the GameOver component's props
 const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -67,8 +64,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
     const userData = userSnapshot.data();
-
-    // If it's the first game, the gameNumber would be 1
     const gameNumber = (userData?.gameCount || 0) + 1;
 
     // Increment the game count in the user's document
