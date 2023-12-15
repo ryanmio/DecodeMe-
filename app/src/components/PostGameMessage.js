@@ -4,6 +4,7 @@ import { getDoc, doc } from 'firebase/firestore';
 
 const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) => {
   const [postGameMessage, setPostGameMessage] = useState('');
+  const [isMessageVisible, setIsMessageVisible] = useState(false); // Initially set to false
 
   const getUserStatsFromFirebase = async () => {
     console.log('Fetching user stats from Firebase...');
@@ -36,6 +37,10 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
     return data;
   };
 
+  const handleCloseMessage = () => {
+    setIsMessageVisible(false);
+  };
+
   useEffect(() => {
     const fetchPostGameMessage = async () => {
       console.log('Fetching post game message...');
@@ -48,15 +53,18 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       const responseData = await response.json();
       console.log('Post game message fetched successfully.');
       setPostGameMessage(responseData.postGameMessage);
+      setIsMessageVisible(true); // Set the message to be visible only after the API call is successful
     };
     fetchPostGameMessage();
   }, []);
 
   return (
-    <div class="speech-bubble">
-    <button class="close-button">&times;</button>
-    {postGameMessage}
-  </div>  
+    isMessageVisible && (
+      <div className="speech-bubble">
+        <button className="close-button" onClick={handleCloseMessage}>&times;</button>
+        {postGameMessage}
+      </div>  
+    )
   );
 };
 
