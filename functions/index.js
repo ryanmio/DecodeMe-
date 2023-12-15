@@ -154,3 +154,52 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     }
   });
 });
+
+
+/**
+ * This function fetches a post-game message for the user. It uses the OpenAI API to generate a message
+ * based on the user's score, incorrect answers, game history, and user stats. The message is intended
+ * to provide a short, encouraging feedback to the user about their game performance.
+ */
+
+exports.fetchPostGameMessage = functions.https.onRequest((request, response) => {
+  cors(request, response, async () => {
+    console.log('Received request to fetch post game message.');
+    const { score, incorrectAnswers, gameHistory, userStats } = request.body;
+    const openaiKey = functions.config().openai?.key;
+    if (!openaiKey) {
+      console.error('Server configuration error.');
+      return response.status(500).send('Server configuration error.');
+    }
+
+    const apiUrl = 'https://api.openai.com/v1/chat/completions';
+    const headers = {
+      'Authorization': `Bearer ${openaiKey}`,
+      'Content-Type': 'application/json',
+    };
+
+    const conversationHistory = [
+      { role: 'system', content: `You are an AI that reviews the user's game performance and provides a short, encouraging message based on their score, incorrect answers, game history, and user stats.` },
+      { role: 'user', content: `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. Here is my game history: ${gameHistory}. My user stats are: ${userStats}.` }
+    ];
+
+    const data = {
+      model: 'gpt-3.5-turbo',
+      messages: conversationHistory
+    };
+
+    try {
+      console.log('Sending request to OpenAI...');
+      const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
+      const postGameMessage = openaiResponse.data.choices[0].message.content.trim();
+      console.log('Received response from OpenAI.');
+      response.send({ postGameMessage });
+    } catch (error) {
+      console.error('Error occurred while communicating with OpenAI:', error);
+      if (error.response) {
+        console.error('Error Response:', error.response.data);
+      }
+      response.status(500).send('An error occurred while communicating with OpenAI.');
+    }
+  });
+});

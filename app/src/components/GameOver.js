@@ -6,6 +6,7 @@ import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
 import { Button } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
+import PostGameMessage from './PostGameMessage';
 
 const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript }) => {
   const [gameHistory, setGameHistory] = useState([]);
@@ -178,6 +179,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
         <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
         <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} />
         <GameHistory gameHistory={gameHistory} />
+        <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} />
         <Button 
           onClick={handleShareResults} 
           radius="full" 
