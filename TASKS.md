@@ -3,6 +3,22 @@
 ## Overview
 DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way. Users can choose from multiple game modes including multiple-choice, open-ended questions, and data analysis challenges.
 
+## Tech Stack
+- Next.js
+- Firebase (Firestore, Authentication, Functions)
+- OpenAI GPT-4 API
+- Framer Motion
+- React Code Blocks
+- NextUI
+
+## Setup
+- Create Next.js app using `create-next-app`
+- Set up Firebase project and enable Firestore and Authentication
+- Install Firebase CLI and initialize Firebase Functions in project
+- Get API key from OpenAI and integrate GPT-4 API for game logic
+- Install necessary npm packages: `framer-motion`, `react-code-blocks`, `@nextui-org/react`
+
+
 ## Core Features
 1. User Authentication
 2. Game Mode Selection
@@ -48,6 +64,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement leaderboard functionality
 - [x] New Scoring System with 3 strikes and unlimited questions
 - [x] Implement Post-Game Review to provide feedback on wrong answers
+- [ ] Finalize post game review system and user messages and model
 - [ ] Add streaks to UI
 - [x] Add strikes to UI
 - [ ] Implement daily streaks
