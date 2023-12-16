@@ -1,21 +1,49 @@
 // pages/history/[userId].js
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { orderBy, query } from 'firebase/firestore';
-import db from '../../utils/firebaseAdmin'; // Correct the import
+import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore';
+import { getFirebaseFirestore } from '../../firebase';
 import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
 import { Pagination } from '@nextui-org/react';
 
-const HistoryPage = ({ userData, userHistory }) => {
-  console.log('HistoryPage userHistory:', userHistory);
-  console.log('HistoryPage userData:', userData);
-  const router = useRouter();
+const HistoryPage = () => {
+  const [userData, setUserData] = useState(null);
+  const [userHistory, setUserHistory] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 3;
+  const router = useRouter();
+  const { userId } = router.query; // Get the user ID from the URL
 
+  useEffect(() => {
+    // Only fetch data if the userId is available
+    if (userId) {
+      const fetchUserDataAndHistory = async () => {
+        const db = getFirebaseFirestore();
+        const userRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userRef);
+        if (userDoc.exists()) {
+          setUserData(userDoc.data());
+
+          const historyRef = collection(userRef, 'games');
+          const historyQuery = query(historyRef, orderBy('timestamp', 'desc'));
+          const historyDocs = await getDocs(historyQuery);
+          const historyData = historyDocs.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            timestamp: doc.data().timestamp.toDate(), // Convert Firestore Timestamp to Date
+          }));
+          setUserHistory(historyData);
+        }
+      };
+
+      fetchUserDataAndHistory();
+    }
+  }, [userId]);
+
+  // Calculate the games to display based on pagination
   const indexOfLastGame = currentPage * gamesPerPage;
   const indexOfFirstGame = indexOfLastGame - gamesPerPage;
   const currentGames = userHistory.slice(indexOfFirstGame, indexOfLastGame);
@@ -35,15 +63,6 @@ const HistoryPage = ({ userData, userHistory }) => {
     url: `${process.env.NEXT_PUBLIC_APP_URL}/history/${userData?.id}`,
   };
 
-  function formatDate(timestamp) {
-    if (timestamp?._seconds) {
-      const date = new Date(timestamp._seconds * 1000);
-      return format(date, 'PPPp');
-    } else {
-      return 'Date not available';
-    }
-  }
-
   return (
     <RootLayout metadata={metadata}>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
@@ -55,32 +74,29 @@ const HistoryPage = ({ userData, userHistory }) => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
-            {currentGames.map((gameHistory) => {
-              console.log('gameHistory object:', gameHistory);
-              return (
-                <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                      Game {String(gameHistory.gameStats.gameNumber).padStart(3, '0')}
-                    </h2>
-                    <span className="text-sm text-gray-500">
-                      {formatDate(gameHistory.timestamp)}
-                    </span>
-                  </div>
-                  <div className="border-t pt-4">
-                    <div className="flex justify-between items-center">
-                      <div className="text-lg text-gray-700">
-                        Score: {gameHistory.gameStats.score}
-                      </div>
-                      <div className="text-lg text-gray-700">
-                        Longest Streak: {gameHistory.gameStats.longestStreak}
-                      </div>
+            {currentGames.map((gameHistory) => (
+              <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                    Game {String(gameHistory.gameStats.gameNumber).padStart(3, '0')}
+                  </h2>
+                  <span className="text-sm text-gray-500">
+                    {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+                  </span>
+                </div>
+                <div className="border-t pt-4">
+                  <div className="flex justify-between items-center">
+                    <div className="text-lg text-gray-700">
+                      Score: {gameHistory.gameStats.score}
+                    </div>
+                    <div className="text-lg text-gray-700">
+                      Longest Streak: {gameHistory.gameStats.longestStreak}
                     </div>
                   </div>
-                  <GameHistory gameHistory={gameHistory.history} timestamp={gameHistory.timestamp} />
                 </div>
-              );
-            })}
+                <GameHistory gameHistory={gameHistory.history} />
+              </div>
+            ))}
 
             <Pagination
               total={Math.ceil(userHistory.length / gamesPerPage)}
@@ -94,32 +110,15 @@ const HistoryPage = ({ userData, userHistory }) => {
   );
 };
 
-async function fetchCollection(docRef, collectionName) {
-  const collectionRef = docRef.collection(collectionName);
-  const collectionQuery = collectionRef.orderBy('timestamp', 'desc');
-  const querySnapshot = await collectionQuery.get();
-  return querySnapshot.docs.map(doc => {
-    const data = doc.data();
-    console.log('data.timestamp:', data.timestamp); // Log the timestamp
-    console.log('Type of data.timestamp:', typeof data.timestamp); // Log the type of timestamp
-
-    // Check if the timestamp is a Firestore Timestamp
-    const convertedTimestamp = data.timestamp 
-      ? new Date(data.timestamp._seconds * 1000 + data.timestamp._nanoseconds / 1000000)
-      : new Date();
-
-    console.log(`Converted timestamp for doc id ${doc.id}:`, convertedTimestamp);
-
-    return {
-      id: doc.id,
-      timestamp: convertedTimestamp,
-      ...data
-    };
-  });
+async function fetchCollection(ref, collectionName) {
+  const collectionRef = collection(ref, collectionName);
+  const collectionQuery = query(collectionRef, orderBy('timestamp', 'desc'));
+  return await getDocs(collectionQuery);
 }
 
 export const getServerSideProps = async (context) => {
   try {
+    const db = getFirebaseFirestore();
     const { query: contextQuery } = context;
     const { userId } = contextQuery;
 
@@ -129,12 +128,12 @@ export const getServerSideProps = async (context) => {
     let userHistory = [];
 
     if (userId) {
-      const userDocRef = db.doc(`users/${userId}`);
-      const userDocSnap = await userDocRef.get(); // Use the get method from the Admin SDK
+      const userDocRef = doc(db, 'users', userId);
+      const userDocSnap = await getDoc(userDocRef);
 
-      console.log('User document exists:', userDocSnap.exists);
+      console.log('User document exists:', userDocSnap.exists());
 
-      if (userDocSnap.exists) {
+      if (userDocSnap.exists()) {
         userData = {
           id: userDocSnap.id,
           ...userDocSnap.data(),
@@ -143,18 +142,15 @@ export const getServerSideProps = async (context) => {
         // Retrieve the games collection
         const gamesSnapshot = await fetchCollection(userDocRef, 'games');
 
-        userHistory = await Promise.all(gamesSnapshot.map(async (gameDocSnap) => {
-          const gameData = gameDocSnap;
-          const gameId = gameDocSnap.id;
-
-          // Create a DocumentReference to the game document
-          const gameDocRef = db.doc(`users/${userId}/games/${gameId}`);
+        userHistory = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
+          const gameId = gameDocSnapshot.id;
+          const gameData = gameDocSnapshot.data();
 
           // Retrieve the history subcollection for each game
-          const historySnapshot = await fetchCollection(gameDocRef, 'history');
-          const gameHistory = historySnapshot.map(docSnap => ({
-            id: docSnap.id,
-            ...docSnap
+          const historySnapshot = await fetchCollection(gameDocSnapshot.ref, 'history');
+          const gameHistory = historySnapshot.docs.map(docSnapshot => ({
+            id: docSnapshot.id,
+            ...docSnapshot.data()
           }));
 
           return {
@@ -199,3 +195,4 @@ export const getServerSideProps = async (context) => {
 };
 
 export default HistoryPage;
+
