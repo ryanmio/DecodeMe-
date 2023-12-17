@@ -70,3 +70,4 @@ backend/decodeme-1f38e-firebase-adminsdk-j6zn0-8494efde02.json
 .env.local
 app/public/images/pythonlogo.png
 app/public/images/pythonlogo.jpeg
+*.gz
