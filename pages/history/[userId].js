@@ -12,7 +12,6 @@ import { Pagination } from '@nextui-org/react';
 const HistoryPage = () => {
   const [userData, setUserData] = useState(null);
   const [userHistory, setUserHistory] = useState([]);
-  const [loading, setLoading] = useState(true); // New loading state
   const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 3;
   const router = useRouter();
@@ -58,8 +57,6 @@ const HistoryPage = () => {
 
           setUserHistory(historyData);
         }
-
-        setLoading(false); // Set loading to false after data has been fetched
       };
 
       fetchUserDataAndHistory();
@@ -88,54 +85,50 @@ const HistoryPage = () => {
 
   return (
     <RootLayout metadata={metadata}>
-      {loading ? (
-        <div>Loading...</div> // Display a loading message or spinner
-      ) : (
-        <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
-          <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-            <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
-              <NavigationButtons resetGame={resetGame} question={{}} />
-              <div className="results-header mb-4">
-                <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
-                <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
-              </div>
-              {currentGames.map((gameHistory) => {
-                console.log('gameHistory:', gameHistory);
-                return gameHistory && gameHistory.gameStats && (
-                  <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                        Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
-                      </h2>
-                      <span className="text-sm text-gray-500">
-                        {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
-                      </span>
-                    </div>
-                    <div className="border-t pt-4">
-                      <div className="flex justify-between items-center">
-                        <div className="text-lg text-gray-700">
-                          Score: {gameHistory.gameStats.score || 'N/A'}
-                        </div>
-                        <div className="text-lg text-gray-700">
-                          Longest Streak: {gameHistory.gameStats.longestStreak || 'N/A'}
-                        </div>
+      <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
+            <NavigationButtons resetGame={resetGame} question={{}} />
+            <div className="results-header mb-4">
+              <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
+              <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
+            </div>
+            {currentGames.map((gameHistory) => {
+              console.log('gameHistory:', gameHistory);
+              return gameHistory && gameHistory.gameStats && (
+                <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                      Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
+                    </h2>
+                    <span className="text-sm text-gray-500">
+                      {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+                    </span>
+                  </div>
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center">
+                      <div className="text-lg text-gray-700">
+                        Score: {gameHistory.gameStats.score || 'N/A'}
+                      </div>
+                      <div className="text-lg text-gray-700">
+                        Longest Streak: {gameHistory.gameStats.longestStreak || 'N/A'}
                       </div>
                     </div>
-                    {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
                   </div>
-                )
-              })}
+                  {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
+                </div>
+              )
+            })}
 
-              <Pagination
-                total={Math.ceil(userHistory.length / gamesPerPage)}
-                page={currentPage}
-                onChange={handlePageChange}
-              />
-            </div>
+            <Pagination
+              total={Math.ceil(userHistory.length / gamesPerPage)}
+              page={currentPage}
+              onChange={handlePageChange}
+            />
           </div>
         </div>
-      )}
+      </div>
     </RootLayout>
   );
 };
@@ -163,4 +156,3 @@ export const getServerSideProps = async (context) => {
 };
 
 export default HistoryPage;
-
