@@ -71,3 +71,6 @@ backend/decodeme-1f38e-firebase-adminsdk-j6zn0-8494efde02.json
 app/public/images/pythonlogo.png
 app/public/images/pythonlogo.jpeg
 *.gz
+
+# Next.js build output
+.next/
