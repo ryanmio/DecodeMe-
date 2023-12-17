@@ -1,10 +1,10 @@
 // pages/results.js
 import React from 'react';
 import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { getFirebaseFirestore } from './firebase';
-import ChallengeSection from './components/ChallengeSection';
-import GameHistory from './components/GameHistory';
-import FinalScore from './components/FinalScore';
+import { getFirebaseFirestore } from '../src/firebase';
+import ChallengeSection from '../components/ChallengeSection';
+import GameHistory from '../components/GameHistory';
+import FinalScore from '../components/FinalScore';
 import RootLayout from './layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
