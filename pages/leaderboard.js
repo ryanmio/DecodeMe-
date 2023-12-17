@@ -7,6 +7,9 @@ import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
 
+// Constants
+const MILLISECONDS_IN_SECOND = 1000;
+
 const fetchLeaderboardData = async (filter) => {
   let startDate;
   switch(filter) {
@@ -23,31 +26,36 @@ const fetchLeaderboardData = async (filter) => {
       startDate = null;
   }
 
-  const db = getFirebaseFirestore();
-  const leaderboardCollectionRef = collection(db, 'leaderboard');
-  let leaderboardQuery = leaderboardCollectionRef;
-  if (startDate) {
-    const firestoreStartDate = Timestamp.fromDate(startDate);
-    leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
-  }
-
-  const leaderboardSnapshot = await getDocs(leaderboardQuery);
-
-  let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
-    let data = docSnapshot.data();
-    if (data.date) {
-      data.date = new Date(data.date.seconds * 1000); // Convert Firestore Timestamp to JavaScript Date
+  try {
+    const db = getFirebaseFirestore();
+    const leaderboardCollectionRef = collection(db, 'leaderboard');
+    let leaderboardQuery = leaderboardCollectionRef;
+    if (startDate) {
+      const firestoreStartDate = Timestamp.fromDate(startDate);
+      leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
     }
-    return {
-      id: docSnapshot.id,
-      ...data
-    };
-  });
 
-  // Sort leaderboard data by score
-  leaderboardData.sort((a, b) => b.score - a.score);
+    const leaderboardSnapshot = await getDocs(leaderboardQuery);
 
-  return leaderboardData;
+    let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
+      let data = docSnapshot.data();
+      if (data.date) {
+        data.date = new Date(data.date.seconds * MILLISECONDS_IN_SECOND); // Convert Firestore Timestamp to JavaScript Date
+      }
+      return {
+        id: docSnapshot.id,
+        ...data
+      };
+    });
+
+    // Sort leaderboard data by score
+    leaderboardData.sort((a, b) => b.score - a.score);
+
+    return leaderboardData;
+  } catch (error) {
+    console.error("Error fetching leaderboard data: ", error);
+    return [];
+  }
 };
 
 const LeaderboardPage = ({ leaderboardData }) => {
