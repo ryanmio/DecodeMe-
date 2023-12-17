@@ -29,6 +29,7 @@
     "uuid": "^9.0.1"
   },
   "devDependencies": {
+    "@netlify/plugin-nextjs": "^4.41.3",
     "autoprefixer": "^10.4.16",
     "eslint": "^8",
     "eslint-config-next": "13.5.4",
