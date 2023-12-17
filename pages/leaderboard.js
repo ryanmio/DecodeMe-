@@ -1,10 +1,10 @@
 // leaderboard.js
-import { getFirebaseFirestore } from '../firebase';
+import { getFirebaseFirestore } from '../app/src/firebase';
 import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
 import React, { useState, useEffect } from 'react';
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
-import NavigationButtons from '../components/NavigationButtons';
+import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
 
 const fetchLeaderboardData = async (filter) => {

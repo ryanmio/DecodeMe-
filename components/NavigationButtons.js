@@ -1,8 +1,8 @@
-// app/src/components/NavigationButtons.js
+// components/NavigationButtons.js
 import React from 'react';
 import { useRouter } from 'next/router';
 import { FaHome } from 'react-icons/fa';
-import OptionsMenu from './OptionsMenu';
+import OptionsMenu from '../components/OptionsMenu';
 
 const NavigationButtons = ({ resetGame, question, onSkipSubmit }) => {
   const router = useRouter();

@@ -1,10 +1,10 @@
-// app/src/components/CodeSnippetDisplay.js
+// components/CodeSnippetDisplay.js
 import React from 'react';
 import PropTypes from 'prop-types';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { useSpring, animated } from '@react-spring/web';
 import { Ping } from '@uiball/loaders';
-import PythonChip from './PythonChip';
+import PythonChip from '../components/PythonChip';
 
 export default function CodeSnippetDisplay({ codeSnippet, loading }) {
   const formattedCodeSnippet = codeSnippet?.replace(/```python\n|```python|```/g, '').trim() || '';

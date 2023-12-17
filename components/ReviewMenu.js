@@ -1,7 +1,7 @@
-// app/src/components/ReviewMenu.js
+// components/ReviewMenu.js
 import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
-import ChevronDownIcon from '../icons/ChevronDownIcon';
+import ChevronDownIcon from '../app/src/icons/ChevronDownIcon';
 
 const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));

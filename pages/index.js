@@ -1,4 +1,4 @@
-// app/src/pages/index.js
+// pages/index.js
 // This is the home component or page of the app.
 import React, { useState, useEffect } from 'react';
 import Auth from '../components/Auth';
@@ -7,7 +7,7 @@ import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
 import UserAnswerInput from '../components/UserAnswerInput';
 import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
-import { getFirebaseAuth, getFirebaseFirestore } from '../firebase';
+import { getFirebaseAuth, getFirebaseFirestore } from '../app/src/firebase';
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
 import GameOver from '../components/GameOver';

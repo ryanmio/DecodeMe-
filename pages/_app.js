@@ -1,5 +1,5 @@
-import '../style.css';
-import '../tailwind.css';
+import '/style.css';
+import '/tailwind.css';
 
 import { NextUIProvider } from "@nextui-org/react";
 

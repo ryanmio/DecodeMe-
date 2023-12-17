@@ -1,4 +1,4 @@
-// app/src/components/GameOver.js
+// components/GameOver.js
 import React, { useEffect, useState } from 'react';
 import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';

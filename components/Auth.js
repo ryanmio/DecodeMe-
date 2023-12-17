@@ -1,9 +1,9 @@
-// app/src/components/Auth.js
+// components/Auth.js
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
-import { getFirebaseFirestore, getFirebaseAuth } from '../firebase';
+import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 export default function Auth({ onUserAuth }) {
