@@ -33,7 +33,7 @@ const HistoryPage = () => {
           const historyData = historyDocs.docs.map(doc => ({
             id: doc.id,
             ...doc.data(),
-            timestamp: doc.data().timestamp.toDate(), // Convert Firestore Timestamp to Date
+            timestamp: doc.data().timestamp?.toDate(), // Convert Firestore Timestamp to Date
           }));
           setUserHistory(historyData);
         }
@@ -75,27 +75,29 @@ const HistoryPage = () => {
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
             {currentGames.map((gameHistory) => (
-              <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
-                <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                    Game {String(gameHistory.gameStats.gameNumber).padStart(3, '0')}
-                  </h2>
-                  <span className="text-sm text-gray-500">
-                    {format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
-                  </span>
-                </div>
-                <div className="border-t pt-4">
-                  <div className="flex justify-between items-center">
-                    <div className="text-lg text-gray-700">
-                      Score: {gameHistory.gameStats.score}
-                    </div>
-                    <div className="text-lg text-gray-700">
-                      Longest Streak: {gameHistory.gameStats.longestStreak}
+              gameHistory && gameHistory.gameStats && (
+                <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
+                  <div className="flex justify-between items-center mb-4">
+                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                      Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
+                    </h2>
+                    <span className="text-sm text-gray-500">
+                      {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+                    </span>
+                  </div>
+                  <div className="border-t pt-4">
+                    <div className="flex justify-between items-center">
+                      <div className="text-lg text-gray-700">
+                        Score: {gameHistory.gameStats.score || 'N/A'}
+                      </div>
+                      <div className="text-lg text-gray-700">
+                        Longest Streak: {gameHistory.gameStats.longestStreak || 'N/A'}
+                      </div>
                     </div>
                   </div>
+                  {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
                 </div>
-                <GameHistory gameHistory={gameHistory.history} />
-              </div>
+              )
             ))}
 
             <Pagination
