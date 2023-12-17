@@ -50,16 +50,6 @@ const fetchLeaderboardData = async (filter) => {
   return leaderboardData;
 };
 
-export const getServerSideProps = async () => {
-  const leaderboardData = await fetchLeaderboardData('lifetime');
-
-  return {
-    props: {
-      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
-    },
-  };
-};
-
 const LeaderboardPage = ({ leaderboardData }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
@@ -132,6 +122,16 @@ const LeaderboardPage = ({ leaderboardData }) => {
       </div>
     </NextUIProvider>
   );
+};
+
+export const getServerSideProps = async () => {
+  const leaderboardData = await fetchLeaderboardData('lifetime');
+
+  return {
+    props: {
+      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
+    },
+  };
 };
 
 export default LeaderboardPage;
