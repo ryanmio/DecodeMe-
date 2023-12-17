@@ -1,0 +1,22 @@
+"use strict";
+/*
+ * ATTENTION: An "eval-source-map" devtool has been used.
+ * This devtool is neither made for production nor for readable output files.
+ * It uses "eval()" calls to create a separate source file with attached SourceMaps in the browser devtools.
+ * If you are trying to read the output file, select a different devtool (https://webpack.js.org/configuration/devtool/)
+ * or disable the default devtool with "devtool: false".
+ * If you are looking for production-ready output files, see mode: "production" (https://webpack.js.org/configuration/mode/).
+ */
+(self["webpackChunk_N_E"] = self["webpackChunk_N_E"] || []).push([["react-syntax-highlighter_languages_refractor_agda"],{
+
+/***/ "./node_modules/refractor/lang/agda.js":
+/*!*********************************************!*\
+  !*** ./node_modules/refractor/lang/agda.js ***!
+  \*********************************************/
+/***/ (function(module, __unused_webpack_exports, __webpack_require__) {
+
+eval(__webpack_require__.ts("\n\nmodule.exports = agda\nagda.displayName = 'agda'\nagda.aliases = []\nfunction agda(Prism) {\n  ;(function (Prism) {\n    Prism.languages.agda = {\n      comment: /\\{-[\\s\\S]*?(?:-\\}|$)|--.*/,\n      string: {\n        pattern: /\"(?:\\\\(?:\\r\\n|[\\s\\S])|[^\\\\\\r\\n\"])*\"/,\n        greedy: true\n      },\n      punctuation: /[(){}⦃⦄.;@]/,\n      'class-name': {\n        pattern: /((?:data|record) +)\\S+/,\n        lookbehind: true\n      },\n      function: {\n        pattern: /(^[ \\t]*)(?!\\s)[^:\\r\\n]+(?=:)/m,\n        lookbehind: true\n      },\n      operator: {\n        pattern: /(^\\s*|\\s)(?:[=|:∀→λ\\\\?_]|->)(?=\\s)/,\n        lookbehind: true\n      },\n      keyword:\n        /\\b(?:Set|abstract|constructor|data|eta-equality|field|forall|hiding|import|in|inductive|infix|infixl|infixr|instance|let|macro|module|mutual|no-eta-equality|open|overlap|pattern|postulate|primitive|private|public|quote|quoteContext|quoteGoal|quoteTerm|record|renaming|rewrite|syntax|tactic|unquote|unquoteDecl|unquoteDef|using|variable|where|with)\\b/\n    }\n  })(Prism)\n}\n//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9ub2RlX21vZHVsZXMvcmVmcmFjdG9yL2xhbmcvYWdkYS5qcyIsIm1hcHBpbmdzIjoiQUFBWTs7QUFFWjtBQUNBO0FBQ0E7QUFDQTtBQUNBLEdBQUc7QUFDSDtBQUNBLGtCQUFrQixlQUFlO0FBQ2pDO0FBQ0E7QUFDQTtBQUNBLE9BQU87QUFDUCx5QkFBeUIsSUFBSTtBQUM3QjtBQUNBO0FBQ0E7QUFDQSxPQUFPO0FBQ1A7QUFDQTtBQUNBO0FBQ0EsT0FBTztBQUNQO0FBQ0E7QUFDQTtBQUNBLE9BQU87QUFDUDtBQUNBO0FBQ0E7QUFDQSxHQUFHO0FBQ0giLCJzb3VyY2VzIjpbIndlYnBhY2s6Ly9fTl9FLy4vbm9kZV9tb2R1bGVzL3JlZnJhY3Rvci9sYW5nL2FnZGEuanM/OWEzMyJdLCJzb3VyY2VzQ29udGVudCI6WyIndXNlIHN0cmljdCdcblxubW9kdWxlLmV4cG9ydHMgPSBhZ2RhXG5hZ2RhLmRpc3BsYXlOYW1lID0gJ2FnZGEnXG5hZ2RhLmFsaWFzZXMgPSBbXVxuZnVuY3Rpb24gYWdkYShQcmlzbSkge1xuICA7KGZ1bmN0aW9uIChQcmlzbSkge1xuICAgIFByaXNtLmxhbmd1YWdlcy5hZ2RhID0ge1xuICAgICAgY29tbWVudDogL1xcey1bXFxzXFxTXSo/KD86LVxcfXwkKXwtLS4qLyxcbiAgICAgIHN0cmluZzoge1xuICAgICAgICBwYXR0ZXJuOiAvXCIoPzpcXFxcKD86XFxyXFxufFtcXHNcXFNdKXxbXlxcXFxcXHJcXG5cIl0pKlwiLyxcbiAgICAgICAgZ3JlZWR5OiB0cnVlXG4gICAgICB9LFxuICAgICAgcHVuY3R1YXRpb246IC9bKCl7feKmg+KmhC47QF0vLFxuICAgICAgJ2NsYXNzLW5hbWUnOiB7XG4gICAgICAgIHBhdHRlcm46IC8oKD86ZGF0YXxyZWNvcmQpICspXFxTKy8sXG4gICAgICAgIGxvb2tiZWhpbmQ6IHRydWVcbiAgICAgIH0sXG4gICAgICBmdW5jdGlvbjoge1xuICAgICAgICBwYXR0ZXJuOiAvKF5bIFxcdF0qKSg/IVxccylbXjpcXHJcXG5dKyg/PTopL20sXG4gICAgICAgIGxvb2tiZWhpbmQ6IHRydWVcbiAgICAgIH0sXG4gICAgICBvcGVyYXRvcjoge1xuICAgICAgICBwYXR0ZXJuOiAvKF5cXHMqfFxccykoPzpbPXw64oiA4oaSzrtcXFxcP19dfC0+KSg/PVxccykvLFxuICAgICAgICBsb29rYmVoaW5kOiB0cnVlXG4gICAgICB9LFxuICAgICAga2V5d29yZDpcbiAgICAgICAgL1xcYig/OlNldHxhYnN0cmFjdHxjb25zdHJ1Y3RvcnxkYXRhfGV0YS1lcXVhbGl0eXxmaWVsZHxmb3JhbGx8aGlkaW5nfGltcG9ydHxpbnxpbmR1Y3RpdmV8aW5maXh8aW5maXhsfGluZml4cnxpbnN0YW5jZXxsZXR8bWFjcm98bW9kdWxlfG11dHVhbHxuby1ldGEtZXF1YWxpdHl8b3BlbnxvdmVybGFwfHBhdHRlcm58cG9zdHVsYXRlfHByaW1pdGl2ZXxwcml2YXRlfHB1YmxpY3xxdW90ZXxxdW90ZUNvbnRleHR8cXVvdGVHb2FsfHF1b3RlVGVybXxyZWNvcmR8cmVuYW1pbmd8cmV3cml0ZXxzeW50YXh8dGFjdGljfHVucXVvdGV8dW5xdW90ZURlY2x8dW5xdW90ZURlZnx1c2luZ3x2YXJpYWJsZXx3aGVyZXx3aXRoKVxcYi9cbiAgICB9XG4gIH0pKFByaXNtKVxufVxuIl0sIm5hbWVzIjpbXSwic291cmNlUm9vdCI6IiJ9\n//# sourceURL=webpack-internal:///./node_modules/refractor/lang/agda.js\n"));
+
+/***/ })
+
+}]);
