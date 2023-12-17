@@ -307,7 +307,7 @@
   z-index: 10; /* Above other elements */
   display: flex; /* Flex display to position the close button */
   justify-content: space-between; /* Justify content for internal spacing */
-  align-items: start; /* Align items to the start */
+  align-items: flex-start; /* Align items to the start */
 }
 
 .close-button {
