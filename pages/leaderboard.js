@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 // Constants
 const MILLISECONDS_IN_SECOND = 1000;
 const HOME_PAGE_URL = '/';
+const ITEMS_PER_PAGE = 10; // Added constant for items per page
 
 const fetchLeaderboardData = async (filter) => {
   let startDate = new Date();
@@ -52,7 +53,8 @@ const fetchLeaderboardData = async (filter) => {
 
     return leaderboardData;
   } catch (error) {
-    throw new Error("Error fetching leaderboard data: " + error);
+    console.error("Error fetching leaderboard data: ", error); // Log the error instead of throwing
+    return []; // Return an empty array in case of error
   }
 };
 
@@ -61,7 +63,7 @@ const LeaderboardPage = ({ leaderboardData }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
-  const itemsPerPage = 10;
+  const itemsPerPage = ITEMS_PER_PAGE; // Use the constant here
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
