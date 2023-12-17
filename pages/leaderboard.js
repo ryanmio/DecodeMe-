@@ -1,5 +1,5 @@
 // leaderboard.js
-import { getFirebaseFirestore } from '../src/firebase';
+import { getFirebaseFirestore } from '../app/src/firebase';
 import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
 import React, { useState, useEffect } from 'react';
