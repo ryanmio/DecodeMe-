@@ -1,7 +1,7 @@
 // pages/history/[userId].js
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { doc, getDoc, collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { doc, getDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../../app/src/firebase';
 import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../components/layout';
@@ -21,41 +21,45 @@ const HistoryPage = () => {
     // Only fetch data if the userId is available
     if (userId) {
       const fetchUserDataAndHistory = async () => {
-        const db = getFirebaseFirestore();
-        const userRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userRef);
-        if (userDoc.exists()) {
-          setUserData(userDoc.data());
+        try {
+          const db = getFirebaseFirestore();
+          const userRef = doc(db, 'users', userId);
+          const userDoc = await getDoc(userRef);
+          if (userDoc.exists()) {
+            setUserData(userDoc.data());
 
-          // Fetch game history
-          const gamesSnapshot = await fetchCollection(userRef, 'games');
-          const historyData = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
-            const gameId = gameDocSnapshot.id;
-            const gameData = gameDocSnapshot.data();
+            // Fetch game history
+            const gamesSnapshot = await fetchCollection(userRef, 'games');
+            const historyData = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
+              const gameId = gameDocSnapshot.id;
+              const gameData = gameDocSnapshot.data();
 
-            // Fetch game history for each game
-            const historySnapshot = await fetchCollection(gameDocSnapshot.ref, 'history');
-            const gameHistory = historySnapshot.docs.map(docSnapshot => ({
-              id: docSnapshot.id,
-              ...docSnapshot.data()
+              // Fetch game history for each game
+              const historySnapshot = await fetchCollection(gameDocSnapshot.ref, 'history');
+              const gameHistory = historySnapshot.docs.map(docSnapshot => ({
+                id: docSnapshot.id,
+                ...docSnapshot.data()
+              }));
+
+              return {
+                gameId,
+                timestamp: gameData.timestamp,
+                history: gameHistory,
+                gameStats: {
+                  leaderboardName: gameData.leaderboardName,
+                  score: gameData.score,
+                  questionLimit: gameData.questionLimit,
+                  longestStreak: gameData.longestStreak,
+                  sharedAt: gameData.sharedAt,
+                  gameNumber: gameData.gameNumber,
+                },
+              };
             }));
 
-            return {
-              gameId,
-              timestamp: gameData.timestamp,
-              history: gameHistory,
-              gameStats: {
-                leaderboardName: gameData.leaderboardName,
-                score: gameData.score,
-                questionLimit: gameData.questionLimit,
-                longestStreak: gameData.longestStreak,
-                sharedAt: gameData.sharedAt,
-                gameNumber: gameData.gameNumber,
-              },
-            };
-          }));
-
-          setUserHistory(historyData);
+            setUserHistory(historyData);
+          }
+        } catch (error) {
+          console.error('Error fetching user data and history:', error);
         }
       };
 
