@@ -9,16 +9,15 @@ import { useRouter } from 'next/router';
 
 // Constants
 const MILLISECONDS_IN_SECOND = 1000;
+const HOME_PAGE_URL = '/';
 
 const fetchLeaderboardData = async (filter) => {
-  let startDate;
+  let startDate = new Date();
   switch(filter) {
     case 'weekly':
-      startDate = new Date();
       startDate.setDate(startDate.getDate() - 7);
       break;
     case 'monthly':
-      startDate = new Date();
       startDate.setMonth(startDate.getMonth() - 1);
       break;
     case 'lifetime':
@@ -53,8 +52,7 @@ const fetchLeaderboardData = async (filter) => {
 
     return leaderboardData;
   } catch (error) {
-    console.error("Error fetching leaderboard data: ", error);
-    return [];
+    throw new Error("Error fetching leaderboard data: " + error);
   }
 };
 
@@ -80,13 +78,15 @@ const LeaderboardPage = ({ leaderboardData }) => {
   };
 
   const getOrdinalSuffix = (i) => {
+    // Suffixes for ordinal numbers
     const suffixes = ['th', 'st', 'nd', 'rd'];
     const v = i % 100;
+    // Return the ordinal number with its suffix
     return i + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
   }
 
   const resetGame = () => {
-    router.push('/'); // Navigate to home page
+    router.push(HOME_PAGE_URL); // Navigate to home page
   };
 
   return (
