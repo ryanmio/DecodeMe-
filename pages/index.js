@@ -76,11 +76,10 @@ export default function Home() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       const newChatHistory = [...updatedChatHistory, { role: 'assistant', content: data.response }];
-      console.log('New chat history:', newChatHistory);
       setChatHistory(newChatHistory);
       return newChatHistory;
     } catch (error) {
-      console.error('Failed to send message:', error);
+      alert('Failed to send message. Please try again.');
     }
   };
 
@@ -137,8 +136,8 @@ export default function Home() {
       timestamp: new Date(),
       strikes,
       strikeLimit,
-    }).catch((error) => {
-      console.error('Failed to log answer:', error);
+    }).catch(() => {
+      alert('Failed to log answer. Please try again.');
     });
 
     setIsFirebaseUpdated(true);
@@ -176,7 +175,7 @@ export default function Home() {
         }
       }
     } catch (error) {
-      console.error('Failed to fetch code snippet:', error);
+      alert('Failed to fetch code snippet. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -218,6 +217,7 @@ export default function Home() {
         await updateDoc(userDocRef, { learningLevel: level });
         setLearningLevel(level);
       } catch (error) {
+        alert('Failed to update learning level. Please try again.');
       }
     }
   };
@@ -240,6 +240,7 @@ export default function Home() {
             setLearningLevel(userData.learningLevel);
           }
         } catch (error) {
+          alert('Failed to fetch learning level. Please try again.');
         }
       };
 
@@ -323,4 +324,3 @@ export default function Home() {
     </div>
   );
 }
-
