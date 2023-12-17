@@ -29,7 +29,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
             <GameHistory gameHistory={gameHistory} />
           </div>
         </div>
-        <div style={{ paddingTop: "20px" }}>
+        <div className="pt-5">
           <ChallengeSection />
         </div>
       </div>
