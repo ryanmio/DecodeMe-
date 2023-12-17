@@ -2,7 +2,7 @@
 import { getFirebaseFirestore } from '../app/src/firebase';
 import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
@@ -82,18 +82,9 @@ const LeaderboardPage = ({ leaderboardData }) => {
   };
 
   const getOrdinalSuffix = (i) => {
-    const j = i % 10,
-        k = i % 100;
-    if (j == 1 && k != 11) {
-        return i + "st";
-    }
-    if (j == 2 && k != 12) {
-        return i + "nd";
-    }
-    if (j == 3 && k != 13) {
-        return i + "rd";
-    }
-    return i + "th";
+    const suffixes = ['th', 'st', 'nd', 'rd'];
+    const v = i % 100;
+    return i + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
   }
 
   const resetGame = () => {
