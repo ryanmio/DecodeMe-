@@ -74,8 +74,9 @@ const HistoryPage = () => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
-            {currentGames.map((gameHistory) => (
-              gameHistory && gameHistory.gameStats && (
+            {currentGames.map((gameHistory) => {
+              console.log('gameHistory:', gameHistory);
+              return gameHistory && gameHistory.gameStats && (
                 <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900">
@@ -98,7 +99,7 @@ const HistoryPage = () => {
                   {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
                 </div>
               )
-            ))}
+            })}
 
             <Pagination
               total={Math.ceil(userHistory.length / gamesPerPage)}
