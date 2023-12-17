@@ -1,11 +1,11 @@
 // pages/history/[userId].js
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { doc, getDoc, collection, getDocs, query, where } from 'firebase/firestore';
-import { getFirebaseFirestore } from '../firebase';
-import GameHistory from '../components/GameHistory';
-import RootLayout from '../layout';
-import NavigationButtons from '../components/NavigationButtons';
+import { doc, getDoc, collection, getDocs, query, where, orderBy } from 'firebase/firestore';
+import { getFirebaseFirestore } from '../../app/src/firebase';
+import GameHistory from '../../components/GameHistory';
+import RootLayout from '../../components/layout';
+import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
 import { Pagination } from '@nextui-org/react';
 
@@ -195,4 +195,3 @@ export const getServerSideProps = async (context) => {
 };
 
 export default HistoryPage;
-
