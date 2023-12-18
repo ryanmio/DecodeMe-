@@ -20,9 +20,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     }
   }, [chatHistory]);
 
+  function handleError(error) {
+    alert('An error occurred. Please try again.');
+    console.error(error);
+  }
+
   const handleChatSubmit = async (event) => {
     event.preventDefault();
-    console.log('Message to send:', userMessageRef.current);
     const messageToSend = userMessageRef.current;
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
@@ -33,7 +37,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
       setChatHistory(newChatHistory);
     } catch (error) {
-      console.error('Failed to send message:', error);
+      handleError(error);
     }
   };
   
@@ -51,7 +55,6 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   const toggleMaximize = () => setIsMaximized(!isMaximized);
 
   const sendStarterMessage = (starter) => {
-    console.log('Starter message:', starter);
     userMessageRef.current = starter;
     handleChatSubmit({ preventDefault: () => { } });
   };
@@ -61,7 +64,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
       onLearningLevelChange(level);
       setShowDropdown(false);
     } catch (error) {
-      console.error('Failed to update learning level:', error);
+      handleError(error);
     }
   };
 
