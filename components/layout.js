@@ -1,5 +1,4 @@
 // app/src/layout.js
-
 import Head from 'next/head'
 import PropTypes from 'prop-types'
 
@@ -9,7 +8,6 @@ export default function RootLayout({ children, metadata }) {
     description: 'Default Description',
     image: '/images/shareimage.jpeg',
     url: 'Default URL',
-    // Add other default values as needed
   };
 
   const finalMetadata = { ...defaultMetadata, ...metadata };
@@ -24,7 +22,6 @@ export default function RootLayout({ children, metadata }) {
         <meta property="og:image" content={finalMetadata.image} />
         <meta property="og:url" content={finalMetadata.url} />
         <meta name="twitter:card" content="summary_large_image" />
-        {/* Other SEO-related tags here */}
       </Head>
       {children}
     </div>
@@ -42,5 +39,10 @@ RootLayout.propTypes = {
 }
 
 RootLayout.defaultProps = {
-  metadata: {},
+  metadata: {
+    title: 'Default Title',
+    description: 'Default Description',
+    image: '/images/shareimage.jpeg',
+    url: 'Default URL',
+  },
 }
