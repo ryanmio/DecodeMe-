@@ -9,7 +9,7 @@ const defaultMetadata = {
   url: 'Default URL',
 };
 
-export default function RootLayout({ children, metadata = defaultMetadata }) {
+function RootLayout({ children, metadata }) {
   return (
     <div>
       <Head>
@@ -26,12 +26,16 @@ export default function RootLayout({ children, metadata = defaultMetadata }) {
   )
 }
 
+RootLayout.defaultProps = {
+  metadata: defaultMetadata
+};
+
 RootLayout.propTypes = {
   children: PropTypes.node.isRequired,
   metadata: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    image: PropTypes.string,
-    url: PropTypes.string,
-  }),
+    title: PropTypes.string.isRequired,
+    description: PropTypes.string.isRequired,
+    image: PropTypes.string.isRequired,
+    url: PropTypes.string.isRequired,
+  }).isRequired,
 }
