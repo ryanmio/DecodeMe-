@@ -30,7 +30,6 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
   return (
     <ButtonGroup variant="flat" className="review-menu">
       <Button onClick={() => {
-        console.log(`${labelsMap[selectedOptionValue]} button clicked`);
         actionsMap[selectedOptionValue](selectedScript);
       }}>{labelsMap[selectedOptionValue]}</Button>
       <Dropdown placement="bottom-end">
@@ -64,3 +63,4 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
 };
 
 export default ReviewMenu;
+
