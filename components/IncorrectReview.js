@@ -1,12 +1,13 @@
 // IncorrectReview.js
 import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
-import { Accordion, AccordionItem } from "@nextui-org/react";
-import { Tooltip } from "@nextui-org/react";
+import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
 import ReviewMenu from './ReviewMenu';
 
+const LANGUAGE = "python";
+
 const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => {
-  const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
+  const formatCodeSnippet = (code) => code.replace(new RegExp(`\`\`\`${LANGUAGE}\n|\`\`\`${LANGUAGE}|\`\`\``, 'g'), '').trim();
 
   return (
     <div className="incorrect-review text-left">
@@ -25,7 +26,7 @@ const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => {
                   <div className="incorrect-question text-gray-800">
                     <CodeBlock
                       text={formattedQuestion}
-                      language={"python"}
+                      language={LANGUAGE}
                       showLineNumbers={true}
                       theme={dracula}
                       wrapLines

@@ -14,7 +14,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   const router = useRouter();
   const auth = getFirebaseAuth();
 
-  const handleLogout = async () => {
+  const handleLogout = () => {
     onOpen();
   };
 
@@ -30,14 +30,10 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
 
   const handleHistory = () => {
     const user = auth.currentUser;
-    if (user) {
-      if (!user.isAnonymous) {
-        router.push(`/history/${user.uid}`);
-      } else {
-        setShowAuthModal(true);
-      }
-    } else {
+    if (!user || user.isAnonymous) {
       setShowAuthModal(true);
+    } else {
+      router.push(`/history/${user.uid}`);
     }
   };
 
@@ -53,7 +49,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   useHotkeys('shift+h', handleHistory);
   useHotkeys('shift+b', handleLeaderboard);
   useHotkeys('shift+s', () => {
-    console.log('Skip hotkey pressed');
     onSkipSubmit();
   });
 
@@ -73,10 +68,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
         <DropdownMenu variant="shadow" aria-label="Options menu">
           <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>
           <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
-          {gameMode && !isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={() => {
-            console.log('Skip button clicked');
-            onSkipSubmit();
-          }}>Skip</DropdownItem>}
+          {!isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
           {auth.currentUser && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
         </DropdownMenu>
       </Dropdown>

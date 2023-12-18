@@ -4,6 +4,7 @@ import '/tailwind.css';
 
 import { NextUIProvider } from "@nextui-org/react";
 
+// MyApp is the main application component. It wraps the entire application with NextUIProvider.
 export default function MyApp({ Component, pageProps }) {
   return (
     <NextUIProvider>

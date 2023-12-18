@@ -58,7 +58,6 @@ export default function Home() {
   };
 
   const handleChatWithTutor = (script) => {
-    console.log('handleChatWithTutor called with script:', script);
     setSelectedScript(script);
     setShowChatWindow(true);
   };
@@ -68,7 +67,6 @@ export default function Home() {
   };
 
   const handleMessageSubmit = async (messageToSend, updatedChatHistory, selectedScript) => {
-    console.log('Message to send:', messageToSend);
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
@@ -78,11 +76,10 @@ export default function Home() {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
       const newChatHistory = [...updatedChatHistory, { role: 'assistant', content: data.response }];
-      console.log('New chat history:', newChatHistory);
       setChatHistory(newChatHistory);
       return newChatHistory;
     } catch (error) {
-      console.error('Failed to send message:', error);
+      alert('Failed to send message. Please try again.');
     }
   };
 
@@ -139,8 +136,8 @@ export default function Home() {
       timestamp: new Date(),
       strikes,
       strikeLimit,
-    }).catch((error) => {
-      console.error('Failed to log answer:', error);
+    }).catch(() => {
+      alert('Failed to log answer. Please try again.');
     });
 
     setIsFirebaseUpdated(true);
@@ -178,7 +175,7 @@ export default function Home() {
         }
       }
     } catch (error) {
-      console.error('Failed to fetch code snippet:', error);
+      alert('Failed to fetch code snippet. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -214,18 +211,14 @@ export default function Home() {
   };
 
   const updateLearningLevelInFirebase = async (level) => {
-    console.log('updateLearningLevelInFirebase called with level:', level);
     if (userId && db) {
       try {
         const userDocRef = doc(db, 'users', userId);
         await updateDoc(userDocRef, { learningLevel: level });
         setLearningLevel(level);
-        console.log(`Learning level updated to ${level}`);
       } catch (error) {
-        console.error('Failed to update learning level:', error);
+        alert('Failed to update learning level. Please try again.');
       }
-    } else {
-      console.log('userId or db is not available');
     }
   };
 
@@ -245,12 +238,9 @@ export default function Home() {
           const userData = userDoc.data();
           if (userData && userData.learningLevel) {
             setLearningLevel(userData.learningLevel);
-            console.log(`Fetched learning level: ${userData.learningLevel}`);
-          } else {
-            console.log('No learning level found in user data');
           }
         } catch (error) {
-          console.error('Failed to fetch learning level:', error);
+          alert('Failed to fetch learning level. Please try again.');
         }
       };
 

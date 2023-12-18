@@ -9,7 +9,9 @@ const NavigationButtons = ({ resetGame, question, onSkipSubmit, gameMode, isGame
 
   const handleHomeClick = () => {
     resetGame();
-    router.push('/'); // Navigate to home page
+    router.push('/').catch((error) => {
+      console.error('Failed to navigate to home:', error);
+    });
   };
 
   return (

@@ -2,20 +2,23 @@
 import { getFirebaseFirestore } from '../app/src/firebase';
 import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
 
+// Constants
+const MILLISECONDS_IN_SECOND = 1000;
+const HOME_PAGE_URL = '/';
+const ITEMS_PER_PAGE = 10; // Added constant for items per page
+
 const fetchLeaderboardData = async (filter) => {
-  let startDate;
+  let startDate = new Date();
   switch(filter) {
     case 'weekly':
-      startDate = new Date();
       startDate.setDate(startDate.getDate() - 7);
       break;
     case 'monthly':
-      startDate = new Date();
       startDate.setMonth(startDate.getMonth() - 1);
       break;
     case 'lifetime':
@@ -23,41 +26,36 @@ const fetchLeaderboardData = async (filter) => {
       startDate = null;
   }
 
-  const db = getFirebaseFirestore();
-  const leaderboardCollectionRef = collection(db, 'leaderboard');
-  let leaderboardQuery = leaderboardCollectionRef;
-  if (startDate) {
-    const firestoreStartDate = Timestamp.fromDate(startDate);
-    leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
-  }
-
-  const leaderboardSnapshot = await getDocs(leaderboardQuery);
-
-  let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
-    let data = docSnapshot.data();
-    if (data.date) {
-      data.date = new Date(data.date.seconds * 1000); // Convert Firestore Timestamp to JavaScript Date
+  try {
+    const db = getFirebaseFirestore();
+    const leaderboardCollectionRef = collection(db, 'leaderboard');
+    let leaderboardQuery = leaderboardCollectionRef;
+    if (startDate) {
+      const firestoreStartDate = Timestamp.fromDate(startDate);
+      leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
     }
-    return {
-      id: docSnapshot.id,
-      ...data
-    };
-  });
 
-  // Sort leaderboard data by score
-  leaderboardData.sort((a, b) => b.score - a.score);
+    const leaderboardSnapshot = await getDocs(leaderboardQuery);
 
-  return leaderboardData;
-};
+    let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
+      let data = docSnapshot.data();
+      if (data.date) {
+        data.date = new Date(data.date.seconds * MILLISECONDS_IN_SECOND); // Convert Firestore Timestamp to JavaScript Date
+      }
+      return {
+        id: docSnapshot.id,
+        ...data
+      };
+    });
 
-export const getServerSideProps = async () => {
-  const leaderboardData = await fetchLeaderboardData('lifetime');
+    // Sort leaderboard data by score
+    leaderboardData.sort((a, b) => b.score - a.score);
 
-  return {
-    props: {
-      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
-    },
-  };
+    return leaderboardData;
+  } catch (error) {
+    console.error("Error fetching leaderboard data: ", error); // Log the error instead of throwing
+    return []; // Return an empty array in case of error
+  }
 };
 
 const LeaderboardPage = ({ leaderboardData }) => {
@@ -65,7 +63,7 @@ const LeaderboardPage = ({ leaderboardData }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
-  const itemsPerPage = 10;
+  const itemsPerPage = ITEMS_PER_PAGE; // Use the constant here
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -82,22 +80,15 @@ const LeaderboardPage = ({ leaderboardData }) => {
   };
 
   const getOrdinalSuffix = (i) => {
-    const j = i % 10,
-        k = i % 100;
-    if (j == 1 && k != 11) {
-        return i + "st";
-    }
-    if (j == 2 && k != 12) {
-        return i + "nd";
-    }
-    if (j == 3 && k != 13) {
-        return i + "rd";
-    }
-    return i + "th";
+    // Suffixes for ordinal numbers
+    const suffixes = ['th', 'st', 'nd', 'rd'];
+    const v = i % 100;
+    // Return the ordinal number with its suffix
+    return i + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
   }
 
   const resetGame = () => {
-    router.push('/'); // Navigate to home page
+    router.push(HOME_PAGE_URL); // Navigate to home page
   };
 
   return (
@@ -141,6 +132,16 @@ const LeaderboardPage = ({ leaderboardData }) => {
       </div>
     </NextUIProvider>
   );
+};
+
+export const getServerSideProps = async () => {
+  const leaderboardData = await fetchLeaderboardData('lifetime');
+
+  return {
+    props: {
+      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
+    },
+  };
 };
 
 export default LeaderboardPage;

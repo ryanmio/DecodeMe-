@@ -31,8 +31,7 @@ const HistoryPage = () => {
             // Fetch game history
             const gamesSnapshot = await fetchCollection(userRef, 'games');
             const historyData = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
-              const gameId = gameDocSnapshot.id;
-              const gameData = gameDocSnapshot.data();
+              const { id: gameId, ...gameData } = gameDocSnapshot.data();
 
               // Fetch game history for each game
               const historySnapshot = await fetchCollection(gameDocSnapshot.ref, 'history');
@@ -98,9 +97,9 @@ const HistoryPage = () => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
-            {currentGames.map((gameHistory) => {
-              return gameHistory && gameHistory.gameStats && (
-                <div key={gameHistory.gameId} className="bg-white p-6 rounded-lg shadow-md mb-4">
+            {currentGames.map((gameHistory, index) => {
+              return gameHistory?.gameStats && (
+                <div key={gameHistory.gameId || index} className="bg-white p-6 rounded-lg shadow-md mb-4">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-lg sm:text-xl font-bold text-gray-900">
                       Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
@@ -142,20 +141,5 @@ async function fetchCollection(ref, collectionName) {
   return await getDocs(collectionQuery);
 }
 
-export const getServerSideProps = async (context) => {
-  try {
-    // No data fetching here, return empty props
-    return {
-      props: {},
-    };
-  } catch (error) {
-    console.error('Error fetching user data:', error);
-    return {
-      props: {
-        error: 'Failed to fetch user data',
-      },
-    };
-  }
-};
-
 export default HistoryPage;
+
