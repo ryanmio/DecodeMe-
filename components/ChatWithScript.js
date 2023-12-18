@@ -8,7 +8,6 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const userMessageRef = useRef('');
   const [isMaximized, setIsMaximized] = useState(false);
-  const [isMinimized, setIsMinimized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const textAreaRef = useRef(null);
   const chatHistoryRef = useRef(null);
