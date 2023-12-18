@@ -8,21 +8,23 @@ import { Button } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
 import PostGameMessage from './PostGameMessage';
 
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+
 const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [leaderboardName, setLeaderboardName] = useState('');
 
-  const fetchGameHistory = async () => {
-    if (!gameId || !userId) {
-      console.error('gameId or userId is not set:', { gameId, userId });
-      return;
-    }
+  const getHistoryCollectionRef = (db, userId, gameId) => {
+    return collection(db, 'users', userId, 'games', gameId, 'history');
+  };
 
+  const fetchGameHistory = async () => {
+    setError('');
     setLoading(true);
     try {
-      const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
+      const historyCollectionRef = getHistoryCollectionRef(db, userId, gameId);
       const querySnapshot = await getDocs(historyCollectionRef);
       const historyData = querySnapshot.docs.map(doc => ({
         id: doc.id,
@@ -34,7 +36,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
       setGameHistory(sortedHistoryData);
     } catch (error) {
-      console.error(`Error fetching game history for gameId: ${gameId} and userId: ${userId}`, error);
       setError(`Failed to load game history for gameId: ${gameId} and userId: ${userId}`);
     } finally {
       setLoading(false);
@@ -77,7 +78,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
   const saveGameStatsToHistory = async () => {
     if (currentStreak === undefined) {
-      console.error('currentStreak is undefined');
       return;
     }
 
@@ -123,7 +123,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   };
 
   const addHistoryToSharedDocument = async (shareDocRef, batch) => {
-    const historyCollectionRef = collection(db, 'users', userId, 'games', gameId, 'history');
+    const historyCollectionRef = getHistoryCollectionRef(db, userId, gameId);
     const querySnapshot = await getDocs(historyCollectionRef);
     querySnapshot.forEach((historyDoc) => {
       const historyData = historyDoc.data();
@@ -133,19 +133,14 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   };
 
   const generateShareLink = async (shareId) => {
-    const shareLink = `${process.env.NEXT_PUBLIC_APP_URL}/results?shareId=${shareId}`;
+    const shareLink = `${APP_URL}/results?shareId=${shareId}`;
     await navigator.clipboard.writeText(shareLink);
     alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
   };
 
   const handleShareResults = async () => {
-    if (!gameId || !userId) {
-      console.error('Cannot share results because gameId or userId is not set:', { gameId, userId });
-      return;
-    }
-
-    setLoading(true);
     setError('');
+    setLoading(true);
 
     try {
       let finalLeaderboardName = leaderboardName || await fetchLeaderboardName();
@@ -161,7 +156,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
       await generateShareLink(shareId);
     } catch (error) {
-      console.error('Error sharing game history:', error);
       setError('Failed to share game history.');
     } finally {
       setLoading(false);
