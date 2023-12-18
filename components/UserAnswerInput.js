@@ -49,15 +49,15 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
       <h2 className="text-xl font-medium mt-2 text-gray-900">What does this code do?</h2>
       <form onSubmit={handleSubmit} className="w-full">
         <animated.div style={fadeAnswers} className="space-y-2">
-          {displayOptions.map((option, index) => (
+          {displayOptions.map((option) => (
             <div 
-              key={index} 
+              key={option} 
               className={`flex items-center p-4 rounded-lg border border-gray-200 transition-all duration-200 ease-in-out cursor-pointer hover:shadow-lg hover:scale-105 shadow-sm ${submittedOption === option ? (displayOptions.indexOf(submittedOption) === correctDisplayIndex ? 'bg-green-100 shadow-md' : `bg-red-100 shadow-md ${shake ? 'shake-animation' : ''}`) : (selectedOption === option ? 'bg-purple-100 shadow-md' : 'bg-white')}`}
               onClick={() => !disabled && setSelectedOption(option)}
             >
               <input 
                 type="radio" 
-                id={`option${index}`} 
+                id={`option${option}`} 
                 name="option" 
                 value={option} 
                 checked={selectedOption === option}
@@ -65,7 +65,7 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
                 className="hidden"
                 disabled={disabled}
               />
-              <label htmlFor={`option${index}`} className={`text-lg ${selectedOption === option ? 'text-gray-900' : 'text-gray-900'}`}>{option}</label>
+              <label htmlFor={`option${option}`} className={`text-lg ${selectedOption === option ? 'text-gray-900' : 'text-gray-900'}`}>{option}</label>
               {showSparkle && submittedOption === option && displayOptions.indexOf(submittedOption) === correctDisplayIndex && <Sparkle />}
             </div>
           ))}
