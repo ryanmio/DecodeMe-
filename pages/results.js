@@ -5,7 +5,7 @@ import { getFirebaseFirestore } from '../app/src/firebase';
 import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
-import { RootLayout } from '../components/layout';
+import RootLayout from '../components/layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   const metadata = {

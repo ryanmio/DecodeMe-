@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import { doc, getDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../../app/src/firebase';
 import GameHistory from '../../components/GameHistory';
-import { RootLayout } from '../../components/layout'; // Changed this line
+import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
 import { Pagination } from '@nextui-org/react';
@@ -142,3 +142,5 @@ async function fetchCollection(ref, collectionName) {
 }
 
 export default HistoryPage;
+
+
