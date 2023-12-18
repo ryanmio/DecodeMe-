@@ -1,11 +1,10 @@
 import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
-import { Accordion, AccordionItem } from "@nextui-org/react";
-import { Tooltip } from "@nextui-org/react";
+import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
+
+const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
 const GameHistory = ({ gameHistory }) => {
-  const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
-
   return (
     <div className="game-history text-left">
       <Accordion motionProps={{
