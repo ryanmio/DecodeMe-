@@ -7,18 +7,15 @@ import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
 
-// Constants
-const MILLISECONDS_IN_SECOND = 1000;
-const HOME_PAGE_URL = '/';
-const ITEMS_PER_PAGE = 10; // Added constant for items per page
-
 const fetchLeaderboardData = async (filter) => {
-  let startDate = new Date();
+  let startDate;
   switch(filter) {
     case 'weekly':
+      startDate = new Date();
       startDate.setDate(startDate.getDate() - 7);
       break;
     case 'monthly':
+      startDate = new Date();
       startDate.setMonth(startDate.getMonth() - 1);
       break;
     case 'lifetime':
@@ -26,36 +23,41 @@ const fetchLeaderboardData = async (filter) => {
       startDate = null;
   }
 
-  try {
-    const db = getFirebaseFirestore();
-    const leaderboardCollectionRef = collection(db, 'leaderboard');
-    let leaderboardQuery = leaderboardCollectionRef;
-    if (startDate) {
-      const firestoreStartDate = Timestamp.fromDate(startDate);
-      leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
-    }
-
-    const leaderboardSnapshot = await getDocs(leaderboardQuery);
-
-    let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
-      let data = docSnapshot.data();
-      if (data.date) {
-        data.date = new Date(data.date.seconds * MILLISECONDS_IN_SECOND); // Convert Firestore Timestamp to JavaScript Date
-      }
-      return {
-        id: docSnapshot.id,
-        ...data
-      };
-    });
-
-    // Sort leaderboard data by score
-    leaderboardData.sort((a, b) => b.score - a.score);
-
-    return leaderboardData;
-  } catch (error) {
-    console.error("Error fetching leaderboard data: ", error); // Log the error instead of throwing
-    return []; // Return an empty array in case of error
+  const db = getFirebaseFirestore();
+  const leaderboardCollectionRef = collection(db, 'leaderboard');
+  let leaderboardQuery = leaderboardCollectionRef;
+  if (startDate) {
+    const firestoreStartDate = Timestamp.fromDate(startDate);
+    leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
   }
+
+  const leaderboardSnapshot = await getDocs(leaderboardQuery);
+
+  let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
+    let data = docSnapshot.data();
+    if (data.date) {
+      data.date = new Date(data.date.seconds * 1000); // Convert Firestore Timestamp to JavaScript Date
+    }
+    return {
+      id: docSnapshot.id,
+      ...data
+    };
+  });
+
+  // Sort leaderboard data by score
+  leaderboardData.sort((a, b) => b.score - a.score);
+
+  return leaderboardData;
+};
+
+export const getServerSideProps = async () => {
+  const leaderboardData = await fetchLeaderboardData('lifetime');
+
+  return {
+    props: {
+      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
+    },
+  };
 };
 
 const LeaderboardPage = ({ leaderboardData }) => {
@@ -63,7 +65,7 @@ const LeaderboardPage = ({ leaderboardData }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
-  const itemsPerPage = ITEMS_PER_PAGE; // Use the constant here
+  const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -80,15 +82,13 @@ const LeaderboardPage = ({ leaderboardData }) => {
   };
 
   const getOrdinalSuffix = (i) => {
-    // Suffixes for ordinal numbers
     const suffixes = ['th', 'st', 'nd', 'rd'];
     const v = i % 100;
-    // Return the ordinal number with its suffix
     return i + (suffixes[(v - 20) % 10] || suffixes[v] || suffixes[0]);
   }
 
   const resetGame = () => {
-    router.push(HOME_PAGE_URL); // Navigate to home page
+    router.push('/'); // Navigate to home page
   };
 
   return (
@@ -132,16 +132,6 @@ const LeaderboardPage = ({ leaderboardData }) => {
       </div>
     </NextUIProvider>
   );
-};
-
-export const getServerSideProps = async () => {
-  const leaderboardData = await fetchLeaderboardData('lifetime');
-
-  return {
-    props: {
-      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
-    },
-  };
 };
 
 export default LeaderboardPage;
