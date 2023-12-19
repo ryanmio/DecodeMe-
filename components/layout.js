@@ -1,4 +1,4 @@
-// app/src/layout.js
+// layout.js
 import Head from 'next/head'
 import PropTypes from 'prop-types'
 
@@ -39,3 +39,5 @@ RootLayout.propTypes = {
     url: PropTypes.string.isRequired,
   }).isRequired,
 }
+
+export default RootLayout;
