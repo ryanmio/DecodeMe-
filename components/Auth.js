@@ -18,6 +18,7 @@ export default function Auth({ onUserAuth }) {
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
+  
   useEffect(() => {
     setIsClient(true);
     if (onUserAuth) {

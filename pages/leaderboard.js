@@ -31,27 +31,32 @@ const fetchLeaderboardData = async (filter) => {
     leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
   }
 
-  const leaderboardSnapshot = await getDocs(leaderboardQuery);
+  try {
+    const leaderboardSnapshot = await getDocs(leaderboardQuery);
 
-  let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
-    let data = docSnapshot.data();
-    if (data.date) {
-      data.date = new Date(data.date.seconds * 1000); // Convert Firestore Timestamp to JavaScript Date
-    }
-    return {
-      id: docSnapshot.id,
-      ...data
-    };
-  });
+    let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
+      let data = docSnapshot.data();
+      if (data.date) {
+        data.date = new Date(data.date.seconds * 1000); // Convert Firestore Timestamp to JavaScript Date
+      }
+      return {
+        id: docSnapshot.id,
+        ...data
+      };
+    });
 
-  // Sort leaderboard data by score
-  leaderboardData.sort((a, b) => b.score - a.score);
+    // Sort leaderboard data by score
+    leaderboardData.sort((a, b) => b.score - a.score);
 
-  return leaderboardData;
+    return leaderboardData;
+  } catch (error) {
+    console.error("Error fetching leaderboard data:", error);
+    return [];  // Return an empty array or handle the error as needed
+  }
 };
 
 export const getServerSideProps = async () => {
-  const leaderboardData = await fetchLeaderboardData('lifetime');
+  const leaderboardData = [{ id: "1", leaderboardName: "Test Player", score: 100 }]; // Static data for testing
 
   return {
     props: {
