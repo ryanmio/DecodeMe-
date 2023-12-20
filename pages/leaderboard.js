@@ -56,13 +56,23 @@ const fetchLeaderboardData = async (filter) => {
 };
 
 export const getServerSideProps = async () => {
-  const leaderboardData = [{ id: "1", leaderboardName: "Test Player", score: 100 }]; // Static data for testing
-
-  return {
-    props: {
-      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
-    },
-  };
+  try {
+    const leaderboardData = await fetchLeaderboardData('lifetime');
+    return {
+      props: {
+        leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
+      },
+    };
+  } catch (error) {
+    console.error("Error in getServerSideProps:", error);
+    // Return empty data or a specific error object to the component
+    return {
+      props: {
+        leaderboardData: [],
+        error: error.message,
+      },
+    };
+  }
 };
 
 const LeaderboardPage = ({ leaderboardData }) => {
