@@ -38,48 +38,55 @@ const ResultsPage = ({ gameData, gameHistory }) => {
 };
 
 export const getServerSideProps = async (context) => {
-  const db = getFirebaseFirestore();
+  try {
+    const db = getFirebaseFirestore();
 
-  const { query: contextQuery } = context;
-  const { shareId } = contextQuery;
+    const { query: contextQuery } = context;
+    const { shareId } = contextQuery;
 
-  let gameData = null;
-  let gameHistory = [];
+    let gameData = null;
+    let gameHistory = [];
 
-  if (shareId) {
-    const shareDocRef = doc(db, 'sharedResults', shareId);
-    const shareDocSnap = await getDoc(shareDocRef);
+    if (shareId) {
+      const shareDocRef = doc(db, 'sharedResults', shareId);
+      const shareDocSnap = await getDoc(shareDocRef);
 
-    if (shareDocSnap.exists()) {
-      gameData = {
-        id: shareDocSnap.id,
-        ...shareDocSnap.data(),
-        sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString(),
-        strikes: shareDocSnap.data().strikes,
-        strikeLimit: shareDocSnap.data().strikeLimit,
-      };
+      if (shareDocSnap.exists()) {
+        gameData = {
+          id: shareDocSnap.id,
+          ...shareDocSnap.data(),
+          sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString(),
+          strikes: shareDocSnap.data().strikes,
+          strikeLimit: shareDocSnap.data().strikeLimit,
+        };
 
-      // Retrieve the history subcollection
-      const historyCollectionRef = collection(shareDocRef, 'history');
-      const historyQuery = query(historyCollectionRef, orderBy('timestamp'));
-      const historySnapshot = await getDocs(historyQuery);
+        // Retrieve the history subcollection
+        const historyCollectionRef = collection(shareDocRef, 'history');
+        const historyQuery = query(historyCollectionRef, orderBy('timestamp'));
+        const historySnapshot = await getDocs(historyQuery);
 
-      gameHistory = historySnapshot.docs.map(docSnapshot => ({
-        id: docSnapshot.id,
-        ...docSnapshot.data()
-      }));
+        gameHistory = historySnapshot.docs.map(docSnapshot => ({
+          id: docSnapshot.id,
+          ...docSnapshot.data()
+        }));
+      }
     }
-  }
 
-  return {
-    props: {
-      gameData: gameData ? {
-        ...JSON.parse(JSON.stringify(gameData)),
-        sharedAt: gameData.sharedAt,
-      } : null,
-      gameHistory: JSON.parse(JSON.stringify(gameHistory)),
-    },
-  };
+    return {
+      props: {
+        gameData: gameData ? {
+          ...JSON.parse(JSON.stringify(gameData)),
+          sharedAt: gameData.sharedAt,
+        } : null,
+        gameHistory: JSON.parse(JSON.stringify(gameHistory)),
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching data in getServerSideProps:', error);
+    return {
+      notFound: true,
+    };
+  }
 };
 
 export default ResultsPage;
