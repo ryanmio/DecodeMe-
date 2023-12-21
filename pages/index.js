@@ -122,8 +122,8 @@ export default function Home() {
     // Create a reference to the 'game' document
     const gameDoc = doc(db, 'users', userId, 'games', gameId);
 
-    // Set the 'timestamp' field in the 'game' document
-    await setDoc(gameDoc, { timestamp: new Date() }, { merge: true });
+    // When creating a new game, initialize the score and longest streak to 0
+    await setDoc(gameDoc, { timestamp: new Date(), score: 0, longestStreak: 0 }, { merge: true });
 
     // Create a reference to the 'history' document
     const questionDoc = doc(gameDoc, 'history', questionId);
@@ -257,8 +257,8 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-        <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
-        {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} userId={userId} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} />}
+          <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
+          {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} userId={userId} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} />}
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -272,9 +272,9 @@ export default function Home() {
           {!user ? <Auth onUserAuth={handleUserUpdate} /> :
             !gameMode ? (
               <>
-                <Tabs 
-                  aria-label="Learning Level" 
-                  selectedKey={learningLevel} 
+                <Tabs
+                  aria-label="Learning Level"
+                  selectedKey={learningLevel}
                   onSelectionChange={updateLearningLevelInFirebase}
                 >
                   <Tab key="beginner" title="Beginner" />
@@ -283,7 +283,7 @@ export default function Home() {
                 </Tabs>
                 <GameModeSelection onGameModeSelect={handleGameModeSelect} />
               </>
-            ) : 
+            ) :
               isGameOver && userId && gameId && isFirebaseUpdated ?
                 <GameOver
                   score={score}
@@ -324,3 +324,4 @@ export default function Home() {
     </div>
   );
 }
+
