@@ -30,7 +30,7 @@ const HistoryPage = () => {
 
             // Fetch game history
             const gamesSnapshot = await fetchCollection(userRef, 'games');
-            const historyData = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
+            let historyData = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
               const { id: gameId, ...gameData } = gameDocSnapshot.data();
 
               // Fetch game history for each game
@@ -54,6 +54,25 @@ const HistoryPage = () => {
                 },
               };
             }));
+
+            console.log('Before filtering:', historyData);
+
+            // Find and log the specific game with gameNumber '097'
+            const game097 = historyData.find(game => game.gameStats.gameNumber === '097');
+            console.log('Game 097 data:', game097);
+
+            // Adjust the filter to treat null scores and longest streaks as 0
+            historyData = historyData.filter(game => {
+              const score = game.gameStats.score !== null ? game.gameStats.score : 0;
+              const longestStreak = game.gameStats.longestStreak !== null ? game.gameStats.longestStreak : 0;
+              const gameNumber = game.gameStats.gameNumber;
+              const scoreIsValid = score !== 'N/A'; // Since we're defaulting to 0, we don't need to check for null here
+              const longestStreakIsValid = longestStreak !== 'N/A'; // Similarly, default to 0 for longest streak
+              const gameNumberIsValid = gameNumber !== '000' && gameNumber != null;
+              return scoreIsValid && longestStreakIsValid && gameNumberIsValid;
+            });
+
+            console.log('After filtering:', historyData);
 
             setUserHistory(historyData);
           }
@@ -142,5 +161,3 @@ async function fetchCollection(ref, collectionName) {
 }
 
 export default HistoryPage;
-
-
