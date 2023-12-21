@@ -55,12 +55,6 @@ const HistoryPage = () => {
               };
             }));
 
-            console.log('Before filtering:', historyData);
-
-            // Find and log the specific game with gameNumber '097'
-            const game097 = historyData.find(game => game.gameStats.gameNumber === '097');
-            console.log('Game 097 data:', game097);
-
             // Adjust the filter to treat null scores and longest streaks as 0
             historyData = historyData.filter(game => {
               const score = game.gameStats.score !== null ? game.gameStats.score : 0;
@@ -71,8 +65,6 @@ const HistoryPage = () => {
               const gameNumberIsValid = gameNumber !== '000' && gameNumber != null;
               return scoreIsValid && longestStreakIsValid && gameNumberIsValid;
             });
-
-            console.log('After filtering:', historyData);
 
             setUserHistory(historyData);
           }
@@ -130,10 +122,10 @@ const HistoryPage = () => {
                   <div className="border-t pt-4">
                     <div className="flex justify-between items-center">
                       <div className="text-lg text-gray-700">
-                        Score: {gameHistory.gameStats.score || 'N/A'}
+                        Score: {gameHistory.gameStats.score !== null && gameHistory.gameStats.score !== undefined ? gameHistory.gameStats.score : 'N/A'}
                       </div>
                       <div className="text-lg text-gray-700">
-                        Longest Streak: {gameHistory.gameStats.longestStreak || 'N/A'}
+                        Longest Streak: {gameHistory.gameStats.longestStreak !== null && gameHistory.gameStats.longestStreak !== undefined ? gameHistory.gameStats.longestStreak : 'N/A'}
                       </div>
                     </div>
                   </div>
