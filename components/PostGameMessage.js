@@ -31,7 +31,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       userStats
     };
     return data;
-  }, [db, userId, score, incorrectAnswers, gameHistory, getUserStatsFromFirebase]);
+  }, [score, incorrectAnswers, gameHistory, getUserStatsFromFirebase]);
 
   const handleCloseMessage = () => {
     setIsMessageVisible(false);
