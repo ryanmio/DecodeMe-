@@ -27,7 +27,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
             </div>
-            <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} strikes={gameData?.strikes} strikeLimit={gameData?.strikeLimit} />
+            <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} longestStreak={gameData?.longestStreak} />
             <GameHistory gameHistory={gameHistory} />
           </div>
         </div>
@@ -60,8 +60,12 @@ export const getServerSideProps = async (context) => {
           id: shareDocSnap.id,
           ...shareData,
           sharedAt: shareData?.sharedAt?.toDate()?.toISOString() ?? null,
-          strikes: shareData?.strikes ?? 0,
-          strikeLimit: shareData?.strikeLimit ?? 0,
+          gameId: shareData?.gameId ?? '',
+          gameNumber: shareData?.gameNumber ?? 0,
+          leaderboardName: shareData?.leaderboardName ?? '',
+          longestStreak: shareData?.longestStreak ?? 0,
+          questionsAnswered: shareData?.questionsAnswered ?? 0,
+          score: shareData?.score ?? 0,
         };
 
         console.log('gameData:', gameData); // New console log
