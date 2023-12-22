@@ -12,7 +12,6 @@ const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
     }
   }, [sharedAt]);
 
-  console.log('sharedAt:', sharedAt);
   const finalScore = Math.round((score / questionsAnswered) * 100);
   return (
     <div className="flex justify-center items-center mb-4">

@@ -42,14 +42,11 @@ export const getServerSideProps = async (context) => {
     const { query: contextQuery } = context;
     const { shareId } = contextQuery;
 
-    console.log('shareId:', shareId);
-
     let gameData = null;
     let gameHistory = [];
 
     if (shareId) {
       const shareDocRef = db.collection('sharedResults').doc(shareId);
-      console.log('shareDocRef:', shareDocRef);
       const shareDocSnap = await shareDocRef.get();
 
       if (shareDocSnap.exists) {
