@@ -1,11 +1,19 @@
 // components/FinalScore.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CircularProgress } from "@nextui-org/react";
+import { format } from 'date-fns';
 
 const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
+  const [date, setDate] = useState('Loading...');
+
+  useEffect(() => {
+    if (sharedAt) {
+      setDate(format(new Date(sharedAt), 'MMM dd, yyyy'));
+    }
+  }, [sharedAt]);
+
+  console.log('sharedAt:', sharedAt);
   const finalScore = Math.round((score / questionsAnswered) * 100);
-  const isFirestoreTimestamp = sharedAt && sharedAt.hasOwnProperty('seconds') && sharedAt.hasOwnProperty('nanoseconds');
-  const date = isFirestoreTimestamp ? sharedAt.toDate().toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Loading...';
   return (
     <div className="flex justify-center items-center mb-4">
       <CircularProgress
