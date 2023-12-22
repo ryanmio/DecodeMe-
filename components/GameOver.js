@@ -46,7 +46,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     fetchGameHistory();
   }, [fetchGameHistory]);
 
-  const fetchLeaderboardName = async () => {
+  const fetchLeaderboardName = useCallback(async () => {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
     const userData = userDoc.data();
@@ -60,9 +60,9 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       }
     }
     return null;
-  };
+  }, [db, userId]);
 
-  const getAndIncrementGameNumber = async () => {
+  const getAndIncrementGameNumber = useCallback(async () => {
     const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
     const userData = userSnapshot.data();
@@ -74,7 +74,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     });
 
     return gameNumber;
-  };
+  }, [db, userId]);
 
   const saveGameStatsToHistory = useCallback(async () => {
     if (currentStreak === undefined) {
@@ -103,7 +103,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await setDoc(gameDocRef, gameStats, { merge: true });
   
     return gameStats;
-  }, [currentStreak, gameId, leaderboardName, score, questionsAnswered, longestStreak, db, userId]);
+  }, [currentStreak, gameId, leaderboardName, score, questionsAnswered, longestStreak, db, userId, fetchLeaderboardName, getAndIncrementGameNumber]);
 
   useEffect(() => {
     saveGameStatsToHistory();
