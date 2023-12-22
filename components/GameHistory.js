@@ -17,6 +17,9 @@ const GameHistory = ({ gameHistory }) => {
           <div>
             {gameHistory.map((entry, index) => {
               const formattedQuestion = formatCodeSnippet(entry.question);
+              const isCorrect = entry.isCorrect === true; // Explicitly check for true
+              const strikes = entry.strikes || 0; // Default to 0 if undefined
+              const strikeLimit = entry.strikeLimit || 0; // Default to 0 if undefined
               return (
                 <div key={entry.id} className="game-history-entry bg-gray-50 rounded-lg shadow mb-6 p-2">
                   <div className="game-question text-gray-800">
@@ -31,7 +34,7 @@ const GameHistory = ({ gameHistory }) => {
                   </div>
                   <div className="game-answer text-gray-800 p-2">
                     <Tooltip
-                      content={entry.isCorrect ? "Correct!" : "Incorrect!"}
+                      content={isCorrect ? "Correct!" : "Incorrect!"}
                       delay={0}
                       closeDelay={0}
                       motionProps={{
@@ -41,8 +44,8 @@ const GameHistory = ({ gameHistory }) => {
                         },
                       }}
                     >
-                      <span className={`game-correct font-semibold ${entry.isCorrect ? 'text-green-500' : 'text-red-500'}`}>
-                        {entry.isCorrect ? <span>&#10004; </span> : <span>&#10060; </span>}
+                      <span className={`game-correct font-semibold ${isCorrect ? 'text-green-500' : 'text-red-500'}`}>
+                        {isCorrect ? <span>&#10004; </span> : <span>&#10060; </span>}
                       </span>
                     </Tooltip>
                     My Answer: {entry.answer}
