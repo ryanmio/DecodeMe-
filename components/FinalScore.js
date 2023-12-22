@@ -4,10 +4,7 @@ import { CircularProgress } from "@nextui-org/react";
 
 const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
   const finalScore = Math.round((score / questionsAnswered) * 100);
-  const isFirestoreTimestamp = sharedAt && sharedAt.hasOwnProperty('seconds') && sharedAt.hasOwnProperty('nanoseconds');
-  const date = isFirestoreTimestamp 
-    ? sharedAt.toDate().toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) 
-    : new Date(sharedAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+  const date = new Date(sharedAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
   return (
     <div className="flex justify-center items-center mb-4">
       <CircularProgress
