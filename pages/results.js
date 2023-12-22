@@ -61,6 +61,8 @@ export const getServerSideProps = async (context) => {
           strikeLimit: shareDocSnap.data().strikeLimit,
         };
 
+        console.log('gameData:', gameData); // New console log
+
         // Retrieve the history subcollection
         const historyCollectionRef = shareDocRef.collection('history');
         const historySnapshot = await historyCollectionRef.get();
@@ -69,6 +71,8 @@ export const getServerSideProps = async (context) => {
           id: docSnapshot.id,
           ...docSnapshot.data()
         }));
+
+        console.log('gameHistory:', gameHistory); // New console log
       }
     }
 
