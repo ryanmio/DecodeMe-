@@ -1,7 +1,7 @@
 // pages/results.js
 import React from 'react';
 import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
-import { getFirebaseFirestore } from '../app/src/firebase';
+import { db } from '../firebaseAdmin';
 import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
@@ -39,7 +39,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
 
 export const getServerSideProps = async (context) => {
   try {
-    const db = getFirebaseFirestore();
+    // const db = getFirebaseFirestore(); // Removed this line
 
     const { query: contextQuery } = context;
     const { shareId } = contextQuery;
