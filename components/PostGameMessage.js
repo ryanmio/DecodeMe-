@@ -1,5 +1,5 @@
 // app/src/components/PostGameMessage.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getDoc, doc } from 'firebase/firestore';
 
 const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) => {
@@ -21,7 +21,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
     return incorrectAnswers.join(', ');
   };
 
-  const prepareDataForOpenAI = async () => {
+  const prepareDataForOpenAI = useCallback(async () => {
     const userStats = await getUserStatsFromFirebase();
     const formattedIncorrectAnswers = formatIncorrectAnswers(incorrectAnswers);
     const data = {
@@ -31,7 +31,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       userStats
     };
     return data;
-  };
+  }, [db, userId, score, incorrectAnswers, gameHistory]);
 
   const handleCloseMessage = () => {
     setIsMessageVisible(false);
@@ -50,7 +50,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       setIsMessageVisible(true); // Set the message to be visible only after the API call is successful
     };
     fetchPostGameMessage();
-  }, []);
+  }, [prepareDataForOpenAI]);
 
   return (
     isMessageVisible && (
