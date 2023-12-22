@@ -11,7 +11,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
     <div>
       <h1>{gameData?.leaderboardName}</h1>
       <p>{gameData?.score}</p>
-      <GameHistory gameHistory={gameHistory} />
+      <FinalScore score={gameData?.score} />
     </div>
   );
 };
