@@ -1,5 +1,5 @@
 // components/GameOver.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
@@ -20,7 +20,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     return collection(db, 'users', userId, 'games', gameId, 'history');
   };
 
-  const fetchGameHistory = async () => {
+  const fetchGameHistory = useCallback(async () => {
     setError('');
     setLoading(true);
     try {
@@ -40,11 +40,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     } finally {
       setLoading(false);
     }
-  };
+  }, [db, gameId, userId]);
 
   useEffect(() => {
     fetchGameHistory();
-  }, [db, gameId, userId]);
+  }, [fetchGameHistory]);
 
   const fetchLeaderboardName = async () => {
     const userDocRef = doc(db, 'users', userId);
@@ -76,7 +76,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     return gameNumber;
   };
 
-  const saveGameStatsToHistory = async () => {
+  const saveGameStatsToHistory = useCallback(async () => {
     if (currentStreak === undefined) {
       return;
     }
@@ -103,11 +103,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await setDoc(gameDocRef, gameStats, { merge: true });
   
     return gameStats;
-  };
+  }, [currentStreak, gameId, leaderboardName, score, questionsAnswered, longestStreak, db, userId]);
 
   useEffect(() => {
     saveGameStatsToHistory();
-  }, [currentStreak]);
+  }, [saveGameStatsToHistory]);
 
   const createShareDocument = async (finalLeaderboardName) => {
     const shareId = `${finalLeaderboardName}_${Date.now()}`;
