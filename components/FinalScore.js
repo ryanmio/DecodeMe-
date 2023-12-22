@@ -3,7 +3,6 @@ import React from 'react';
 import { CircularProgress } from "@nextui-org/react";
 
 const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
-  console.log('sharedAt:', sharedAt, 'Type:', typeof sharedAt);
   const finalScore = Math.round((score / questionsAnswered) * 100);
   const isFirestoreTimestamp = sharedAt && sharedAt.hasOwnProperty('seconds') && sharedAt.hasOwnProperty('nanoseconds');
   const date = isFirestoreTimestamp ? sharedAt.toDate().toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Loading...';
