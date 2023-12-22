@@ -1,6 +1,5 @@
 // pages/results.js
 import React from 'react';
-import { doc, getDoc, collection, getDocs, orderBy, query } from 'firebase/firestore';
 import { db } from '../firebaseAdmin';
 import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
@@ -39,17 +38,19 @@ const ResultsPage = ({ gameData, gameHistory }) => {
 
 export const getServerSideProps = async (context) => {
   try {
-    // const db = getFirebaseFirestore(); // Removed this line
 
     const { query: contextQuery } = context;
     const { shareId } = contextQuery;
+
+    console.log('shareId:', shareId);
 
     let gameData = null;
     let gameHistory = [];
 
     if (shareId) {
-      const shareDocRef = doc(db, 'sharedResults', shareId);
-      const shareDocSnap = await getDoc(shareDocRef);
+      const shareDocRef = db.collection('sharedResults').doc(shareId);
+      console.log('shareDocRef:', shareDocRef);
+      const shareDocSnap = await shareDocRef.get();
 
       if (shareDocSnap.exists()) {
         gameData = {
@@ -61,9 +62,8 @@ export const getServerSideProps = async (context) => {
         };
 
         // Retrieve the history subcollection
-        const historyCollectionRef = collection(shareDocRef, 'history');
-        const historyQuery = query(historyCollectionRef, orderBy('timestamp'));
-        const historySnapshot = await getDocs(historyQuery);
+        const historyCollectionRef = shareDocRef.collection('history');
+        const historySnapshot = await historyCollectionRef.get();
 
         gameHistory = historySnapshot.docs.map(docSnapshot => ({
           id: docSnapshot.id,
