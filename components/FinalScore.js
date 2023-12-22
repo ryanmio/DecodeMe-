@@ -6,9 +6,7 @@ const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
   console.log('sharedAt:', sharedAt);
   const finalScore = Math.round((score / questionsAnswered) * 100);
   const isISODateString = sharedAt && typeof sharedAt === 'string';
-  console.log('isISODateString:', isISODateString);
-  const date = isISODateString ? new Date(sharedAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Loading...';
-  console.log('date:', date);
+  const date = isISODateString ? new Date(sharedAt).toISOString() : 'Loading...';
   return (
     <div className="flex justify-center items-center mb-4">
       <CircularProgress
