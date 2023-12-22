@@ -6,7 +6,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
   const [postGameMessage, setPostGameMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false); // Initially set to false
 
-  const getUserStatsFromFirebase = async () => {
+  const getUserStatsFromFirebase = useCallback(async () => {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
@@ -15,7 +15,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       console.error('No such user document!');
       return null;
     }
-  };
+  }, [db, userId]);
 
   const formatIncorrectAnswers = (incorrectAnswers) => {
     return incorrectAnswers.join(', ');
@@ -31,7 +31,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       userStats
     };
     return data;
-  }, [db, userId, score, incorrectAnswers, gameHistory]);
+  }, [db, userId, score, incorrectAnswers, gameHistory, getUserStatsFromFirebase]);
 
   const handleCloseMessage = () => {
     setIsMessageVisible(false);
