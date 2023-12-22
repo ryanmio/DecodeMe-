@@ -3,7 +3,9 @@ import React from 'react';
 import { CircularProgress } from "@nextui-org/react";
 
 const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
+  console.log('sharedAt:', sharedAt, 'Type:', typeof sharedAt);
   const finalScore = Math.round((score / questionsAnswered) * 100);
+  const date = sharedAt ? sharedAt.toDate().toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Loading...';
   return (
     <div className="flex justify-center items-center mb-4">
       <CircularProgress
@@ -16,7 +18,7 @@ const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
       />
       <div className="ml-6 text-left">
         <p className="text-lg font-semibold text-gray-700">Questions Correct: {score} / {questionsAnswered}</p>
-        <p className="results-shared-at text-sm text-gray-500">{sharedAt ? new Date(sharedAt).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }) : 'Loading...'}</p>
+        <p className="results-shared-at text-sm text-gray-500">{date}</p>
       </div>
     </div>
   );
