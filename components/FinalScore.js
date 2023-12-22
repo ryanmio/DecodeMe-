@@ -1,13 +1,19 @@
 // components/FinalScore.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { CircularProgress } from "@nextui-org/react";
 import { format } from 'date-fns';
 
 const FinalScore = ({ score, questionsAnswered, sharedAt }) => {
+  const [date, setDate] = useState('Loading...');
+
+  useEffect(() => {
+    if (sharedAt) {
+      setDate(format(new Date(sharedAt), 'MMM dd, yyyy'));
+    }
+  }, [sharedAt]);
+
   console.log('sharedAt:', sharedAt);
   const finalScore = Math.round((score / questionsAnswered) * 100);
-  const isISODateString = sharedAt && typeof sharedAt === 'string';
-  const date = isISODateString ? format(new Date(sharedAt), 'MMM dd, yyyy') : 'Loading...';
   return (
     <div className="flex justify-center items-center mb-4">
       <CircularProgress
