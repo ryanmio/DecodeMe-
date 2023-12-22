@@ -1,22 +1,35 @@
 // pages/results.js
 import React from 'react';
 import { db } from '../firebaseAdmin';
+import ChallengeSection from '../components/ChallengeSection';
+import GameHistory from '../components/GameHistory';
+import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
 
-const ResultsPage = ({ gameData }) => {
-  // Simplified rendering, focusing only on gameData
+const ResultsPage = ({ gameData, gameHistory }) => {
+  const metadata = {
+    title: `Game Results for ${gameData?.leaderboardName}`,
+    description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
+    image: '/images/shareimage.jpeg',
+    url: `https://deocdeme.app/results/${gameData?.id}`,
+  };
+
   return (
-    <RootLayout>
+    <RootLayout metadata={metadata}>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
+          <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-8 fixed-width">
-            <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
-            {gameData ? (
-              <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData.leaderboardName}</p>
-            ) : (
-              <p className="text-lg text-center text-gray-700">No Game Data Available</p>
-            )}
+            <div className="results-header mb-4">
+              <h1 className="text-2xl font-bold text-center text-gray-900">Game Results</h1>
+              <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
+            </div>
+            <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} strikes={gameData?.strikes} strikeLimit={gameData?.strikeLimit} />
+            <GameHistory gameHistory={gameHistory} />
           </div>
+        </div>
+        <div className="pt-5">
+          <ChallengeSection />
         </div>
       </div>
     </RootLayout>
@@ -25,34 +38,54 @@ const ResultsPage = ({ gameData }) => {
 
 export const getServerSideProps = async (context) => {
   try {
-    const { shareId } = context.query;
-    console.log('shareId received:', shareId); // Log for debugging
+
+    const { query: contextQuery } = context;
+    const { shareId } = contextQuery;
+
+    console.log('shareId:', shareId);
+
     let gameData = null;
+    let gameHistory = [];
 
     if (shareId) {
-      console.log('Fetching Firestore document for shareId:', shareId);
       const shareDocRef = db.collection('sharedResults').doc(shareId);
+      console.log('shareDocRef:', shareDocRef);
       const shareDocSnap = await shareDocRef.get();
 
       if (shareDocSnap.exists) {
-        console.log('Document found, processing data...');
-        gameData = { id: shareDocSnap.id, ...shareDocSnap.data() };
-        console.log('Processed gameData:', gameData);
-      } else {
-        console.log('No document found for shareId:', shareId);
+        gameData = {
+          id: shareDocSnap.id,
+          ...shareDocSnap.data(),
+          sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString(),
+          strikes: shareDocSnap.data().strikes,
+          strikeLimit: shareDocSnap.data().strikeLimit,
+        };
+
+        // Retrieve the history subcollection
+        const historyCollectionRef = shareDocRef.collection('history');
+        const historySnapshot = await historyCollectionRef.get();
+
+        gameHistory = historySnapshot.docs.map(docSnapshot => ({
+          id: docSnapshot.id,
+          ...docSnapshot.data()
+        }));
       }
-    } else {
-      console.log('No shareId provided in query');
     }
 
     return {
       props: {
-        gameData: gameData ? JSON.parse(JSON.stringify(gameData)) : null,
+        gameData: gameData ? {
+          ...JSON.parse(JSON.stringify(gameData)),
+          sharedAt: gameData.sharedAt,
+        } : null,
+        gameHistory: JSON.parse(JSON.stringify(gameHistory)),
       },
     };
   } catch (error) {
-    console.error('Error in getServerSideProps:', error);
-    return { props: { gameData: null } };
+    console.error('Error fetching data in getServerSideProps:', error);
+    return {
+      notFound: true,
+    };
   }
 };
 
