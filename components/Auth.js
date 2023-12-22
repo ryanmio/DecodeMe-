@@ -29,7 +29,7 @@ export default function Auth({ onUserAuth }) {
       });
       return () => unsubscribe();
     }
-  }, []);
+  }, [auth, onUserAuth]);  
 
   const handleAnonymousSignIn = async () => {
     if (!leaderboardName) {
