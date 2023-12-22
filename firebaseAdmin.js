@@ -13,5 +13,4 @@ if (!admin.apps.length) {
 }
 
 const db = admin.firestore();
-console.log('db:', db);  // Add this line
 export { db };
