@@ -1,5 +1,5 @@
 // components/GameOver.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
@@ -20,7 +20,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     return collection(db, 'users', userId, 'games', gameId, 'history');
   };
 
-  const fetchGameHistory = async () => {
+  const fetchGameHistory = useCallback(async () => {
     setError('');
     setLoading(true);
     try {
@@ -40,13 +40,13 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     } finally {
       setLoading(false);
     }
-  };
+  }, [db, gameId, userId]);
 
   useEffect(() => {
     fetchGameHistory();
-  }, [db, gameId, userId]);
+  }, [fetchGameHistory]);
 
-  const fetchLeaderboardName = async () => {
+  const fetchLeaderboardName = useCallback(async () => {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
     const userData = userDoc.data();
@@ -60,9 +60,9 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       }
     }
     return null;
-  };
+  }, [db, userId]);
 
-  const getAndIncrementGameNumber = async () => {
+  const getAndIncrementGameNumber = useCallback(async () => {
     const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
     const userData = userSnapshot.data();
@@ -74,9 +74,9 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     });
 
     return gameNumber;
-  };
+  }, [db, userId]);
 
-  const saveGameStatsToHistory = async () => {
+  const saveGameStatsToHistory = useCallback(async () => {
     if (currentStreak === undefined) {
       return;
     }
@@ -103,11 +103,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await setDoc(gameDocRef, gameStats, { merge: true });
   
     return gameStats;
-  };
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, fetchLeaderboardName, getAndIncrementGameNumber]);
 
   useEffect(() => {
     saveGameStatsToHistory();
-  }, [currentStreak]);
+  }, [saveGameStatsToHistory]);
 
   const createShareDocument = async (finalLeaderboardName) => {
     const shareId = `${finalLeaderboardName}_${Date.now()}`;

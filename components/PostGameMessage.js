@@ -1,12 +1,12 @@
 // app/src/components/PostGameMessage.js
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { getDoc, doc } from 'firebase/firestore';
 
 const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) => {
   const [postGameMessage, setPostGameMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false); // Initially set to false
 
-  const getUserStatsFromFirebase = async () => {
+  const getUserStatsFromFirebase = useCallback(async () => {
     const userDocRef = doc(db, 'users', userId);
     const userDoc = await getDoc(userDocRef);
     if (userDoc.exists()) {
@@ -15,13 +15,13 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       console.error('No such user document!');
       return null;
     }
-  };
+  }, [db, userId]);
 
   const formatIncorrectAnswers = (incorrectAnswers) => {
     return incorrectAnswers.join(', ');
   };
 
-  const prepareDataForOpenAI = async () => {
+  const prepareDataForOpenAI = useCallback(async () => {
     const userStats = await getUserStatsFromFirebase();
     const formattedIncorrectAnswers = formatIncorrectAnswers(incorrectAnswers);
     const data = {
@@ -31,7 +31,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       userStats
     };
     return data;
-  };
+  }, [score, incorrectAnswers, gameHistory, getUserStatsFromFirebase]);
 
   const handleCloseMessage = () => {
     setIsMessageVisible(false);
@@ -50,7 +50,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       setIsMessageVisible(true); // Set the message to be visible only after the API call is successful
     };
     fetchPostGameMessage();
-  }, []);
+  }, [prepareDataForOpenAI]);
 
   return (
     isMessageVisible && (
