@@ -5,6 +5,7 @@ import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   const metadata = {
@@ -93,4 +94,10 @@ export const getServerSideProps = async (context) => {
   }
 };
 
-export default ResultsPage;
+export default function ResultsPageWithErrorBoundary(props) {
+  return (
+    <ErrorBoundary>
+      <ResultsPage {...props} />
+    </ErrorBoundary>
+  );
+}
