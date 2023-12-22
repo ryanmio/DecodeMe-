@@ -52,7 +52,7 @@ export const getServerSideProps = async (context) => {
       console.log('shareDocRef:', shareDocRef);
       const shareDocSnap = await shareDocRef.get();
 
-      if (shareDocSnap.exists()) {
+      if (shareDocSnap.exists) {
         gameData = {
           id: shareDocSnap.id,
           ...shareDocSnap.data(),
