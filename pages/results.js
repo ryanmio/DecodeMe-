@@ -14,6 +14,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
       <FinalScore 
         score={gameData?.score} 
         questionsAnswered={gameData?.questionsAnswered} 
+        sharedAt={gameData?.sharedAt} 
       />
     </div>
   );
