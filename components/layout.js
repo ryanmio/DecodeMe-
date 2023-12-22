@@ -14,7 +14,7 @@ export default function RootLayout({ children, metadata }) {
 
   return (
     <div>
-      {/* <Head>
+      <Head>
         <title>{finalMetadata.title}</title>
         <meta name="description" content={finalMetadata.description} />
         <meta property="og:title" content={finalMetadata.title} />
@@ -22,7 +22,7 @@ export default function RootLayout({ children, metadata }) {
         <meta property="og:image" content={finalMetadata.image} />
         <meta property="og:url" content={finalMetadata.url} />
         <meta name="twitter:card" content="summary_large_image" />
-      </Head> */}
+      </Head>
       {children}
     </div>
   )
