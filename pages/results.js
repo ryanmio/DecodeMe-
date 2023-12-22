@@ -41,7 +41,6 @@ const ResultsPage = ({ gameData, gameHistory }) => {
 
 export const getServerSideProps = async (context) => {
   try {
-
     const { query: contextQuery } = context;
     const { shareId } = contextQuery;
 
@@ -56,12 +55,13 @@ export const getServerSideProps = async (context) => {
       const shareDocSnap = await shareDocRef.get();
 
       if (shareDocSnap.exists) {
+        const shareData = shareDocSnap.data();
         gameData = {
           id: shareDocSnap.id,
-          ...shareDocSnap.data(),
-          sharedAt: shareDocSnap.data().sharedAt.toDate().toISOString(),
-          strikes: shareDocSnap.data().strikes,
-          strikeLimit: shareDocSnap.data().strikeLimit,
+          ...shareData,
+          sharedAt: shareData?.sharedAt?.toDate()?.toISOString() ?? null,
+          strikes: shareData?.strikes ?? 0,
+          strikeLimit: shareData?.strikeLimit ?? 0,
         };
 
         console.log('gameData:', gameData); // New console log
