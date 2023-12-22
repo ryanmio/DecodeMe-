@@ -11,6 +11,12 @@ const ResultsPage = ({ gameData, gameHistory }) => {
     <div>
       <h1>{gameData?.leaderboardName}</h1>
       <p>{gameData?.score}</p>
+      <FinalScore 
+        score={gameData?.score} 
+        questionsAnswered={gameData?.questionsAnswered} 
+        sharedAt={gameData?.sharedAt} 
+        longestStreak={gameData?.longestStreak} 
+      />
     </div>
   );
 };
