@@ -15,7 +15,8 @@ export default function RootLayout({ children, metadata }) {
   return (
     <div>
       <Head>
-        <title>Simplified Title</title>
+        <title key="title">{finalMetadata.title}</title>
+        {/* Add other meta tags here with unique keys */}
       </Head>
       {children}
     </div>
