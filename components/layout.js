@@ -1,19 +1,12 @@
 // layout.js
-import Head from 'next/head'
-import PropTypes from 'prop-types'
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default function RootLayout({ children, metadata }) {
-  const defaultMetadata = {
-    title: 'Default Title',
-    description: 'Default Description',
-    image: '/images/shareimage.jpeg',
-    url: 'Default URL',
-  };
-
-  const finalMetadata = { ...defaultMetadata, ...metadata };
-
+export default function RootLayout({ children }) {
   return (
     <div>
+      {/* Temporarily commented out the Head component to test its impact on SSR */}
+      {/*
       <Head>
         <title>{finalMetadata.title}</title>
         <meta name="description" content={finalMetadata.description} />
@@ -23,26 +16,23 @@ export default function RootLayout({ children, metadata }) {
         <meta property="og:url" content={finalMetadata.url} />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
+      */}
       {children}
     </div>
-  )
+  );
 }
 
 RootLayout.propTypes = {
   children: PropTypes.node.isRequired,
-  metadata: PropTypes.shape({
-    title: PropTypes.string,
-    description: PropTypes.string,
-    image: PropTypes.string,
-    url: PropTypes.string,
-  }),
-}
+  // metadata prop is temporarily removed for testing
+};
 
-RootLayout.defaultProps = {
-  metadata: {
-    title: 'Default Title',
-    description: 'Default Description',
-    image: '/images/shareimage.jpeg',
-    url: 'Default URL',
-  },
-}
+// Temporarily commented out defaultProps for metadata
+// RootLayout.defaultProps = {
+//   metadata: {
+//     title: 'Default Title',
+//     description: 'Default Description',
+//     image: '/images/shareimage.jpeg',
+//     url: 'Default URL',
+//   },
+// };
