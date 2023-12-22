@@ -7,6 +7,9 @@ import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
+  console.log('Rendering ResultsPage with gameData:', gameData);
+  console.log('Rendering ResultsPage with gameHistory:', gameHistory);
+
   const metadata = {
     title: `Game Results for ${gameData?.leaderboardName}`,
     description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
