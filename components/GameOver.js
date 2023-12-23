@@ -16,7 +16,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   const [error, setError] = useState('');
 
   const getHistoryCollectionRef = (db, userId, gameId) => {
-    return collection(db, 'users', userId, 'games', gameId, 'history');
+    return collection(db, user.isAnonymous ? 'guests' : 'users', userId, 'games', gameId, 'history');
   };
 
   const fetchGameHistory = useCallback(async () => {
@@ -39,7 +39,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     } finally {
       setLoading(false);
     }
-  }, [db, gameId, userId]);
+  }, [db, gameId, userId, user.isAnonymous]);
 
   useEffect(() => {
     fetchGameHistory();
