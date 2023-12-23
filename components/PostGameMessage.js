@@ -50,7 +50,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
       setIsMessageVisible(true); // Set the message to be visible only after the API call is successful
     };
     fetchPostGameMessage();
-  }, [prepareDataForOpenAI]);
+  }, []); // Empty array means this effect will only run once, when the component is first mounted
 
   return (
     isMessageVisible && (
