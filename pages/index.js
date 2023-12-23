@@ -39,6 +39,7 @@ export default function Home() {
   const [learningLevel, setLearningLevel] = useState('intermediate');
   const [selectedScript, setSelectedScript] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
+  const [leaderboardName, setLeaderboardName] = useState(null); // Add a new state for the leaderboard name
 
   const questionLimit = 20;
   const strikeLimit = 2;
@@ -269,7 +270,7 @@ export default function Home() {
             </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
-          {!user ? <Auth onUserAuth={handleUserUpdate} /> :
+          {!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> : // Pass the setLeaderboardName function to the Auth component
             !gameMode ? (
               <>
                 <Tabs
@@ -296,6 +297,7 @@ export default function Home() {
                   incorrectAnswers={incorrectAnswers}
                   currentStreak={currentStreak}
                   handleChatWithTutor={handleChatWithTutor}
+                  leaderboardName={leaderboardName} // Pass the leaderboardName state to the GameOver component
                 /> :
                 <>
                   <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />

@@ -10,11 +10,10 @@ import PostGameMessage from './PostGameMessage';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
-const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript }) => {
+const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [leaderboardName, setLeaderboardName] = useState('');
 
   const getHistoryCollectionRef = (db, userId, gameId) => {
     return collection(db, 'users', userId, 'games', gameId, 'history');
@@ -46,22 +45,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     fetchGameHistory();
   }, [fetchGameHistory]);
 
-  const fetchLeaderboardName = useCallback(async () => {
-    const userDocRef = doc(db, 'users', userId);
-    const userDoc = await getDoc(userDocRef);
-    const userData = userDoc.data();
-    if (userData && userData.leaderboardName) {
-      return userData.leaderboardName;
-    } else {
-      const inputName = prompt('Please enter your leaderboard name:');
-      if (inputName) {
-        await updateDoc(userDocRef, { leaderboardName: inputName });
-        return inputName;
-      }
-    }
-    return null;
-  }, [db, userId]);
-
   const getAndIncrementGameNumber = useCallback(async () => {
     const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
@@ -82,7 +65,9 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     }
 
     const gameNumber = await getAndIncrementGameNumber();
-    const leaderboardName = await fetchLeaderboardName();
+  
+    // Use the leaderboardName prop instead of fetching it again
+    const leaderboardNameToUse = leaderboardName;
   
     // Check if the current streak is greater than the longest streak
     if (currentStreak > longestStreak) {
@@ -91,7 +76,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   
     const gameStats = {
       gameId,
-      leaderboardName,
+      leaderboardName: leaderboardNameToUse,
       score,
       questionsAnswered,
       longestStreak,
@@ -103,14 +88,14 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await setDoc(gameDocRef, gameStats, { merge: true });
   
     return gameStats;
-  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, fetchLeaderboardName, getAndIncrementGameNumber]);
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName]);
 
   useEffect(() => {
     saveGameStatsToHistory();
   }, [saveGameStatsToHistory]);
 
-  const createShareDocument = async (finalLeaderboardName) => {
-    const shareId = `${finalLeaderboardName}_${Date.now()}`;
+  const createShareDocument = async () => {
+    const shareId = `${leaderboardName}_${Date.now()}`;
     const shareCollectionRef = collection(db, 'sharedResults');
     const shareDocRef = doc(shareCollectionRef, shareId);
     const batch = writeBatch(db);
@@ -143,14 +128,14 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     setLoading(true);
 
     try {
-      let finalLeaderboardName = leaderboardName || await fetchLeaderboardName();
+      // Use the leaderboardName prop instead of fetching it again
+      let finalLeaderboardName = leaderboardName;
       if (!finalLeaderboardName) {
         setLoading(false);
         return;
       }
-      setLeaderboardName(finalLeaderboardName);
 
-      const { shareId, shareDocRef, batch } = await createShareDocument(finalLeaderboardName);
+      const { shareId, shareDocRef, batch } = await createShareDocument();
       await addHistoryToSharedDocument(shareDocRef, batch);
       await batch.commit();
 

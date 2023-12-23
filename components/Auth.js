@@ -6,7 +6,7 @@ import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
-export default function Auth({ onUserAuth }) {
+export default function Auth({ onUserAuth, onLeaderboardNameSet }) { // Add the new prop here
   const [isClient, setIsClient] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [leaderboardName, setLeaderboardName] = useState('');
@@ -42,6 +42,7 @@ export default function Auth({ onUserAuth }) {
     try {
       const { user } = await signInAnonymously(auth);
       await setDoc(doc(db, 'guests', user.uid), { leaderboardName });
+      onLeaderboardNameSet(leaderboardName); // Call the new prop function to pass the leaderboard name back to the parent component
     } catch (error) {
       setError(error.message);
     } finally {
@@ -145,4 +146,5 @@ export default function Auth({ onUserAuth }) {
 
 Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
+  onLeaderboardNameSet: PropTypes.func.isRequired, // Add the new prop here
 };
