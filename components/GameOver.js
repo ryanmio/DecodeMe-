@@ -16,7 +16,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   const [error, setError] = useState('');
 
   const getHistoryCollectionRef = (db, userId, gameId) => {
-    return collection(db, user.isAnonymous ? 'guests' : 'users', userId, 'games', gameId, 'history');
+    return collection(db, 'users', userId, 'games', gameId, 'history');
   };
 
   const fetchGameHistory = useCallback(async () => {
@@ -39,14 +39,14 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     } finally {
       setLoading(false);
     }
-  }, [db, gameId, userId, user.isAnonymous]);
+  }, [db, gameId, userId]);
 
   useEffect(() => {
     fetchGameHistory();
   }, [fetchGameHistory]);
 
   const getAndIncrementGameNumber = useCallback(async () => {
-    const userRef = doc(db, user.isAnonymous ? 'guests' : 'users', userId);
+    const userRef = doc(db, 'users', userId);
     const userSnapshot = await getDoc(userRef);
     const userData = userSnapshot.data();
     const gameNumber = (userData?.gameCount || 0) + 1;
@@ -57,7 +57,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   });
 
   return gameNumber;
-}, [db, userId, user.isAnonymous]);
+}, [db, userId]);
 
   const saveGameStatsToHistory = useCallback(async () => {
     if (currentStreak === undefined) {
@@ -84,11 +84,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       gameNumber,
     };
 
-    const gameDocRef = doc(db, user.isAnonymous ? 'guests' : 'users', userId, 'games', gameId);
+    const gameDocRef = doc(db, 'users', userId, 'games', gameId);
     await setDoc(gameDocRef, gameStats, { merge: true });
   
     return gameStats;
-  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, user.isAnonymous]);
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName]);
 
   useEffect(() => {
     saveGameStatsToHistory();
