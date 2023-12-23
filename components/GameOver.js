@@ -84,11 +84,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       gameNumber,
     };
 
-    const gameDocRef = doc(db, 'users', userId, 'games', gameId);
+    const gameDocRef = doc(db, user.isAnonymous ? 'guests' : 'users', userId, 'games', gameId);
     await setDoc(gameDocRef, gameStats, { merge: true });
   
     return gameStats;
-  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName]);
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, user.isAnonymous]);
 
   useEffect(() => {
     saveGameStatsToHistory();
