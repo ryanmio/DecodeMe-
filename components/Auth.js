@@ -41,7 +41,9 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) { // Add the 
     setLoading(true);
     try {
       const { user } = await signInAnonymously(auth);
+      console.log('User signed in anonymously:', user);
       await setDoc(doc(db, 'guests', user.uid), { leaderboardName });
+      console.log('User document created in guests collection:', user.uid);
       onLeaderboardNameSet(leaderboardName); // Call the new prop function to pass the leaderboard name back to the parent component
     } catch (error) {
       setError(error.message);
