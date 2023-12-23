@@ -10,7 +10,7 @@ import PostGameMessage from './PostGameMessage';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
-const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName }) => {
+const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -46,18 +46,18 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   }, [fetchGameHistory]);
 
   const getAndIncrementGameNumber = useCallback(async () => {
-    const userRef = doc(db, 'users', userId);
+    const userRef = doc(db, user.isAnonymous ? 'guests' : 'users', userId);
     const userSnapshot = await getDoc(userRef);
     const userData = userSnapshot.data();
     const gameNumber = (userData?.gameCount || 0) + 1;
 
-    // Increment the game count in the user's document
-    await updateDoc(userRef, {
-      gameCount: gameNumber
-    });
+  // Increment the game count in the user's document
+  await updateDoc(userRef, {
+    gameCount: gameNumber
+  });
 
-    return gameNumber;
-  }, [db, userId]);
+  return gameNumber;
+}, [db, userId, user.isAnonymous]);
 
   const saveGameStatsToHistory = useCallback(async () => {
     if (currentStreak === undefined) {

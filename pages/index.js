@@ -298,6 +298,7 @@ export default function Home() {
                   currentStreak={currentStreak}
                   handleChatWithTutor={handleChatWithTutor}
                   leaderboardName={leaderboardName} // Pass the leaderboardName state to the GameOver component
+                  user={user} // Pass the user state to the GameOver component
                 /> :
                 <>
                   <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
