@@ -5,6 +5,7 @@ import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   const metadata = {
@@ -58,6 +59,8 @@ export const getServerSideProps = async (context) => {
           strikeLimit: shareDocSnap.data().strikeLimit,
         };
 
+        console.log('gameData:', gameData); // New console log
+
         // Retrieve the history subcollection
         const historyCollectionRef = shareDocRef.collection('history');
         const historySnapshot = await historyCollectionRef.get();
@@ -66,6 +69,8 @@ export const getServerSideProps = async (context) => {
           id: docSnapshot.id,
           ...docSnapshot.data()
         }));
+
+        console.log('gameHistory:', gameHistory); // New console log
       }
     }
 
@@ -86,4 +91,10 @@ export const getServerSideProps = async (context) => {
   }
 };
 
-export default ResultsPage;
+export default function ResultsPageWithErrorBoundary(props) {
+  return (
+    <ErrorBoundary>
+      <ResultsPage {...props} />
+    </ErrorBoundary>
+  );
+}
