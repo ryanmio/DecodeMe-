@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { getDoc, doc } from 'firebase/firestore';
 
-const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) => {
+const PostGameMessage = ({ db, userId, score, incorrectAnswers }) => {
   const [postGameMessage, setPostGameMessage] = useState('');
   const [isMessageVisible, setIsMessageVisible] = useState(false); // Initially set to false
 
@@ -27,11 +27,10 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, gameHistory }) =
     const data = {
       score,
       incorrectAnswers: formattedIncorrectAnswers,
-      gameHistory,
       userStats
     };
     return data;
-  }, [score, incorrectAnswers, gameHistory, getUserStatsFromFirebase]);
+  }, [score, incorrectAnswers, getUserStatsFromFirebase]);
 
   const handleCloseMessage = () => {
     setIsMessageVisible(false);

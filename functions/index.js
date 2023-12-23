@@ -158,13 +158,13 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
 /**
  * This function fetches a post-game message for the user. It uses the OpenAI API to generate a message
- * based on the user's score, incorrect answers, game history, and user stats. The message is intended
+ * based on the user's score, incorrect answers, and user stats. The message is intended
  * to provide a short, encouraging feedback to the user about their game performance.
  */
 
 exports.fetchPostGameMessage = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
-    const { score, incorrectAnswers, gameHistory, userStats } = request.body;
+    const { score, incorrectAnswers, userStats } = request.body;
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
       console.error('Server configuration error.');
@@ -179,7 +179,7 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
 
     const conversationHistory = [
       { role: 'system', content: `You are an AI that reviews the user's game performance and provides a short, encouraging message.` },
-      { role: 'user', content: `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. Here is my game history: ${gameHistory}. My user stats are: ${userStats}.` }
+      { role: 'user', content: `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. My user stats are: ${userStats}.` }
     ];
 
     const data = {
