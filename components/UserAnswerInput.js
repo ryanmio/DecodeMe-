@@ -70,7 +70,11 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
             </div>
           ))}
         </animated.div>
-        <button type="submit" className={`w-full mt-4 py-2 text-white rounded-lg bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 ${disabled ? 'cursor-not-allowed opacity-50' : 'hover:opacity-90'}`} disabled={disabled}>
+        <button 
+          type="submit" 
+          className={`w-full mt-4 py-2 text-white rounded-lg bg-gradient-to-r from-purple-400 via-pink-500 to-red-500 ${disabled || !selectedOption ? 'cursor-not-allowed opacity-50' : 'hover:opacity-90'}`} 
+          disabled={disabled || !selectedOption}
+        >
           {disabled && selectedOption ? 'Submitting...' : 'Submit'}
         </button>
       </form>
