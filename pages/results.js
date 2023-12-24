@@ -5,28 +5,17 @@ import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
-import { NextSeo } from 'next-seo';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
+  const metadata = {
+    title: `Game Results for ${gameData?.leaderboardName}`,
+    description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
+    image: '/images/shareimage.jpeg',
+    url: `https://deocdeme.app/results/${gameData?.id}`,
+  };
+
   return (
-    <RootLayout>
-      <NextSeo
-        title={`Game Results for ${gameData?.leaderboardName}`}
-        description={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`}
-        openGraph={{
-          title: `Game Results for ${gameData?.leaderboardName}`,
-          description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-          url: `https://deocdeme.app/results/${gameData?.id}`,
-          images: [
-            {
-              url: '/images/shareimage.jpeg',
-              width: 800,
-              height: 600,
-              alt: 'Share Image',
-            },
-          ],
-        }}
-      />
+    <RootLayout metadata={metadata}>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
