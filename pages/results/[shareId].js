@@ -23,10 +23,10 @@ const ResultsPage = ({ gameData, gameHistory }) => {
   return (
     <RootLayout metadata={metadata}>
       <Head>
-        <meta key="results:og:title" property="og:title" content={metadata.title} />
-        <meta key="results:og:description" property="og:description" content={metadata.description} />
-        <meta key="results:og:image" property="og:image" content={metadata.image} />
-        <meta key="results:og:url" property="og:url" content={metadata.url} />
+        <meta key="og:title" property="og:title" content={metadata.title} />
+        <meta key="og:description" property="og:description" content={metadata.description} />
+        <meta key="og:image" property="og:image" content={metadata.image} />
+        <meta key="og:url" property="og:url" content={metadata.url} />
       </Head>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
