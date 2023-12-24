@@ -1,5 +1,6 @@
 // pages/results.js
 import React from 'react';
+import Head from 'next/head';
 import { db } from '../firebaseAdmin';
 import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
@@ -16,6 +17,12 @@ const ResultsPage = ({ gameData, gameHistory }) => {
 
   return (
     <RootLayout metadata={metadata}>
+      <Head>
+        <meta property="og:title" content={metadata.title} />
+        <meta property="og:description" content={metadata.description} />
+        <meta property="og:image" content={metadata.image} />
+        <meta property="og:url" content={metadata.url} />
+      </Head>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>

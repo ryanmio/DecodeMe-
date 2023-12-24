@@ -1,3 +1,4 @@
+// pages/_document.js
 import Document, { Html, Head, Main, NextScript } from 'next/document'
 
 class MyDocument extends Document {
@@ -10,6 +11,10 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
+          <meta property="og:title" content="Default Title" />
+          <meta property="og:description" content="Default Description" />
+          <meta property="og:image" content="Default Image URL" />
+          <meta property="og:url" content="Default URL" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <body>
