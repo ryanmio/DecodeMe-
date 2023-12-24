@@ -11,17 +11,17 @@ const ResultsPage = ({ gameData, gameHistory }) => {
   const metadata = {
     title: `Game Results for ${gameData?.leaderboardName}`,
     description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-    image: '/images/shareimage.jpeg',
+    image: 'https://deocdeme.app/images/shareimage.jpeg',
     url: `https://deocdeme.app/results/${gameData?.id}`,
   };
 
   return (
     <RootLayout metadata={metadata}>
       <Head>
-        <meta property="og:title" content={metadata.title} />
-        <meta property="og:description" content={metadata.description} />
-        <meta property="og:image" content={metadata.image} />
-        <meta property="og:url" content={metadata.url} />
+        <meta key="og:title" property="og:title" content={metadata.title} />
+        <meta key="og:description" property="og:description" content={metadata.description} />
+        <meta key="og:image" property="og:image" content={metadata.image} />
+        <meta key="og:url" property="og:url" content={metadata.url} />
       </Head>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
