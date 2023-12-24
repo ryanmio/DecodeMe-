@@ -5,11 +5,28 @@ import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
-import { generateMetadata } from 'next/app';
+import { NextSeo } from 'next-seo';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   return (
     <RootLayout>
+      <NextSeo
+        title={`Game Results for ${gameData?.leaderboardName}`}
+        description={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`}
+        openGraph={{
+          title: `Game Results for ${gameData?.leaderboardName}`,
+          description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
+          url: `https://deocdeme.app/results/${gameData?.id}`,
+          images: [
+            {
+              url: '/images/shareimage.jpeg',
+              width: 800,
+              height: 600,
+              alt: 'Share Image',
+            },
+          ],
+        }}
+      />
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
@@ -63,24 +80,6 @@ export const getServerSideProps = async (context) => {
       }
     }
 
-    const metadata = generateMetadata({
-      title: `Game Results for ${gameData?.leaderboardName}`,
-      description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-      openGraph: {
-        title: `Game Results for ${gameData?.leaderboardName}`,
-        description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-        url: `https://deocdeme.app/results/${gameData?.id}`,
-        images: [
-          {
-            url: '/images/shareimage.jpeg',
-            width: 800,
-            height: 600,
-            alt: 'Share Image',
-          },
-        ],
-      },
-    });
-
     return {
       props: {
         gameData: gameData ? {
@@ -89,7 +88,6 @@ export const getServerSideProps = async (context) => {
         } : null,
         gameHistory: JSON.parse(JSON.stringify(gameHistory)),
       },
-      metadata,
     };
   } catch (error) {
     console.error('Error fetching data in getServerSideProps:', error);
