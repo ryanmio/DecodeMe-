@@ -118,7 +118,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   };
 
   const generateShareLink = async (shareId) => {
-    const shareLink = `${APP_URL}/results?shareId=${shareId}`;
+    const shareLink = `${APP_URL}/results/${shareId}`;
     await navigator.clipboard.writeText(shareLink);
     alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
   };

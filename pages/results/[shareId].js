@@ -1,11 +1,11 @@
-// pages/results.js
+// pages/results/[shareId].js
 import React from 'react';
 import Head from 'next/head';
-import { db } from '../firebaseAdmin';
-import ChallengeSection from '../components/ChallengeSection';
-import GameHistory from '../components/GameHistory';
-import FinalScore from '../components/FinalScore';
-import RootLayout from '../components/layout';
+import { db } from '../../firebaseAdmin';
+import ChallengeSection from '../../components/ChallengeSection';
+import GameHistory from '../../components/GameHistory';
+import FinalScore from '../../components/FinalScore';
+import RootLayout from '../../components/layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   console.log('gameData:', gameData);
@@ -48,11 +48,9 @@ const ResultsPage = ({ gameData, gameHistory }) => {
   );
 };
 
-export const getServerSideProps = async (context) => {
+export const getServerSideProps = async ({ params }) => {
   try {
-
-    const { query: contextQuery } = context;
-    const { shareId } = contextQuery;
+    const { shareId } = params;
 
     let gameData = null;
     let gameHistory = [];
