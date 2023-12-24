@@ -1,5 +1,6 @@
 // pages/results.js
 import React from 'react';
+import Head from 'next/head';
 import { db } from '../firebaseAdmin';
 import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
@@ -7,15 +8,16 @@ import FinalScore from '../components/FinalScore';
 import RootLayout from '../app/layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
-  const metadata = {
-    title: `Game Results for ${gameData?.leaderboardName}`,
-    description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-    image: '/images/shareimage.jpeg',
-    url: `https://deocdeme.app/results/${gameData?.id}`,
-  };
-
   return (
-    <RootLayout metadata={metadata}>
+    <RootLayout>
+      <Head>
+        <title>{`Game Results for ${gameData?.leaderboardName}`}</title>
+        <meta name="description" content={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`} />
+        <meta property="og:title" content={`Game Results for ${gameData?.leaderboardName}`} />
+        <meta property="og:description" content={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`} />
+        <meta property="og:image" content="/images/shareimage.jpeg" />
+        <meta property="og:url" content={`https://deocdeme.app/results/${gameData?.id}`} />
+      </Head>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
