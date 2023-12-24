@@ -8,15 +8,20 @@ import FinalScore from '../components/FinalScore';
 import RootLayout from '../app/layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
+  if (!gameData) {
+    // Render a loading state or return null if the server-side props are not available
+    return null;
+  }
+
   return (
     <RootLayout>
       <Head>
-        <title>{`Game Results for ${gameData?.leaderboardName}`}</title>
-        <meta name="description" content={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`} />
-        <meta property="og:title" content={`Game Results for ${gameData?.leaderboardName}`} />
-        <meta property="og:description" content={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`} />
+        <title>{`Game Results for ${gameData.leaderboardName}`}</title>
+        <meta name="description" content={`Check out the game results for ${gameData.leaderboardName} on DecodeMe!`} />
+        <meta property="og:title" content={`Game Results for ${gameData.leaderboardName}`} />
+        <meta property="og:description" content={`Check out the game results for ${gameData.leaderboardName} on DecodeMe!`} />
         <meta property="og:image" content="/images/shareimage.jpeg" />
-        <meta property="og:url" content={`https://deocdeme.app/results/${gameData?.id}`} />
+        <meta property="og:url" content={`https://deocdeme.app/results/${gameData.id}`} />
       </Head>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
