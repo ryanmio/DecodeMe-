@@ -5,19 +5,11 @@ import ChallengeSection from '../components/ChallengeSection';
 import GameHistory from '../components/GameHistory';
 import FinalScore from '../components/FinalScore';
 import RootLayout from '../components/layout';
-import { Helmet } from 'react-helmet';
+import { generateMetadata } from 'next/app';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
   return (
     <RootLayout>
-      <Helmet>
-        <title>Game Results for {gameData?.leaderboardName}</title>
-        <meta name="description" content={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`} />
-        <meta property="og:title" content={`Game Results for ${gameData?.leaderboardName}`} />
-        <meta property="og:description" content={`Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`} />
-        <meta property="og:image" content="/images/shareimage.jpeg" />
-        <meta property="og:url" content={`https://deocdeme.app/results/${gameData?.id}`} />
-      </Helmet>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
@@ -71,6 +63,24 @@ export const getServerSideProps = async (context) => {
       }
     }
 
+    const metadata = generateMetadata({
+      title: `Game Results for ${gameData?.leaderboardName}`,
+      description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
+      openGraph: {
+        title: `Game Results for ${gameData?.leaderboardName}`,
+        description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
+        url: `https://deocdeme.app/results/${gameData?.id}`,
+        images: [
+          {
+            url: '/images/shareimage.jpeg',
+            width: 800,
+            height: 600,
+            alt: 'Share Image',
+          },
+        ],
+      },
+    });
+
     return {
       props: {
         gameData: gameData ? {
@@ -79,6 +89,7 @@ export const getServerSideProps = async (context) => {
         } : null,
         gameHistory: JSON.parse(JSON.stringify(gameHistory)),
       },
+      metadata,
     };
   } catch (error) {
     console.error('Error fetching data in getServerSideProps:', error);
