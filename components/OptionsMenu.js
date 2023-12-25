@@ -53,7 +53,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   });
 
   const user = auth.currentUser;
-  const isLoggedIn = user && !user.isAnonymous;
+  const isLoggedIn = user !== null;
 
   return (
     <>
