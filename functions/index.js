@@ -177,9 +177,15 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
       'Content-Type': 'application/json',
     };
 
+    const systemMessage = `You are an AI that reviews the user's game performance and provides a short, encouraging message.`;
+    const userMessage = `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. My user stats are: ${userStats}. Refer to me by my username: ${leaderboardName}.`;
+
+    console.log('System Message:', systemMessage);
+    console.log('User Message:', userMessage);
+
     const conversationHistory = [
-      { role: 'system', content: `You are an AI that reviews the user's game performance and provides a short, encouraging message.` },
-      { role: 'user', content: `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. My user stats are: ${userStats}. My username is ${leaderboardName}.` }
+      { role: 'system', content: systemMessage },
+      { role: 'user', content: userMessage }
     ];
 
     const data = {
