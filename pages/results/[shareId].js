@@ -8,8 +8,6 @@ import FinalScore from '../../components/FinalScore';
 import RootLayout from '../../components/layout';
 
 const ResultsPage = ({ gameData, gameHistory }) => {
-  console.log('gameData:', gameData);
-  console.log('gameHistory:', gameHistory);
   
   const metadata = {
     title: `Game Results for ${gameData?.leaderboardName}`,
@@ -17,8 +15,6 @@ const ResultsPage = ({ gameData, gameHistory }) => {
     image: 'https://decodeme.app/images/shareimage.jpeg',
     url: `https://decodeme.app/results/${gameData?.id}`,
   };
-
-  console.log('metadata:', metadata);
 
   return (
     <RootLayout metadata={metadata}>
@@ -78,9 +74,6 @@ export const getServerSideProps = async ({ params }) => {
         }));
       }
     }
-
-    console.log('gameData:', gameData);
-    console.log('gameHistory:', gameHistory);
 
     return {
       props: {
