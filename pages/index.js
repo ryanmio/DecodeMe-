@@ -1,5 +1,5 @@
 // pages/index.js
-// This is the home component or page of the app.
+// This is the home page of the application. It contains the game logic, state management and UI components for the game.
 import React, { useState, useEffect } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
@@ -14,6 +14,7 @@ import GameOver from '../components/GameOver';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
 import ChatWithScript from '../components/ChatWithScript';
+import Head from 'next/head';
 
 export default function Home() {
   const [user, setUser] = useState(null);
@@ -255,6 +256,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <Head>
+        <title key="title">Play DecodeMe!</title>
+        <meta key="description" name="description" content="Play DecodeMe! and improve your coding skills!" />
+        <meta key="og:title" property="og:title" content="Play DecodeMe!" />
+        <meta key="og:description" property="og:description" content="Play DecodeMe! and improve your coding skills!" />
+        <meta key="og:image" property="og:image" content="https://decodeme.app/images/shareimage.jpeg" />
+        <meta key="og:url" property="og:url" content="https://decodeme.app" />
+      </Head>
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
