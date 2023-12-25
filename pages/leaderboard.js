@@ -6,6 +6,7 @@ import React, { useState } from 'react';
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 const fetchLeaderboardData = async (filter) => {
   let startDate;
@@ -108,6 +109,14 @@ const LeaderboardPage = ({ leaderboardData }) => {
 
   return (
     <NextUIProvider>
+      <Head>
+        <title>Leaderboard - DecodeMe!</title>
+        <meta name="description" content="Check out the leaderboard on DecodeMe!" />
+        <meta key="og:title" property="og:title" content="Leaderboard - DecodeMe!" />
+        <meta key="og:description" property="og:description" content="Check out the leaderboard on DecodeMe!" />
+        <meta property="og:image" content="https://decodeme.app/images/shareimage.jpeg" />
+        <meta property="og:url" content="https://decodeme.app/leaderboard" />
+      </Head>
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
