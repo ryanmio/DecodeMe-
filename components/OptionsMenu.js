@@ -52,6 +52,9 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
     onSkipSubmit();
   });
 
+  const user = auth.currentUser;
+  const isLoggedIn = user && !user.isAnonymous;
+
   return (
     <>
       <Dropdown>
@@ -66,10 +69,10 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
           </Button>
         </DropdownTrigger>
         <DropdownMenu variant="shadow" aria-label="Options menu">
-          <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>
+          {isLoggedIn && <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>}
           <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
           {gameMode && !isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
-          {auth.currentUser && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
+          {isLoggedIn && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
         </DropdownMenu>
       </Dropdown>
       <Modal 
