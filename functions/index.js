@@ -164,7 +164,7 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
 exports.fetchPostGameMessage = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
-    const { score, incorrectAnswers, userStats } = request.body;
+    const { score, incorrectAnswers, userStats, leaderboardName } = request.body; // Extract leaderboardName from request body
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
       console.error('Server configuration error.');
@@ -179,7 +179,7 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
 
     const conversationHistory = [
       { role: 'system', content: `You are an AI that reviews the user's game performance and provides a short, encouraging message.` },
-      { role: 'user', content: `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. My user stats are: ${userStats}.` }
+      { role: 'user', content: `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. My user stats are: ${userStats}. My username is ${leaderboardName}.` }
     ];
 
     const data = {
