@@ -79,8 +79,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Implement shareable score previews
 - [ ] Implement daily streaks
 - [ ] Add more stats to the history page like accuracy
-- [ ] Finalize the system message
-- [ ] Finalize the initial user message
+- [x] Finalize the system message
+- [x] Finalize the initial user message
 - [x] Implement 'Chat with Code' feature
 - [x] Implement learning levels in chat
 - [x] Implement learning levels in scripts

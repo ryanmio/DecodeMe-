@@ -206,3 +206,71 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
     }
   });
 });
+
+
+
+
+
+/**
+ * This Cloud Function calculates various user statistics upon the completion of a game.
+ * It is triggered when a new game document is added to a user's game history subcollection.
+ * The statistics calculated include the user's average score, high score, current daily streak,
+ * and the number of games played within the last 24 hours, 7 days, and 30 days, as well as the lifetime total.
+ * These statistics are then updated in the user's document to reflect their latest gaming activity.
+ */
+exports.calculateUserStats = functions.firestore
+  .document('users/{userId}/games/{gameId}')
+  .onCreate(async (snapshot, context) => {
+    const { userId } = context.params;
+    const db = admin.firestore();
+    const newGameData = snapshot.data();
+    const now = admin.firestore.Timestamp.now();
+
+    // Fetch the user's game history
+    const gameHistoryRef = db.collection('users').doc(userId).collection('games');
+    const gameHistorySnapshot = await gameHistoryRef.get();
+    const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
+
+    // Initialize stats
+    let totalScore = 0;
+    let highScore = 0;
+    let currentStreak = 0;
+    let gamesLast24Hours = 0;
+    let gamesLast7Days = 0;
+    let gamesLast30Days = 0;
+
+    // Sort games by timestamp descending
+    gameHistory.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
+
+    // Calculate stats
+    gameHistory.forEach((game, index) => {
+      totalScore += game.score;
+      if (game.score > highScore) highScore = game.score;
+
+      // Check for streaks and games in time frames
+      if (index === 0 || gameHistory[index - 1].timestamp.toDate().getDate() - game.timestamp.toDate().getDate() === 1) {
+        currentStreak++;
+      } else {
+        currentStreak = 1; // Reset streak if there's a gap
+      }
+
+      let timeDiffHours = (now.toMillis() - game.timestamp.toMillis()) / (1000 * 60 * 60);
+      if (timeDiffHours < 24) gamesLast24Hours++;
+      if (timeDiffHours < 24 * 7) gamesLast7Days++;
+      if (timeDiffHours < 24 * 30) gamesLast30Days++;
+    });
+
+    const averageScore = totalScore / gameHistory.length;
+
+    // Update the user's stats in Firestore
+    const userRef = db.collection('users').doc(userId);
+    await userRef.update({
+      averageScore,
+      highScore,
+      currentStreak,
+      gamesLast24Hours,
+      gamesLast7Days,
+      gamesLast30Days,
+      totalGames: gameHistory.length
+    });
+  });
