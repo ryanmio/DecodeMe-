@@ -225,15 +225,26 @@ exports.calculateUserStats = functions.firestore
     console.log(`Processing game for user: ${userId}`); // Log the user ID
 
     const db = admin.firestore();
+    const userRef = db.collection('users').doc(userId);
+
+    // Step 1: Fetch the user document to check if the user is anonymous
+    const userDoc = await userRef.get();
+
+    // Step 2: Check if the user document exists and has the 'leaderboardName' field
+    if (!userDoc.exists || !userDoc.data().leaderboardName) {
+      console.log(`Skipping stats calculation for anonymous or incomplete user: ${userId}`);
+      return null; // Exit the function if the user is anonymous or the document is incomplete
+    }
+
     const newGameData = snapshot.data();
     const now = admin.firestore.Timestamp.now();
 
-    // Fetch the user's game history
+    // Step 3: Continue with the existing logic if the user is not anonymous
     const gameHistoryRef = db.collection('users').doc(userId).collection('games');
     const gameHistorySnapshot = await gameHistoryRef.get();
     const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
 
-    console.log(`Fetched ${gameHistory.length} games for user: ${userId}`); // Log the number of games fetched
+    console.log(`Fetched ${gameHistory.length} games for user: ${userId}`);
 
     // Initialize stats
     let totalScore = 0;
@@ -266,10 +277,9 @@ exports.calculateUserStats = functions.firestore
 
     const averageScore = totalScore / gameHistory.length;
 
-    // Update the user's stats in Firestore
-    const userRef = db.collection('users').doc(userId);
-    console.log(`Updating stats for user: ${userId}`); // Log before updating the user document
+    console.log(`Updating stats for user: ${userId}`);
 
+    // Step 4: Update the user's stats in Firestore
     await userRef.set({
       averageScore,
       highScore,
@@ -280,5 +290,5 @@ exports.calculateUserStats = functions.firestore
       totalGames: gameHistory.length
     }, { merge: true });
 
-    console.log(`Updated stats for user: ${userId}`); // Log after updating the user document
+    console.log(`Updated stats for user: ${userId}`);
   });
