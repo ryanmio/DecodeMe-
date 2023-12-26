@@ -251,6 +251,9 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   // Log the game history
   console.log(`Fetched ${gameHistory.length} games for user: ${userId}`);
 
+  // Filter out games with undefined scores
+  const validGames = gameHistory.filter(game => game.score !== undefined);
+
   // Initialize stats
   let totalScore = 0;
   let highScore = 0;
@@ -262,18 +265,18 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   const now = admin.firestore.Timestamp.now();
 
   // Sort games by timestamp descending
-  gameHistory.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
+  validGames.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
 
   // Calculate stats
-  gameHistory.forEach((game, index) => {
+  validGames.forEach((game, index) => {
     // Log the score of each game
-    console.log(`Score of game ${index}:`, game.score);
+    console.log(`Score of valid game ${index}:`, game.score);
 
     totalScore += game.score;
     if (game.score > highScore) highScore = game.score;
 
     // Check for streaks and games in time frames
-    if (index === 0 || gameHistory[index - 1].timestamp.toDate().getDate() - game.timestamp.toDate().getDate() === 1) {
+    if (index === 0 || validGames[index - 1].timestamp.toDate().getDate() - game.timestamp.toDate().getDate() === 1) {
       currentStreak++;
     } else {
       currentStreak = 1; // Reset streak if there's a gap
@@ -285,7 +288,7 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     if (timeDiffHours < 24 * 30) gamesLast30Days++;
   });
 
-  const averageScore = totalScore / gameHistory.length;
+  const averageScore = totalScore / validGames.length;
 
   // Log the total score and average score
   console.log(`Total score for user ${userId}:`, totalScore);
@@ -299,7 +302,7 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     gamesLast24Hours,
     gamesLast7Days,
     gamesLast30Days,
-    totalGames: gameHistory.length
+    totalGames: validGames.length
   });
 
   console.log(`Updating stats for user: ${userId}`);
@@ -312,7 +315,7 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     gamesLast24Hours,
     gamesLast7Days,
     gamesLast30Days,
-    totalGames: gameHistory.length
+    totalGames: validGames.length
   }, { merge: true });
 
   // Log a message after updating Firestore
