@@ -1,6 +1,7 @@
 // components/GameOver.js
 import React, { useEffect, useState, useCallback } from 'react';
 import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
+import { httpsCallable, getFunctions } from 'firebase/functions'; // Import httpsCallable and getFunctions
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
@@ -14,6 +15,8 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  const functions = getFunctions(); // Initialize Firebase Functions
 
   const getHistoryCollectionRef = (db, userId, gameId) => {
     return collection(db, 'users', userId, 'games', gameId, 'history');
@@ -86,7 +89,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
     const gameDocRef = doc(db, 'users', userId, 'games', gameId);
     await setDoc(gameDocRef, gameStats, { merge: true });
-  
+
+    // Call the Cloud Function
+    const recalculateUserStats = httpsCallable(functions, 'recalculateUserStats');
+    await recalculateUserStats({ userId });
+
     return gameStats;
   }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName]);
 

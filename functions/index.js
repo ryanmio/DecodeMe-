@@ -212,83 +212,103 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
 
 
 /**
- * This Cloud Function calculates various user statistics upon the completion of a game.
- * It is triggered when a new game document is added to a user's game history subcollection.
- * The statistics calculated include the user's average score, high score, current daily streak,
+ * This Cloud Function recalculates various user statistics upon the completion of a game.
+ * It is designed to be invoked directly via a callable method from the client application.
+ * The statistics recalculated include the user's average score, high score, current daily streak,
  * and the number of games played within the last 24 hours, 7 days, and 30 days, as well as the lifetime total.
- * These statistics are then updated in the user's document to reflect their latest gaming activity.
+ * These recalculated statistics are then updated in the user's document to reflect their most recent gaming activity.
  */
-exports.calculateUserStats = functions.firestore
-  .document('users/{userId}/games/{gameId}')
-  .onCreate(async (snapshot, context) => {
-    const { userId } = context.params;
-    console.log(`Processing game for user: ${userId}`); // Log the user ID
+exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
+  // Log the raw input data
+  console.log('Received data:', JSON.stringify(data));
 
-    const db = admin.firestore();
-    const userRef = db.collection('users').doc(userId);
+  const { userId } = data;
 
-    // Step 1: Fetch the user document to check if the user is anonymous
-    const userDoc = await userRef.get();
+  // Log the extracted userId
+  console.log('Extracted userId:', userId);
 
-    // Step 2: Check if the user document exists and has the 'leaderboardName' field
-    if (!userDoc.exists || !userDoc.data().leaderboardName) {
-      console.log(`Skipping stats calculation for anonymous or incomplete user: ${userId}`);
-      return null; // Exit the function if the user is anonymous or the document is incomplete
+  if (!userId) {
+    console.error('No userId provided.');
+    return null;
+  }
+
+  const db = admin.firestore();
+  const userRef = db.collection('users').doc(userId);
+
+  // Fetch the user document to check if the user is anonymous
+  const userDoc = await userRef.get();
+
+  // Check if the user document exists and has the 'leaderboardName' field
+  if (!userDoc.exists || !userDoc.data().leaderboardName) {
+    console.log(`Skipping stats calculation for anonymous or incomplete user: ${userId}`);
+    return null; // Exit the function if the user is anonymous or the document is incomplete
+  }
+
+  const gameHistoryRef = db.collection('users').doc(userId).collection('games');
+  const gameHistorySnapshot = await gameHistoryRef.get();
+  const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
+
+  // Log the game history
+  console.log(`Fetched ${gameHistory.length} games for user: ${userId}`);
+  console.log('Game history:', gameHistory);
+
+  // Initialize stats
+  let totalScore = 0;
+  let highScore = 0;
+  let currentStreak = 0;
+  let gamesLast24Hours = 0;
+  let gamesLast7Days = 0;
+  let gamesLast30Days = 0;
+
+  const now = admin.firestore.Timestamp.now();
+
+  // Sort games by timestamp descending
+  gameHistory.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
+
+  // Calculate stats
+  gameHistory.forEach((game, index) => {
+    totalScore += game.score;
+    if (game.score > highScore) highScore = game.score;
+
+    // Check for streaks and games in time frames
+    if (index === 0 || gameHistory[index - 1].timestamp.toDate().getDate() - game.timestamp.toDate().getDate() === 1) {
+      currentStreak++;
+    } else {
+      currentStreak = 1; // Reset streak if there's a gap
     }
 
-    const newGameData = snapshot.data();
-    const now = admin.firestore.Timestamp.now();
-
-    // Step 3: Continue with the existing logic if the user is not anonymous
-    const gameHistoryRef = db.collection('users').doc(userId).collection('games');
-    const gameHistorySnapshot = await gameHistoryRef.get();
-    const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
-
-    console.log(`Fetched ${gameHistory.length} games for user: ${userId}`);
-
-    // Initialize stats
-    let totalScore = 0;
-    let highScore = 0;
-    let currentStreak = 0;
-    let gamesLast24Hours = 0;
-    let gamesLast7Days = 0;
-    let gamesLast30Days = 0;
-
-    // Sort games by timestamp descending
-    gameHistory.sort((a, b) => b.timestamp.toMillis() - a.timestamp.toMillis());
-
-    // Calculate stats
-    gameHistory.forEach((game, index) => {
-      totalScore += game.score;
-      if (game.score > highScore) highScore = game.score;
-
-      // Check for streaks and games in time frames
-      if (index === 0 || gameHistory[index - 1].timestamp.toDate().getDate() - game.timestamp.toDate().getDate() === 1) {
-        currentStreak++;
-      } else {
-        currentStreak = 1; // Reset streak if there's a gap
-      }
-
-      let timeDiffHours = (now.toMillis() - game.timestamp.toMillis()) / (1000 * 60 * 60);
-      if (timeDiffHours < 24) gamesLast24Hours++;
-      if (timeDiffHours < 24 * 7) gamesLast7Days++;
-      if (timeDiffHours < 24 * 30) gamesLast30Days++;
-    });
-
-    const averageScore = totalScore / gameHistory.length;
-
-    console.log(`Updating stats for user: ${userId}`);
-
-    // Step 4: Update the user's stats in Firestore
-    await userRef.set({
-      averageScore,
-      highScore,
-      currentStreak,
-      gamesLast24Hours,
-      gamesLast7Days,
-      gamesLast30Days,
-      totalGames: gameHistory.length
-    }, { merge: true });
-
-    console.log(`Updated stats for user: ${userId}`);
+    let timeDiffHours = (now.toMillis() - game.timestamp.toMillis()) / (1000 * 60 * 60);
+    if (timeDiffHours < 24) gamesLast24Hours++;
+    if (timeDiffHours < 24 * 7) gamesLast7Days++;
+    if (timeDiffHours < 24 * 30) gamesLast30Days++;
   });
+
+  const averageScore = totalScore / gameHistory.length;
+
+  // Log the calculated stats before updating Firestore
+  console.log(`Final stats for user: ${userId}`, {
+    averageScore,
+    highScore,
+    currentStreak,
+    gamesLast24Hours,
+    gamesLast7Days,
+    gamesLast30Days,
+    totalGames: gameHistory.length
+  });
+
+  console.log(`Updating stats for user: ${userId}`);
+
+  // Update the user's stats in Firestore
+  await userRef.set({
+    averageScore,
+    highScore,
+    currentStreak,
+    gamesLast24Hours,
+    gamesLast7Days,
+    gamesLast30Days,
+    totalGames: gameHistory.length
+  }, { merge: true });
+
+  // Log a message after updating Firestore
+  console.log(`Updated stats for user: ${userId} in Firestore`);
+});
