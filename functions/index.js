@@ -288,7 +288,7 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     if (timeDiffHours < 24 * 30) gamesLast30Days++;
   });
 
-  const averageScore = totalScore / validGames.length;
+  const averageScore = (totalScore / validGames.length).toFixed(2);
 
   // Log the total score and average score
   console.log(`Total score for user ${userId}:`, totalScore);
