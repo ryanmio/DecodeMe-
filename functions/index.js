@@ -250,7 +250,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
 
   // Log the game history
   console.log(`Fetched ${gameHistory.length} games for user: ${userId}`);
-  console.log('Game history:', gameHistory);
 
   // Initialize stats
   let totalScore = 0;
@@ -267,6 +266,9 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
 
   // Calculate stats
   gameHistory.forEach((game, index) => {
+    // Log the score of each game
+    console.log(`Score of game ${index}:`, game.score);
+
     totalScore += game.score;
     if (game.score > highScore) highScore = game.score;
 
@@ -284,6 +286,10 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   });
 
   const averageScore = totalScore / gameHistory.length;
+
+  // Log the total score and average score
+  console.log(`Total score for user ${userId}:`, totalScore);
+  console.log(`Average score for user ${userId}:`, averageScore);
 
   // Log the calculated stats before updating Firestore
   console.log(`Final stats for user: ${userId}`, {
