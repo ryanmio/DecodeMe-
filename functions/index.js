@@ -222,6 +222,8 @@ exports.calculateUserStats = functions.firestore
   .document('users/{userId}/games/{gameId}')
   .onCreate(async (snapshot, context) => {
     const { userId } = context.params;
+    console.log(`Processing game for user: ${userId}`); // Log the user ID
+
     const db = admin.firestore();
     const newGameData = snapshot.data();
     const now = admin.firestore.Timestamp.now();
@@ -230,6 +232,8 @@ exports.calculateUserStats = functions.firestore
     const gameHistoryRef = db.collection('users').doc(userId).collection('games');
     const gameHistorySnapshot = await gameHistoryRef.get();
     const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
+
+    console.log(`Fetched ${gameHistory.length} games for user: ${userId}`); // Log the number of games fetched
 
     // Initialize stats
     let totalScore = 0;
@@ -264,7 +268,9 @@ exports.calculateUserStats = functions.firestore
 
     // Update the user's stats in Firestore
     const userRef = db.collection('users').doc(userId);
-    await userRef.update({
+    console.log(`Updating stats for user: ${userId}`); // Log before updating the user document
+
+    await userRef.set({
       averageScore,
       highScore,
       currentStreak,
@@ -272,5 +278,7 @@ exports.calculateUserStats = functions.firestore
       gamesLast7Days,
       gamesLast30Days,
       totalGames: gameHistory.length
-    });
+    }, { merge: true });
+
+    console.log(`Updated stats for user: ${userId}`); // Log after updating the user document
   });
