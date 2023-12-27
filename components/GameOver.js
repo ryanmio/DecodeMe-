@@ -142,6 +142,8 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
         return;
       }
 
+      console.log('Leaderboard Name before passing to PostGameMessage:', leaderboardName); // Added log
+
       const { shareId, shareDocRef, batch } = await createShareDocument();
       await addHistoryToSharedDocument(shareDocRef, batch);
       await batch.commit();
@@ -163,7 +165,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
-        <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={user.leaderboardName} />
+        <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={leaderboardName} />
         <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} />
         <GameHistory gameHistory={gameHistory} />
         <Button 
