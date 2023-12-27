@@ -18,7 +18,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName 
   }, [db, userId]);
 
   const formatIncorrectAnswers = (incorrectAnswers) => {
-    return incorrectAnswers.join(', ');
+    return incorrectAnswers.map(answer => JSON.stringify(answer)).join(', ');
   };
 
   const prepareDataForOpenAI = useCallback(async () => {
@@ -29,7 +29,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName 
     const data = {
       score,
       incorrectAnswers: formattedIncorrectAnswers,
-      userStats,
+      userStats: JSON.stringify(userStats),
       leaderboardName,
     };
     return data;

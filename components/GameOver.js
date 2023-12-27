@@ -163,7 +163,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       >
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
-        <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={leaderboardName} />
+        <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={user.leaderboardName} />
         <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} />
         <GameHistory gameHistory={gameHistory} />
         <Button 
