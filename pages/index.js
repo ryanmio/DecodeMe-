@@ -48,9 +48,20 @@ export default function Home() {
   // Conversation starters
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
-  const handleUserUpdate = (user) => {
+  const handleUserUpdate = async (user) => {
     setUser(user);
     setUserId(user?.uid || null);
+
+    // Fetch leaderboardName from Firestore for non-anonymous users
+    if (user && !user.isAnonymous) {
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setLeaderboardName(userData.leaderboardName);
+        console.log('Leaderboard Name in handleUserUpdate:', userData.leaderboardName); // Add this log
+      }
+    }
   };
 
   const handleGameModeSelect = mode => {
