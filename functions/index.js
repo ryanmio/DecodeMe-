@@ -164,7 +164,8 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
 exports.fetchPostGameMessage = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
-    const { score, incorrectAnswers, userStats, leaderboardName } = request.body; // Extract leaderboardName from request body
+    console.log('Data received in fetchPostGameMessage:', request.body);
+    const { score, incorrectAnswers, userStats, leaderboardName } = request.body;
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
       console.error('Server configuration error.');
