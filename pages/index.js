@@ -43,7 +43,7 @@ export default function Home() {
   const [leaderboardName, setLeaderboardName] = useState(null); // Add a new state for the leaderboard name
 
   const questionLimit = 20;
-  const strikeLimit = 2;
+  const strikeLimit = 1;
 
   // Conversation starters
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
