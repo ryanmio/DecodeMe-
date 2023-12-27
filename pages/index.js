@@ -306,20 +306,23 @@ export default function Home() {
               </>
             ) :
               isGameOver && userId && gameId && isFirebaseUpdated ?
-                <GameOver
-                  score={score}
-                  questionsAnswered={questionsAnswered}
-                  conversationHistory={conversationHistory}
-                  gameId={gameId}
-                  userId={userId}
-                  db={db}
-                  longestStreak={longestStreak}
-                  incorrectAnswers={incorrectAnswers}
-                  currentStreak={currentStreak}
-                  handleChatWithTutor={handleChatWithTutor}
-                  leaderboardName={leaderboardName} // Pass the leaderboardName state to the GameOver component
-                  user={user} // Pass the user state to the GameOver component
-                /> :
+                <>
+                  {console.log('Leaderboard Name before passing to GameOver:', leaderboardName)}
+                  <GameOver
+                    score={score}
+                    questionsAnswered={questionsAnswered}
+                    conversationHistory={conversationHistory}
+                    gameId={gameId}
+                    userId={userId}
+                    db={db}
+                    longestStreak={longestStreak}
+                    incorrectAnswers={incorrectAnswers}
+                    currentStreak={currentStreak}
+                    handleChatWithTutor={handleChatWithTutor}
+                    leaderboardName={leaderboardName} // Pass the leaderboardName state to the GameOver component
+                    user={user} // Pass the user state to the GameOver component
+                  />
+                </> :
                 <>
                   <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
                   <UserAnswerInput
