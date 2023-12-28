@@ -335,7 +335,7 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
 
   // Fetch all users
   const usersSnapshot = await admin.firestore().collection('users').get();
-  const users = usersSnapshot.docs.map(doc => doc.data());
+  const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
   // Calculate the streak for each user
   for (const user of users) {
