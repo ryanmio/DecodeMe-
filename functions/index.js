@@ -215,7 +215,7 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
 /**
  * This Cloud Function recalculates various user statistics upon the completion of a game.
  * It is designed to be invoked directly via a callable method from the client application.
- * The statistics recalculated include the user's average score, high score, current daily streak,
+ * The statistics recalculated include the user's average score, high score,
  * and the number of games played within the last 24 hours, 7 days, and 30 days, as well as the lifetime total.
  * These recalculated statistics are then updated in the user's document to reflect their most recent gaming activity.
  */
@@ -258,7 +258,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   // Initialize stats
   let totalScore = 0;
   let highScore = 0;
-  let currentStreak = 0;
   let gamesLast24Hours = 0;
   let gamesLast7Days = 0;
   let gamesLast30Days = 0;
@@ -276,13 +275,7 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     totalScore += game.score;
     if (game.score > highScore) highScore = game.score;
 
-    // Check for streaks and games in time frames
-    if (index === 0 || validGames[index - 1].timestamp.toDate().getDate() - game.timestamp.toDate().getDate() === 1) {
-      currentStreak++;
-    } else {
-      currentStreak = 1; // Reset streak if there's a gap
-    }
-
+    // Check for games in time frames
     let timeDiffHours = (now.toMillis() - game.timestamp.toMillis()) / (1000 * 60 * 60);
     if (timeDiffHours < 24) gamesLast24Hours++;
     if (timeDiffHours < 24 * 7) gamesLast7Days++;
@@ -299,7 +292,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   console.log(`Final stats for user: ${userId}`, {
     averageScore,
     highScore,
-    currentStreak,
     gamesLast24Hours,
     gamesLast7Days,
     gamesLast30Days,
@@ -312,7 +304,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   await userRef.set({
     averageScore,
     highScore,
-    currentStreak,
     gamesLast24Hours,
     gamesLast7Days,
     gamesLast30Days,
