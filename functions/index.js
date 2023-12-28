@@ -325,7 +325,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
  * The streak is calculated by sorting the games by date and counting the consecutive days with games.
  */
 exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => {
-
   // Helper function to check if two dates are on the same day
   function isSameDay(date1, date2) {
     return date1.getFullYear() === date2.getFullYear() &&
@@ -337,10 +336,16 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
   const usersSnapshot = await admin.firestore().collection('users').get();
   const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
+  console.log(`Fetched ${users.length} users`);
+
   // Calculate the streak for each user
   for (const user of users) {
+    console.log(`Processing user ${user.id}`);
+
     const gameHistorySnapshot = await admin.firestore().collection('users').doc(user.id).collection('games').get();
     const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
+
+    console.log(`Fetched ${gameHistory.length} games for user ${user.id}`);
 
     // Sort games by date
     gameHistory.sort((a, b) => b.date - a.date);
@@ -349,6 +354,8 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
     let currentDate = new Date();
 
     for (const game of gameHistory) {
+      console.log(`Processing game with date ${game.date}`);
+
       if (isSameDay(new Date(game.date), currentDate)) {
         streak++;
         currentDate.setDate(currentDate.getDate() - 1);
@@ -357,8 +364,12 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
       }
     }
 
+    console.log(`Calculated streak of ${streak} for user ${user.id}`);
+
     // Update the user's streak in Firestore
     await admin.firestore().collection('users').doc(user.id).update({ streak });
+
+    console.log(`Updated streak for user ${user.id}`);
   }
 
   console.log('Daily streaks updated for all users');
