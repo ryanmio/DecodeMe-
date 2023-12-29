@@ -4,10 +4,8 @@ import { Snippet } from '@nextui-org/react';
 import toast from 'react-hot-toast';
 
 const ShareGameLink = ({ url }) => {
-  console.log('Rendering ShareGameLink with url:', url); // Log when the component is rendered with the url
 
   const handleCopy = () => {
-    console.log('Link copied to clipboard:', url); // Log when the link is copied
     toast.success('Link copied to clipboard!');
   };
 

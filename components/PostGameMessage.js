@@ -23,9 +23,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName 
 
   const prepareDataForOpenAI = useCallback(async () => {
     const userStats = await getUserStatsFromFirebase();
-    console.log('User Stats:', userStats); // Added log
     const formattedIncorrectAnswers = formatIncorrectAnswers(incorrectAnswers);
-    console.log('Formatted Incorrect Answers:', formattedIncorrectAnswers); // Added log
     const data = {
       score,
       incorrectAnswers: formattedIncorrectAnswers,
@@ -42,7 +40,6 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName 
   useEffect(() => {
     const fetchPostGameMessage = async () => {
       const data = await prepareDataForOpenAI();
-      console.log('Data sent to fetchPostGameMessage:', data); // Added log
       const response = await fetch('https://us-central1-decodeme-1f38e.cloudfunctions.net/fetchPostGameMessage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

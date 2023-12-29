@@ -1,23 +1,22 @@
 // components/GameOver.js
 import React, { useEffect, useState, useCallback } from 'react';
 import { collection, getDocs, doc, writeBatch, getDoc, updateDoc, setDoc } from 'firebase/firestore';
-import { httpsCallable, getFunctions } from 'firebase/functions'; // Import httpsCallable and getFunctions
+import { httpsCallable, getFunctions } from 'firebase/functions';
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
 import { Button, Spinner } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
 import PostGameMessage from './PostGameMessage';
-import ShareGameLink from './ShareGameLink'; // Import the new component
+import ShareGameLink from './ShareGameLink';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user }) => {
-  console.log('GameOver props:', { score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user }); // Log the props
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [shareUrl, setShareUrl] = useState(''); // New state to hold the shareable URL
+  const [shareUrl, setShareUrl] = useState('');
 
   const functions = getFunctions();
 
@@ -133,7 +132,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   };
 
   const handleShareResults = async () => {
-    console.log('handleShareResults called'); // Log when the function is called
     setError('');
     setLoading(true);
 
@@ -141,19 +139,14 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       // Use the leaderboardName prop instead of fetching it again
       let finalLeaderboardName = leaderboardName;
       if (!finalLeaderboardName) {
-        console.log('Leaderboard name not found'); // Log when the leaderboard name is not found
         setLoading(false);
         return;
       }
 
-      console.log('Creating share document'); // Log before creating the share document
       const { shareId, shareDocRef, batch } = await createShareDocument();
-      console.log('Adding history to shared document'); // Log before adding history to the shared document
       await addHistoryToSharedDocument(shareDocRef, batch);
-      console.log('Committing batch'); // Log before committing the batch
       await batch.commit();
 
-      console.log('Generating share link'); // Log before generating the share link
       await generateShareLink(shareId);
     } catch (error) {
       console.error('Error in handleShareResults:', error); // Log any errors
