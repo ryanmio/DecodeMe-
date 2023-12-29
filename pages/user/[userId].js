@@ -22,13 +22,15 @@ const UserStatsPage = ({ userData }) => {
   // Extract the game counts for each learning level from userData
   const { beginner = 0, intermediate = 0, expert = 0 } = userData?.gameCountsByLevel || {};
 
-  // Calculate the maximum game count
-  const maxGameCount = Math.max(beginner, intermediate, expert);
+  // Calculate the maximum game count. If all game counts are 0, set the maximum game count to 1.
+  const maxGameCount = Math.max(beginner, intermediate, expert) || 1;
 
   // Calculate the width of each bar as a percentage of the maximum game count
-  const beginnerWidth = (beginner / maxGameCount) * 100;
-  const intermediateWidth = (intermediate / maxGameCount) * 100;
-  const expertWidth = (expert / maxGameCount) * 100;
+  // If all counts are 0, we want to show full bars, so we set the width to 100%.
+  const allCountsAreZero = beginner === 0 && intermediate === 0 && expert === 0;
+  const beginnerWidth = allCountsAreZero ? 100 : (beginner / maxGameCount) * 100;
+  const intermediateWidth = allCountsAreZero ? 100 : (intermediate / maxGameCount) * 100;
+  const expertWidth = allCountsAreZero ? 100 : (expert / maxGameCount) * 100;
 
   return (
     <RootLayout metadata={metadata}>
@@ -60,16 +62,16 @@ const UserStatsPage = ({ userData }) => {
             </div>
             <div className="my-6">
               <h2 className="text-lg font-semibold text-gray-900">Game Count</h2>
-              <div className="space-y-1"> {/* Add space between bars */}
+              <div className="space-y-1">
                 <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: `${beginnerWidth}%` }}>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Beginner</span>
-                </div> {/* Beginner bar with label */}
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Beginner: {beginner}</span>
+                </div>
                 <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: `${intermediateWidth}%` }}>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Intermediate</span>
-                </div> {/* Intermediate bar with label */}
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Intermediate: {intermediate}</span>
+                </div>
                 <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: `${expertWidth}%` }}>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Expert</span>
-                </div> {/* Expert bar with label */}
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Expert: {expert}</span>
+                </div>
               </div>
             </div>
             <Divider />
