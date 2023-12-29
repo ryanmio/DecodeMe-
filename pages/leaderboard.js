@@ -9,6 +9,7 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 const fetchLeaderboardData = async (filter) => {
+  console.log(`Fetching leaderboard data with filter: ${filter}`);
   let startDate;
   switch(filter) {
     case 'weekly':
@@ -31,9 +32,11 @@ const fetchLeaderboardData = async (filter) => {
     const firestoreStartDate = Timestamp.fromDate(startDate);
     leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
   }
+  console.log(`Firestore query: ${JSON.stringify(leaderboardQuery)}`);
 
   try {
     const leaderboardSnapshot = await getDocs(leaderboardQuery);
+    console.log(`Number of documents returned: ${leaderboardSnapshot.docs.length}`);
 
     let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
       let data = docSnapshot.data();
@@ -59,6 +62,7 @@ const fetchLeaderboardData = async (filter) => {
 export const getServerSideProps = async () => {
   try {
     const leaderboardData = await fetchLeaderboardData('lifetime');
+    console.log(leaderboardData); // Added this line
     return {
       props: {
         leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
@@ -76,7 +80,11 @@ export const getServerSideProps = async () => {
   }
 };
 
-const LeaderboardPage = ({ leaderboardData }) => {
+const LeaderboardPage = ({ leaderboardData, error }) => {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
