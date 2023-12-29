@@ -258,9 +258,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   // Initialize stats
   let totalScore = 0;
   let highScore = 0;
-  let gamesLast24Hours = 0;
-  let gamesLast7Days = 0;
-  let gamesLast30Days = 0;
 
   const now = admin.firestore.Timestamp.now();
 
@@ -274,12 +271,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
 
     totalScore += game.score;
     if (game.score > highScore) highScore = game.score;
-
-    // Check for games in time frames
-    let timeDiffHours = (now.toMillis() - game.timestamp.toMillis()) / (1000 * 60 * 60);
-    if (timeDiffHours < 24) gamesLast24Hours++;
-    if (timeDiffHours < 24 * 7) gamesLast7Days++;
-    if (timeDiffHours < 24 * 30) gamesLast30Days++;
   });
 
   const averageScore = (totalScore / validGames.length).toFixed(2);
@@ -292,9 +283,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   console.log(`Final stats for user: ${userId}`, {
     averageScore,
     highScore,
-    gamesLast24Hours,
-    gamesLast7Days,
-    gamesLast30Days,
     totalGames: validGames.length
   });
 
@@ -304,9 +292,6 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   await userRef.set({
     averageScore,
     highScore,
-    gamesLast24Hours,
-    gamesLast7Days,
-    gamesLast30Days,
     totalGames: validGames.length
   }, { merge: true });
 
@@ -338,7 +323,7 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
 
   console.log(`Fetched ${users.length} users`);
 
-  // Calculate the streak for each user
+  // Calculate the streak and games in time frames for each user
   for (const user of users) {
     console.log(`Processing user ${user.id}`);
 
@@ -351,35 +336,51 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
     gameHistory.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
     let streak = 0;
+    let gamesLast24Hours = 0;
+    let gamesLast7Days = 0;
+    let gamesLast30Days = 0;
     let currentDate = new Date();
 
     for (const game of gameHistory) {
       console.log(`Processing game with timestamp ${game.timestamp}`);
 
+      // Calculate games in time frames
+      let timeDiffHours = (currentDate.getTime() - game.timestamp.getTime()) / (1000 * 60 * 60);
+      if (timeDiffHours < 24) gamesLast24Hours++;
+      if (timeDiffHours < 24 * 7) gamesLast7Days++;
+      if (timeDiffHours < 24 * 30) gamesLast30Days++;
+
+      // Calculate streak
       if (isSameDay(game.timestamp, currentDate)) {
         streak++;
         currentDate.setDate(currentDate.getDate() - 1);
       } else {
-        // If the current game is not on the same day as the currentDate, check if it's on the day before
-        // This handles the case where there might be gaps in the game history
         const previousDay = new Date(currentDate);
         previousDay.setDate(previousDay.getDate() - 1);
         if (isSameDay(game.timestamp, previousDay)) {
-          currentDate = previousDay; // Update currentDate to the previous day
+          currentDate = previousDay;
           streak++;
         } else {
-          break; // If there's a gap in the streak, break out of the loop
+          break;
         }
       }
     }
 
     console.log(`Calculated streak of ${streak} for user ${user.id}`);
+    console.log(`Games in last 24 hours: ${gamesLast24Hours}`);
+    console.log(`Games in last 7 days: ${gamesLast7Days}`);
+    console.log(`Games in last 30 days: ${gamesLast30Days}`);
 
-    // Update the user's streak in Firestore
-    await admin.firestore().collection('users').doc(user.id).update({ currentStreak: streak });
+    // Update the user's streak and games in time frames in Firestore
+    await admin.firestore().collection('users').doc(user.id).update({
+      currentStreak: streak,
+      gamesLast24Hours,
+      gamesLast7Days,
+      gamesLast30Days
+    });
 
-    console.log(`Updated streak for user ${user.id}`);
+    console.log(`Updated streak and games in time frames for user ${user.id}`);
   }
 
-  console.log('Daily streaks updated for all users');
+  console.log('Daily streaks and games in time frames updated for all users');
 });
