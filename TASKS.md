@@ -85,13 +85,21 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement learning levels in chat
 - [x] Implement learning levels in scripts
 - [ ] Implement custom instructions
-- [ ] Create share game component with copy to clipboard link
+- [x] Create share game component with copy to clipboard link
+  - [x] Create a new React component `ShareGameLink` that uses the Snippet component from NextUI.
+  - [x] Add state in `GameOver` to hold the shareable URL.
+  - [x] Update `handleShareResults` in `GameOver` to set the shareable URL in the state instead of copying to the clipboard.
+  - [x] Render `ShareGameLink` in `GameOver` when the shareable URL is set.
+  - [x] Use the `onCopy` event of the Snippet component to show a message that the URL has been copied.
+  - [x] Test the new feature to ensure it works as expected.
+
 - [ ] Implement bug reporting
 - [ ] Implement GPT usage cap or rate limits
 - [ ] Implement sign-in with gmail/github
 - [ ] Implement account upgrade option
-- [ ] Implement Dynamic SEO
+- [x] Implement Dynamic SEO
 - [ ] Implement User Stats page
+- [ ] Implement AI commands
 
 ### Future Release Features
 - [ ] Implement challenge mode for friends

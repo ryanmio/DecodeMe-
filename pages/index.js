@@ -40,7 +40,7 @@ export default function Home() {
   const [learningLevel, setLearningLevel] = useState('intermediate');
   const [selectedScript, setSelectedScript] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
-  const [leaderboardName, setLeaderboardName] = useState(null); // Add a new state for the leaderboard name
+  const [leaderboardName, setLeaderboardName] = useState(null);
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -52,8 +52,8 @@ export default function Home() {
     setUser(user);
     setUserId(user?.uid || null);
 
-    // Fetch leaderboardName from Firestore for non-anonymous users
-    if (user && !user.isAnonymous) {
+    // Fetch leaderboardName from Firestore for all users
+    if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
       if (userDoc.exists()) {

@@ -5,18 +5,21 @@ import { httpsCallable, getFunctions } from 'firebase/functions'; // Import http
 import { motion } from 'framer-motion';
 import GameHistory from './GameHistory';
 import FinalScore from './FinalScore';
-import { Button } from "@nextui-org/react";
+import { Button, Spinner } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
 import PostGameMessage from './PostGameMessage';
+import ShareGameLink from './ShareGameLink'; // Import the new component
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user }) => {
+  console.log('GameOver props:', { score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user }); // Log the props
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [shareUrl, setShareUrl] = useState(''); // New state to hold the shareable URL
 
-  const functions = getFunctions(); // Initialize Firebase Functions
+  const functions = getFunctions();
 
   const getHistoryCollectionRef = (db, userId, gameId) => {
     return collection(db, 'users', userId, 'games', gameId, 'history');
@@ -126,11 +129,11 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
   const generateShareLink = async (shareId) => {
     const shareLink = `${APP_URL}/results/${shareId}`;
-    await navigator.clipboard.writeText(shareLink);
-    alert(`Your results are shared with ID: ${shareId}. The link has been copied to your clipboard.`);
+    setShareUrl(shareLink); // Update the state with the generated URL
   };
 
   const handleShareResults = async () => {
+    console.log('handleShareResults called'); // Log when the function is called
     setError('');
     setLoading(true);
 
@@ -138,18 +141,22 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       // Use the leaderboardName prop instead of fetching it again
       let finalLeaderboardName = leaderboardName;
       if (!finalLeaderboardName) {
+        console.log('Leaderboard name not found'); // Log when the leaderboard name is not found
         setLoading(false);
         return;
       }
 
-      console.log('Leaderboard Name before passing to PostGameMessage:', leaderboardName); // Added log
-
+      console.log('Creating share document'); // Log before creating the share document
       const { shareId, shareDocRef, batch } = await createShareDocument();
+      console.log('Adding history to shared document'); // Log before adding history to the shared document
       await addHistoryToSharedDocument(shareDocRef, batch);
+      console.log('Committing batch'); // Log before committing the batch
       await batch.commit();
 
+      console.log('Generating share link'); // Log before generating the share link
       await generateShareLink(shareId);
     } catch (error) {
+      console.error('Error in handleShareResults:', error); // Log any errors
       setError('Failed to share game history.');
     } finally {
       setLoading(false);
@@ -173,9 +180,18 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
           radius="full" 
           className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
           disabled={loading}
+          auto
         >
-          Share Results
+          {loading ? (
+            <>
+              Sharing...
+              <Spinner size="sm" color="white" />
+            </>
+          ) : (
+            'Share Results'
+          )}
         </Button>
+        {shareUrl && <ShareGameLink url={shareUrl} />}
         {error && <p className="text-red-500">{error}</p>}
       </motion.div>
     </div>
