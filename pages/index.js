@@ -59,7 +59,6 @@ export default function Home() {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
-        console.log('Leaderboard Name in handleUserUpdate:', userData.leaderboardName); // Add this log
       }
     }
   };
@@ -307,7 +306,6 @@ export default function Home() {
             ) :
               isGameOver && userId && gameId && isFirebaseUpdated ?
                 <>
-                  {console.log('Leaderboard Name before passing to GameOver:', leaderboardName)}
                   <GameOver
                     score={score}
                     questionsAnswered={questionsAnswered}
@@ -319,8 +317,8 @@ export default function Home() {
                     incorrectAnswers={incorrectAnswers}
                     currentStreak={currentStreak}
                     handleChatWithTutor={handleChatWithTutor}
-                    leaderboardName={leaderboardName} // Pass the leaderboardName state to the GameOver component
-                    user={user} // Pass the user state to the GameOver component
+                    leaderboardName={leaderboardName}
+                    user={user}
                   />
                 </> :
                 <>

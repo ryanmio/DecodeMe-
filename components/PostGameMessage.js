@@ -4,7 +4,7 @@ import { getDoc, doc } from 'firebase/firestore';
 
 const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName }) => {
   const [postGameMessage, setPostGameMessage] = useState('');
-  const [isMessageVisible, setIsMessageVisible] = useState(false); // Initially set to false
+  const [isMessageVisible, setIsMessageVisible] = useState(false);
 
   const getUserStatsFromFirebase = useCallback(async () => {
     const userDocRef = doc(db, 'users', userId);
@@ -47,7 +47,7 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName 
       });
       const responseData = await response.json();
       setPostGameMessage(responseData.postGameMessage);
-      setIsMessageVisible(true); // Set the message to be visible only after the API call is successful
+      setIsMessageVisible(true);
     };
     fetchPostGameMessage();
   }, []); // Empty array means this effect will only run once, when the component is first mounted
