@@ -38,8 +38,8 @@ const UserStatsPage = ({ userData }) => {
               <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
             </div>
             <div className="flex items-center justify-center my-4">
-              <span role="img" aria-label="trophy">🏆</span> {/* Placeholder for trophy icon */}
-              <span className="text-6xl font-bold text-gray-900 ml-4">100</span> {/* Placeholder for lifetime score */}
+              <span role="img" aria-label="trophy" style={{ fontSize: '2em' }}>🏆</span> {/* Increased size of trophy */}
+              <span className="text-6xl font-bold text-gray-900 ml-4">100</span>
             </div>
             <p className="text-center text-gray-700">This is your lifetime score</p>
             <div className="my-6">
@@ -60,12 +60,12 @@ const UserStatsPage = ({ userData }) => {
               </div>
             </div>
             <Divider />
-            <Spacer y={1} /> {/* Add some space */}
+            <Spacer y={1} />
             <div className="flex justify-around mt-4">
-              <Button color="primary" auto onClick={() => router.push('/history')}>
+              <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/history')}>
                 Game History
               </Button>
-              <Button color="secondary" auto onClick={() => router.push('/leaderboard')}>
+              <Button color="secondary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/leaderboard')}>
                 Leaderboard
               </Button>
             </div>
