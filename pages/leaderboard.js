@@ -9,7 +9,6 @@ import { useRouter } from 'next/router';
 import Head from 'next/head';
 
 const fetchLeaderboardData = async (filter) => {
-  console.log(`Fetching leaderboard data with filter: ${filter}`);
   let startDate;
   switch(filter) {
     case 'weekly':
@@ -32,7 +31,6 @@ const fetchLeaderboardData = async (filter) => {
     const firestoreStartDate = Timestamp.fromDate(startDate);
     leaderboardQuery = query(leaderboardCollectionRef, orderBy('date', 'desc'), where('date', '>=', firestoreStartDate));
   }
-  console.log(`Firestore query: ${JSON.stringify(leaderboardQuery)}`);
 
   try {
     const leaderboardSnapshot = await getDocs(leaderboardQuery);
@@ -65,7 +63,6 @@ export const getStaticProps = async () => {
     const props = {
       leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
     };
-    console.log("getStaticProps returning:", props);
     return { 
       props,
       revalidate: 300, // Regenerate the page every 5 minutes
@@ -76,7 +73,6 @@ export const getStaticProps = async () => {
       leaderboardData: [],
       error: error.message,
     };
-    console.log("getStaticProps returning:", props);
     return { 
       props,
       revalidate: 300, // Regenerate the page every 5 minutes
