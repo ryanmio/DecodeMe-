@@ -319,6 +319,7 @@ export default function Home() {
                     handleChatWithTutor={handleChatWithTutor}
                     leaderboardName={leaderboardName}
                     user={user}
+                    learningLevel={learningLevel}
                   />
                 </> :
                 <>
