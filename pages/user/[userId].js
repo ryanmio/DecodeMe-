@@ -3,7 +3,7 @@ import { db } from '../../firebaseAdmin';
 import Head from 'next/head';
 import RootLayout from '../../components/layout';
 import Image from 'next/image';
-import { Button, Divider } from '@nextui-org/react'; // Import NextUI components
+import { Button, Divider, Spacer } from '@nextui-org/react'; // Import NextUI components
 import { useRouter } from 'next/router'; // Import useRouter for navigation
 
 const UserStatsPage = ({ userData }) => {
@@ -38,21 +38,29 @@ const UserStatsPage = ({ userData }) => {
               <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
             </div>
             <div className="flex items-center justify-center my-4">
-              <Image src="/trophy-icon.png" alt="Trophy" width={50} height={50} /> {/* Placeholder for trophy icon */}
-              <span className="text-6xl font-bold text-gray-900 ml-4">{userData?.highScore}</span>
+              <span role="img" aria-label="trophy">🏆</span> {/* Placeholder for trophy icon */}
+              <span className="text-6xl font-bold text-gray-900 ml-4">100</span> {/* Placeholder for lifetime score */}
             </div>
-            <p className="text-center text-gray-700">This is your current score</p>
+            <p className="text-center text-gray-700">This is your lifetime score</p>
             <div className="my-6">
               <h2 className="text-lg font-semibold text-gray-900">Lifetime Stats</h2>
               <p className="text-lg text-gray-700">High Score: {userData?.highScore}</p>
               <p className="text-lg text-gray-700">Current Streak: {userData?.currentStreak}</p>
             </div>
             <div className="my-6">
-              <h2 className="text-lg font-semibold text-gray-900">Progress</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Learning Level</h2>
+              <p className="text-lg text-gray-700">{userData?.learningLevel || 'Expert'}</p>
+            </div>
+            <div className="my-6">
+              <h2 className="text-lg font-semibold text-gray-900">Accuracy</h2>
               <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700">
-                <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '70%' }}></div> {/* Placeholder for progress bar */}
+                <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '70%' }}></div> {/* Placeholder for beginner bar */}
+                <div className="bg-yellow-600 h-2.5 rounded-full" style={{ width: '50%' }}></div> {/* Placeholder for intermediate bar */}
+                <div className="bg-red-600 h-2.5 rounded-full" style={{ width: '30%' }}></div> {/* Placeholder for expert bar */}
               </div>
             </div>
+            <Divider />
+            <Spacer y={1} /> {/* Add some space */}
             <div className="flex justify-around mt-4">
               <Button color="primary" auto onClick={() => router.push('/history')}>
                 Game History
