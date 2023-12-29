@@ -55,28 +55,26 @@ const fetchLeaderboardData = async (filter) => {
     return leaderboardData;
   } catch (error) {
     console.error("Error fetching leaderboard data:", error);
-    return [];  // Return an empty array or handle the error as needed
+    throw error;  // re-throw the error to be caught in getServerSideProps
   }
 };
 
 export const getServerSideProps = async () => {
   try {
     const leaderboardData = await fetchLeaderboardData('lifetime');
-    console.log(leaderboardData); // Added this line
-    return {
-      props: {
-        leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
-      },
+    const props = {
+      leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
     };
+    console.log("getServerSideProps returning:", props);
+    return { props };
   } catch (error) {
     console.error("Error in getServerSideProps:", error);
-    // Return empty data or a specific error object to the component
-    return {
-      props: {
-        leaderboardData: [],
-        error: error.message,
-      },
+    const props = {
+      leaderboardData: [],
+      error: error.message,
     };
+    console.log("getServerSideProps returning:", props);
+    return { props };
   }
 };
 
@@ -151,7 +149,7 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
             {currentItems.map((game, index) => (
               <div key={game.id} className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
                 <span className="text-lg text-gray-700">{getOrdinalSuffix(indexOfFirstItem + index + 1)}</span>
-                <span className="text-lg text-gray-700">{game.leaderboardName}</span>
+                <span className="text-lg text-gray-700">{game.leaderboardName || 'Unknown'}</span>
                 <span className="text-lg text-gray-700">{game.score}</span>
               </div>
             ))}
