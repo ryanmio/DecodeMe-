@@ -12,7 +12,7 @@ const UserStatsPage = ({ userData }) => {
   const metadata = {
     title: `User Stats for ${userData?.leaderboardName}`,
     description: `Check out the user stats for ${userData?.leaderboardName} on DecodeMe!`,
-    image: 'https://decodeme.app/images/shareimage.jpeg',
+    image: 'https://decodeme.app/images/shareimage.png',
     url: `https://decodeme.app/user/${userData?.id}`,
   };
 

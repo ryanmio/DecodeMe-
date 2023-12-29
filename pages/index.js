@@ -271,7 +271,7 @@ export default function Home() {
         <meta key="description" name="description" content="Play DecodeMe! and improve your coding skills!" />
         <meta key="og:title" property="og:title" content="Play DecodeMe!" />
         <meta key="og:description" property="og:description" content="Play DecodeMe! and improve your coding skills!" />
-        <meta key="og:image" property="og:image" content="https://decodeme.app/images/shareimage.jpeg" />
+        <meta key="og:image" property="og:image" content="https://decodeme.app/images/shareimage.png" />
         <meta key="og:url" property="og:url" content="https://decodeme.app" />
       </Head>
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">

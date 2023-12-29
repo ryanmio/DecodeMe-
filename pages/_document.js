@@ -17,13 +17,13 @@ class MyDocument extends Document {
           {/* <meta property="og:description" content="DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way." /> */}
           <meta property="og:url" content="https://decodeme.app" />
           <meta property="og:site_name" content="DecodeMe!" />
-          <meta property="og:image" content="https://decodeme.app/images/shareimage.jpeg" />
+          <meta property="og:image" content="https://decodeme.app/images/shareimage.png" />
           <meta property="og:type" content="website" />
           <meta name="twitter:card" content="summary_large_image" />
           <meta name="twitter:site" content="@DecodeMe" />
           <meta name="twitter:title" content="DecodeMe!" />
           <meta name="twitter:description" content="DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way." />
-          <meta name="twitter:image" content="https://decodeme.app/images/shareimage.jpeg" />
+          <meta name="twitter:image" content="https://decodeme.app/images/shareimage.png" />
           <link rel="icon" href="/favicon.ico" />
           <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />

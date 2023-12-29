@@ -93,7 +93,7 @@ const HistoryPage = () => {
   const metadata = {
     title: `DecodeMe Game History for ${userData?.leaderboardName}`,
     description: `Explore detailed game history for ${userData?.leaderboardName} on DecodeMe, the leading online gaming platform.`,
-    image: '/images/shareimage.jpeg',
+    image: '/images/shareimage.png',
     url: `${process.env.NEXT_PUBLIC_APP_URL}/history/${userData?.id}`,
   };
 
