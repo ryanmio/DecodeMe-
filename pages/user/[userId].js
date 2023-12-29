@@ -1,9 +1,13 @@
 // pages/user/[userId].js
 import { db } from '../../firebaseAdmin';
 import Head from 'next/head';
-import RootLayout from '../../components/layout'; // Import the RootLayout component
+import RootLayout from '../../components/layout';
+import Image from 'next/image';
+import { Button, Divider } from '@nextui-org/react'; // Import NextUI components
+import { useRouter } from 'next/router'; // Import useRouter for navigation
 
 const UserStatsPage = ({ userData }) => {
+  const router = useRouter(); // Initialize useRouter
   // Metadata for sharing
   const metadata = {
     title: `User Stats for ${userData?.leaderboardName}`,
@@ -12,8 +16,11 @@ const UserStatsPage = ({ userData }) => {
     url: `https://decodeme.app/user/${userData?.id}`,
   };
 
+  // Function to capitalize the first letter of the leaderboard name
+  const capitalize = (s) => s && s[0].toUpperCase() + s.slice(1);
+
   return (
-    <RootLayout metadata={metadata}> {/* Wrap content with RootLayout */}
+    <RootLayout metadata={metadata}>
       <Head>
         <title key="title">{metadata.title}</title>
         <meta key="description" name="description" content={metadata.description} />
@@ -26,11 +33,33 @@ const UserStatsPage = ({ userData }) => {
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <h1 className="text-2xl font-bold text-center text-gray-900">User Stats</h1>
-            <div className="text-lg text-center text-gray-700">
-              <p>Leaderboard Name: {userData?.leaderboardName}</p>
-              <p>High Score: {userData?.highScore}</p>
-              <p>Current Streak: {userData?.currentStreak}</p>
+            <div className="flex justify-between items-center">
+              <h1 className="text-2xl font-bold text-gray-900">{capitalize(userData?.leaderboardName)} Score</h1>
+              <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
+            </div>
+            <div className="flex items-center justify-center my-4">
+              <Image src="/trophy-icon.png" alt="Trophy" width={50} height={50} /> {/* Placeholder for trophy icon */}
+              <span className="text-6xl font-bold text-gray-900 ml-4">{userData?.highScore}</span>
+            </div>
+            <p className="text-center text-gray-700">This is your current score</p>
+            <div className="my-6">
+              <h2 className="text-lg font-semibold text-gray-900">Lifetime Stats</h2>
+              <p className="text-lg text-gray-700">High Score: {userData?.highScore}</p>
+              <p className="text-lg text-gray-700">Current Streak: {userData?.currentStreak}</p>
+            </div>
+            <div className="my-6">
+              <h2 className="text-lg font-semibold text-gray-900">Progress</h2>
+              <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700">
+                <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '70%' }}></div> {/* Placeholder for progress bar */}
+              </div>
+            </div>
+            <div className="flex justify-around mt-4">
+              <Button color="primary" auto onClick={() => router.push('/history')}>
+                Game History
+              </Button>
+              <Button color="secondary" auto onClick={() => router.push('/leaderboard')}>
+                Leaderboard
+              </Button>
             </div>
           </div>
         </div>
