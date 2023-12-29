@@ -81,14 +81,15 @@ export const getServerSideProps = async () => {
 };
 
 const LeaderboardPage = ({ leaderboardData, error }) => {
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
-
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const itemsPerPage = 10;
 
   const indexOfLastItem = currentPage * itemsPerPage;
