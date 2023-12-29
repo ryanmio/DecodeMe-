@@ -59,22 +59,28 @@ const fetchLeaderboardData = async (filter) => {
   }
 };
 
-export const getServerSideProps = async () => {
+export const getStaticProps = async () => {
   try {
     const leaderboardData = await fetchLeaderboardData('lifetime');
     const props = {
       leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
     };
-    console.log("getServerSideProps returning:", props);
-    return { props };
+    console.log("getStaticProps returning:", props);
+    return { 
+      props,
+      revalidate: 300, // Regenerate the page every 5 minutes
+    };
   } catch (error) {
-    console.error("Error in getServerSideProps:", error);
+    console.error("Error in getStaticProps:", error);
     const props = {
       leaderboardData: [],
       error: error.message,
     };
-    console.log("getServerSideProps returning:", props);
-    return { props };
+    console.log("getStaticProps returning:", props);
+    return { 
+      props,
+      revalidate: 300, // Regenerate the page every 5 minutes
+    };
   }
 };
 
