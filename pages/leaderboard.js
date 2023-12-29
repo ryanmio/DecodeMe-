@@ -34,7 +34,6 @@ const fetchLeaderboardData = async (filter) => {
 
   try {
     const leaderboardSnapshot = await getDocs(leaderboardQuery);
-    console.log(`Number of documents returned: ${leaderboardSnapshot.docs.length}`);
 
     let leaderboardData = leaderboardSnapshot.docs.map(docSnapshot => {
       let data = docSnapshot.data();
