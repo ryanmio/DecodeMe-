@@ -2,7 +2,7 @@
 import { getFirebaseFirestore } from '../app/src/firebase';
 import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect, Suspense, unstable_startTransition as startTransition } from 'react';
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
@@ -91,7 +91,9 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
     // Fetch additional data in the background after initial render
     const fetchAdditionalData = async () => {
       const newLeaderboardData = await fetchLeaderboardData('monthly');
-      setAdditionalData(newLeaderboardData);
+      startTransition(() => {
+        setAdditionalData(newLeaderboardData);
+      });
     };
     fetchAdditionalData();
   }, []);
