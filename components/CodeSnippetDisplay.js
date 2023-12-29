@@ -19,7 +19,7 @@ export default function CodeSnippetDisplay({ codeSnippet, loading }) {
           <CodeBlock 
             text={formattedCodeSnippet || placeholder} 
             language={"python"} 
-            showLineNumbers={true} 
+            showLineNumbers={false} 
             theme={dracula} 
             wrapLines 
             style={{minWidth: '300px', minHeight: '200px'}}
