@@ -2,7 +2,7 @@
 import { getFirebaseFirestore } from '../app/src/firebase';
 import { collection, getDocs, query, orderBy, where, Timestamp } from 'firebase/firestore';
 import { Pagination } from '@nextui-org/react';
-import React, { useState, useEffect, Suspense } from 'react';
+import React, { useState, useEffect } from 'react'; // Removed Suspense
 import { NextUIProvider, Tabs, Tab } from "@nextui-org/react";
 import NavigationButtons from 'components/NavigationButtons';
 import { useRouter } from 'next/router';
@@ -85,18 +85,18 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
-  const [additionalData, setAdditionalData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false); // New state for loading
 
-  useEffect(() => {
-    // Fetch additional data in the background after initial render
-    const fetchAdditionalData = async () => {
-      const newLeaderboardData = await fetchLeaderboardData('monthly');
-      setTimeout(() => {
-        setAdditionalData(newLeaderboardData);
-      }, 0);
-    };
-    fetchAdditionalData();
-  }, []);
+  const handleFilterChange = async (newFilter) => {
+    setIsLoading(true);
+    try {
+      setFilter(newFilter);
+      const newLeaderboardData = await fetchLeaderboardData(newFilter);
+      setData(newLeaderboardData);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   if (error) {
     return <div>Error: {error}</div>;
@@ -110,12 +110,6 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
-  };
-
-  const handleFilterChange = async (newFilter) => {
-    setFilter(newFilter);
-    const newLeaderboardData = await fetchLeaderboardData(newFilter);
-    setData(newLeaderboardData);
   };
 
   const getOrdinalSuffix = (i) => {
@@ -160,15 +154,13 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Player</h2>
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Score</h2>
             </div>
-            <Suspense fallback={<div>Loading leaderboard...</div>}>
-              {currentItems.map((game, index) => (
+            {isLoading ? <div>Loading leaderboard...</div> : currentItems.map((game, index) => ( // Removed Suspense and added conditional rendering
                 <div key={game.id} className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
                   <span className="text-lg text-gray-700">{getOrdinalSuffix(indexOfFirstItem + index + 1)}</span>
                   <span className="text-lg text-gray-700">{game.leaderboardName || 'Unknown'}</span>
                   <span className="text-lg text-gray-700">{game.score}</span>
                 </div>
               ))}
-            </Suspense>
             <Pagination
               total={Math.ceil(data.length / itemsPerPage)}
               page={currentPage}
