@@ -19,6 +19,17 @@ const UserStatsPage = ({ userData }) => {
   // Function to capitalize the first letter of the leaderboard name
   const capitalize = (s) => s && s[0].toUpperCase() + s.slice(1);
 
+  // Extract the game counts for each learning level from userData
+  const { beginner = 0, intermediate = 0, expert = 0 } = userData?.gameCountsByLevel || {};
+
+  // Calculate the maximum game count
+  const maxGameCount = Math.max(beginner, intermediate, expert);
+
+  // Calculate the width of each bar as a percentage of the maximum game count
+  const beginnerWidth = (beginner / maxGameCount) * 100;
+  const intermediateWidth = (intermediate / maxGameCount) * 100;
+  const expertWidth = (expert / maxGameCount) * 100;
+
   return (
     <RootLayout metadata={metadata}>
       <Head>
@@ -48,15 +59,15 @@ const UserStatsPage = ({ userData }) => {
               <p className="text-lg text-gray-700">Daily Streak: {userData?.currentStreak}</p>
             </div>
             <div className="my-6">
-              <h2 className="text-lg font-semibold text-gray-900">Accuracy</h2>
+              <h2 className="text-lg font-semibold text-gray-900">Game Count</h2>
               <div className="space-y-1"> {/* Add space between bars */}
-                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '70%' }}>
+                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: `${beginnerWidth}%` }}>
                   <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Beginner</span>
                 </div> {/* Beginner bar with label */}
-                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '50%' }}>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Standard</span>
-                </div> {/* Standard bar with label */}
-                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '30%' }}>
+                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: `${intermediateWidth}%` }}>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Intermediate</span>
+                </div> {/* Intermediate bar with label */}
+                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: `${expertWidth}%` }}>
                   <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Expert</span>
                 </div> {/* Expert bar with label */}
               </div>
@@ -110,5 +121,3 @@ export const getServerSideProps = async ({ params }) => {
 };
 
 export default UserStatsPage;
-
-
