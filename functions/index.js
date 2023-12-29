@@ -343,31 +343,40 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
     console.log(`Processing user ${user.id}`);
 
     const gameHistorySnapshot = await admin.firestore().collection('users').doc(user.id).collection('games').get();
-    const gameHistory = gameHistorySnapshot.docs.map(doc => doc.data());
+    const gameHistory = gameHistorySnapshot.docs.map(doc => ({ ...doc.data(), timestamp: doc.data().timestamp.toDate() }));
 
     console.log(`Fetched ${gameHistory.length} games for user ${user.id}`);
 
-    // Sort games by date
-    gameHistory.sort((a, b) => b.date - a.date);
+    // Sort games by timestamp
+    gameHistory.sort((a, b) => b.timestamp.getTime() - a.timestamp.getTime());
 
     let streak = 0;
     let currentDate = new Date();
 
     for (const game of gameHistory) {
-      console.log(`Processing game with date ${game.date}`);
+      console.log(`Processing game with timestamp ${game.timestamp}`);
 
-      if (isSameDay(new Date(game.date), currentDate)) {
+      if (isSameDay(game.timestamp, currentDate)) {
         streak++;
         currentDate.setDate(currentDate.getDate() - 1);
       } else {
-        break;
+        // If the current game is not on the same day as the currentDate, check if it's on the day before
+        // This handles the case where there might be gaps in the game history
+        const previousDay = new Date(currentDate);
+        previousDay.setDate(previousDay.getDate() - 1);
+        if (isSameDay(game.timestamp, previousDay)) {
+          currentDate = previousDay; // Update currentDate to the previous day
+          streak++;
+        } else {
+          break; // If there's a gap in the streak, break out of the loop
+        }
       }
     }
 
     console.log(`Calculated streak of ${streak} for user ${user.id}`);
 
     // Update the user's streak in Firestore
-    await admin.firestore().collection('users').doc(user.id).update({ streak });
+    await admin.firestore().collection('users').doc(user.id).update({ currentStreak: streak });
 
     console.log(`Updated streak for user ${user.id}`);
   }
