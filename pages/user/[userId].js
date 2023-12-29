@@ -45,23 +45,19 @@ const UserStatsPage = ({ userData }) => {
             <div className="my-6">
               <h2 className="text-lg font-semibold text-gray-900">Lifetime Stats</h2>
               <p className="text-lg text-gray-700">High Score: {userData?.highScore}</p>
-              <p className="text-lg text-gray-700">Current Streak: {userData?.currentStreak}</p>
-            </div>
-            <div className="my-6">
-              <h2 className="text-lg font-semibold text-gray-900">Learning Level</h2>
-              <p className="text-lg text-gray-700">{userData?.learningLevel || 'Expert'}</p>
+              <p className="text-lg text-gray-700">Daily Streak: {userData?.currentStreak}</p>
             </div>
             <div className="my-6">
               <h2 className="text-lg font-semibold text-gray-900">Accuracy</h2>
-              <div className="w-full bg-gray-300 rounded-full h-2.5 dark:bg-gray-700">
-                <div className="bg-blue-600 h-2.5 rounded-full" style={{ width: '70%' }}></div> {/* Placeholder for beginner bar */}
-                <div className="bg-yellow-600 h-2.5 rounded-full" style={{ width: '50%' }}></div> {/* Placeholder for intermediate bar */}
-                <div className="bg-red-600 h-2.5 rounded-full" style={{ width: '30%' }}></div> {/* Placeholder for expert bar */}
+              <div className="space-y-1"> {/* Add space between bars */}
+                <div className="bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '70%' }}></div> {/* Changed color, height, opacity, and hover */}
+                <div className="bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '50%' }}></div> {/* Changed color, height, opacity, and hover */}
+                <div className="bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '30%' }}></div> {/* Changed color, height, opacity, and hover */}
               </div>
             </div>
             <Divider />
             <Spacer y={1} />
-            <div className="flex justify-around mt-4">
+            <div className="flex justify-around mt-4 space-x-4"> {/* Added horizontal spacing between buttons */}
               <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/history')}>
                 Game History
               </Button>
