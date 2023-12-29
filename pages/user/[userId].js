@@ -38,8 +38,8 @@ const UserStatsPage = ({ userData }) => {
               <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
             </div>
             <div className="flex items-center justify-center my-4">
-              <span role="img" aria-label="trophy" style={{ fontSize: '2em' }}>🏆</span> {/* Increased size of trophy */}
-              <span className="text-6xl font-bold text-gray-900 ml-4">100</span>
+              <span role="img" aria-label="trophy" style={{ fontSize: '2em', alignSelf: 'center' }}>🏆</span> 
+              <span className="text-6xl font-bold text-gray-900 ml-4" style={{ alignSelf: 'center' }}>100</span>
             </div>
             <p className="text-center text-gray-700">This is your lifetime score</p>
             <div className="my-6">
@@ -50,14 +50,20 @@ const UserStatsPage = ({ userData }) => {
             <div className="my-6">
               <h2 className="text-lg font-semibold text-gray-900">Accuracy</h2>
               <div className="space-y-1"> {/* Add space between bars */}
-                <div className="bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '70%' }}></div> {/* Changed color, height, opacity, and hover */}
-                <div className="bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '50%' }}></div> {/* Changed color, height, opacity, and hover */}
-                <div className="bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '30%' }}></div> {/* Changed color, height, opacity, and hover */}
+                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '70%' }}>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Beginner</span>
+                </div> {/* Beginner bar with label */}
+                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '50%' }}>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Standard</span>
+                </div> {/* Standard bar with label */}
+                <div className="relative bg-blue-500 h-5 rounded-full opacity-70 hover:opacity-100" style={{ width: '30%' }}>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-thin text-white">Expert</span>
+                </div> {/* Expert bar with label */}
               </div>
             </div>
             <Divider />
             <Spacer y={1} />
-            <div className="flex justify-around mt-4 space-x-4"> {/* Added horizontal spacing between buttons */}
+            <div className="flex justify-around mt-4 space-x-4">
               <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/history')}>
                 Game History
               </Button>
@@ -104,3 +110,5 @@ export const getServerSideProps = async ({ params }) => {
 };
 
 export default UserStatsPage;
+
+
