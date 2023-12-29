@@ -85,16 +85,17 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
-  const [isLoading, setIsLoading] = useState(false); // New state for loading
+  const [newData, setNewData] = useState(null); // New state for new data
 
   const handleFilterChange = async (newFilter) => {
-    setIsLoading(true);
+    setNewData(null);
     try {
       setFilter(newFilter);
       const newLeaderboardData = await fetchLeaderboardData(newFilter);
+      setNewData(newLeaderboardData);
       setData(newLeaderboardData);
-    } finally {
-      setIsLoading(false);
+    } catch (error) {
+      console.error("Error fetching new leaderboard data:", error);
     }
   };
 
@@ -106,7 +107,7 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = (newData || data).slice(indexOfFirstItem, indexOfLastItem);
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
@@ -154,7 +155,7 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Player</h2>
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Score</h2>
             </div>
-            {isLoading ? <div>Loading leaderboard...</div> : currentItems.map((game, index) => ( // Removed Suspense and added conditional rendering
+            {currentItems.map((game, index) => (
                 <div key={game.id} className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
                   <span className="text-lg text-gray-700">{getOrdinalSuffix(indexOfFirstItem + index + 1)}</span>
                   <span className="text-lg text-gray-700">{game.leaderboardName || 'Unknown'}</span>
