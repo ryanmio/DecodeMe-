@@ -5,9 +5,15 @@ import RootLayout from '../../components/layout';
 import Image from 'next/image';
 import { Button, Divider, Spacer } from '@nextui-org/react'; // Import NextUI components
 import { useRouter } from 'next/router'; // Import useRouter for navigation
+import NavigationButtons from '../../components/NavigationButtons'; // Import NavigationButtons
 
 const UserStatsPage = ({ userData }) => {
   const router = useRouter(); // Initialize useRouter
+
+  const resetGame = () => {
+    router.push('/'); // Navigate to home page
+  };
+
   // Metadata for sharing
   const metadata = {
     title: `User Stats for ${userData?.leaderboardName}`,
@@ -46,6 +52,7 @@ const UserStatsPage = ({ userData }) => {
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+            <NavigationButtons resetGame={resetGame} question={{}} /> {/* Add this line */}
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold text-gray-900">{capitalize(userData?.leaderboardName)} Score</h1>
               <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
