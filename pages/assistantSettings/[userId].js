@@ -38,9 +38,6 @@ const AssistantSettingsPage = ({ userData }) => {
           const userDocRef = doc(dbClient, 'users', userData.id);
           await updateDoc(userDocRef, { customInstructions });
           console.log('Document successfully updated'); // After successful Firestore operation
-          console.log('Attempting to redirect to user page'); // Before redirecting
-          router.push(`/user/${userData.id}`);
-          console.log('Redirecting to user page'); // After initiating the redirect
         } else {
           console.log('No authenticated user'); // Log a message if there is no authenticated user
         }
