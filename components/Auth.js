@@ -1,4 +1,5 @@
 // components/Auth.js
+import LinkAccount from './LinkAccount';
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, GithubAuthProvider, signInWithPopup, fetchSignInMethodsForEmail, signInWithCredential, SnapchatAuthProvider } from 'firebase/auth';
@@ -15,6 +16,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showLinkAccount, setShowLinkAccount] = useState(false);
+  const [pendingCredential, setPendingCredential] = useState(null);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
@@ -60,10 +63,20 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       onUserAuth(result.user);
       setLeaderboardName(result.additionalUserInfo.username);
     } catch (error) {
+      console.log('Error code:', error.code);
+      console.log('Credential:', error.credential);
       if (error.code === 'auth/account-exists-with-different-credential') {
-        // Show error message to user
-        setError('You have already signed up with a different method using the same email. Please sign in with that method first.');
-        setShowErrorModal(true);
+        // User has already signed up with a different provider for that email.
+        // Show the LinkAccount component.
+        if (error.credential) {
+          setPendingCredential(error.credential);
+          setShowLinkAccount(true);
+        } else {
+          // Handle error when credential is undefined
+          console.error('Credential is undefined');
+          setError('An error occurred while signing in with GitHub');
+          setShowErrorModal(true);
+        }
       } else {
         setError(error.message);
         setShowErrorModal(true);
@@ -121,46 +134,58 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
-      <input
-        type="text"
-        value={leaderboardName}
-        onChange={(e) => setLeaderboardName(e.target.value)}
-        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-        placeholder="Leaderboard Name"
-      />
-      <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Play as Guest</button>
-      <div className="w-full border-b border-gray-300 my-4"></div>
-      <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
-      <div className="flex flex-col space-y-2">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-          placeholder="Email"
+      {showLinkAccount ? (
+        <LinkAccount
+          credential={pendingCredential}
+          onUserAuth={(user) => {
+            onUserAuth(user);
+            setShowLinkAccount(false);
+          }}
         />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-          placeholder="Password"
-        />
-        <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
-        <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
-        <button onClick={handleGithubSignIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In with GitHub</button>
-      </div>
-      {loading && <p className="mt-2 text-sm">Loading...</p>}
-      {error && showErrorModal && (
-        <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
-          <ModalContent>
-            <ModalHeader>Error</ModalHeader>
-            <ModalBody>{error}</ModalBody>
-            <ModalFooter>
-              <Button color="primary" onClick={closeErrorModal}>Close</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+      ) : (
+        <>
+          <input
+            type="text"
+            value={leaderboardName}
+            onChange={(e) => setLeaderboardName(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+            placeholder="Leaderboard Name"
+          />
+          <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Play as Guest</button>
+          <div className="w-full border-b border-gray-300 my-4"></div>
+          <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
+          <div className="flex flex-col space-y-2">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+              placeholder="Password"
+            />
+            <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
+            <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+            <button onClick={handleGithubSignIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In with GitHub</button>
+          </div>
+          {loading && <p className="mt-2 text-sm">Loading...</p>}
+          {error && showErrorModal && (
+            <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
+              <ModalContent>
+                <ModalHeader>Error</ModalHeader>
+                <ModalBody>{error}</ModalBody>
+                <ModalFooter>
+                  <Button color="primary" onClick={closeErrorModal}>Close</Button>
+                </ModalFooter>
+              </ModalContent>
+            </Modal>
+          )}
+        </>
       )}
     </div>
   );
