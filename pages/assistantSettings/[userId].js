@@ -35,9 +35,10 @@ const AssistantSettingsPage = ({ userData }) => {
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
             <h1 className="text-2xl font-bold text-gray-900">Assistant Settings</h1>
-            <form onSubmit={handleFormSubmit} style={{ maxWidth: '500px', margin: '0 auto' }}>
-              <div className="input-group" style={{ marginBottom: '20px' }}>
-                <label htmlFor="codeGen">Code Generation Instructions:</label>
+            <p className="mt-2 text-gray-600">Customize the instructions for each aspect of the assistant</p>
+            <form onSubmit={handleFormSubmit} style={{ maxWidth: '500px', margin: '0 auto', marginTop: '30px' }}>
+              <div className="input-group" style={{ marginBottom: '15px' }}>
+                <label htmlFor="codeGen" style={{ display: 'block', marginBottom: '10px', fontWeight: 'normal' }}>Code Generation Instructions:</label>
                 <Input
                   id="codeGen"
                   value={customInstructions.codeGen}
@@ -46,8 +47,8 @@ const AssistantSettingsPage = ({ userData }) => {
                   fullWidth
                 />
               </div>
-              <div className="input-group" style={{ marginBottom: '20px' }}>
-                <label htmlFor="chatbot">Chatbot Instructions:</label>
+              <div className="input-group" style={{ marginBottom: '15px' }}>
+                <label htmlFor="chatbot" style={{ display: 'block', marginBottom: '10px', fontWeight: 'normal' }}>Chatbot Instructions:</label>
                 <Input
                   id="chatbot"
                   value={customInstructions.chatbot}
@@ -57,7 +58,7 @@ const AssistantSettingsPage = ({ userData }) => {
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '20px' }}>
-                <label htmlFor="endGame">End Game Message Instructions:</label>
+                <label htmlFor="endGame" style={{ display: 'block', marginBottom: '10px', fontWeight: 'normal' }}>End Game Message Instructions:</label>
                 <Input
                   id="endGame"
                   value={customInstructions.endGame}
