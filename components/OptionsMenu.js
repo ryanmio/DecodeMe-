@@ -1,4 +1,5 @@
 // components/OptionsMenu.js
+
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
@@ -30,7 +31,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
 
   const handleHistory = () => {
     const user = auth.currentUser;
-    if (!user || user.isAnonymous) {
+    if (!user) {
       setShowAuthModal(true);
     } else {
       router.push(`/history/${user.uid}`);
@@ -69,7 +70,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
           </Button>
         </DropdownTrigger>
         <DropdownMenu variant="shadow" aria-label="Options menu">
-          {isLoggedIn && !user.isAnonymous && <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>}
+          {isLoggedIn && <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>}
           <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
           {gameMode && !isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
           {isLoggedIn && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
