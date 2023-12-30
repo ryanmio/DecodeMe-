@@ -1,9 +1,10 @@
 // pages/assistantSettings.js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { db } from '../firebaseAdmin';
-import RootLayout from '../components/layout';
+import dbClient from '../../app/src/utils/firebaseAdmin'; // Client-side db
+import RootLayout from '../../components/layout';
 import { Button, Input } from '@nextui-org/react';
+import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 
 const AssistantSettingsPage = ({ userData }) => {
   const router = useRouter();
@@ -16,7 +17,7 @@ const AssistantSettingsPage = ({ userData }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     // Update the customInstructions field in Firestore
-    const userDocRef = db.collection('users').doc(userData.id);
+    const userDocRef = dbClient.collection('users').doc(userData.id);
     await userDocRef.update({ customInstructions });
     // Redirect to the user stats page
     router.push(`/user/${userData.id}`);
@@ -52,7 +53,7 @@ export const getServerSideProps = async ({ params }) => {
     let userData = null;
 
     if (userId) {
-      const userDocRef = db.collection('users').doc(userId);
+      const userDocRef = dbServer.collection('users').doc(userId);
       const userDocSnap = await userDocRef.get();
 
       if (userDocSnap.exists) {
