@@ -57,18 +57,18 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Develop function for fetching code snippets
 - [x] Implement multiple-choice questions logic
 - [ ] Implement open-ended questions logic (save for future release)
-- [ ] Implement data analysis questions logic (save for future release)
+- [ ] Implement daily challenge questions logic (save for future release)
 
 ### Scoring and Feedback
 - [x] Develop scoring algorithm
 - [x] Implement leaderboard functionality
 - [x] New Scoring System with 3 strikes and unlimited questions
 - [x] Implement Post-Game Review to provide feedback on wrong answers
-- [ ] Finalize post game review system and user messages and model
 - [x] Add streaks to UI
 - [x] Add strikes to UI
 - [x] Implement daily streaks
 - [x] Implement high scores
+- [ ] Finalize post game review system and user messages and model
 - [ ] Implement notification for events like new hight score
 
 ### Core Features
@@ -77,23 +77,22 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Style the game history
 - [x] Add "Skip this/Refresh" button in options menu
 - [x] Add daily, weekly, lifetime scores in leaderboards
-- [ ] Implement shareable score previews
 - [x] Implement daily streaks
-- [ ] Add more stats to the history page like accuracy
 - [x] Finalize the system message
 - [x] Finalize the initial user message
 - [x] Implement 'Chat with Code' feature
 - [x] Implement learning levels in chat
 - [x] Implement learning levels in scripts
-- [ ] Implement custom instructions
 - [x] Create share game component with copy to clipboard link
-
+- [x] Implement Dynamic SEO
+- [x] Implement User Stats page
+- [ ] Implement custom instructions
+- [ ] Implement shareable score previews
+- [ ] Add more stats to the history page like accuracy
 - [ ] Implement bug reporting
 - [ ] Implement GPT usage cap or rate limits
 - [ ] Implement sign-in with gmail/github
 - [ ] Implement account upgrade option
-- [x] Implement Dynamic SEO
-- [x] Implement User Stats page
 - [ ] Implement AI commands
 
 ### Future Release Features
