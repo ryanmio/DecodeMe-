@@ -1,7 +1,7 @@
 // pages/assistantSettings/[userId].js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import dbClient from '../../app/src/utils/firebaseAdmin'; // Client-side db
+import { getFirebaseFirestore } from '../../app/src/firebase'; // Updated import
 import RootLayout from '../../components/layout';
 import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
@@ -28,13 +28,19 @@ const AssistantSettingsPage = ({ userData }) => {
     console.log('Form submit initiated'); // Log when form submission starts
     try {
       console.log('Attempting to update document in Firestore'); // Before Firestore operation
+      const dbClient = getFirebaseFirestore(); // Updated Firestore instance
       const userDocRef = doc(dbClient, 'users', userData.id);
       await updateDoc(userDocRef, { customInstructions });
       console.log('Document successfully updated'); // After successful Firestore operation
+      console.log('Attempting to redirect to user page'); // Before redirecting
       router.push(`/user/${userData.id}`);
       console.log('Redirecting to user page'); // After initiating the redirect
     } catch (error) {
       console.error('Error updating document:', error); // Log any errors that occur
+      // Log additional error details if available
+      if (error.code) console.error('Error code:', error.code);
+      if (error.message) console.error('Error message:', error.message);
+      if (error.stack) console.error('Error stack:', error.stack);
     }
   };
 
