@@ -1,7 +1,7 @@
 // components/Auth.js
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, GithubAuthProvider, signInWithPopup, fetchSignInMethodsForEmail, signInWithCredential, SnapchatAuthProvider } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
@@ -54,13 +54,20 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 
   const handleGithubSignIn = async () => {
     const provider = new GithubAuthProvider();
+    provider.addScope('user:email');
     try {
       const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      onUserAuth(user);
+      onUserAuth(result.user);
+      setLeaderboardName(result.additionalUserInfo.username);
     } catch (error) {
-      setError(error.message);
-      setShowErrorModal(true);
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        // Show error message to user
+        setError('You have already signed up with a different method using the same email. Please sign in with that method first.');
+        setShowErrorModal(true);
+      } else {
+        setError(error.message);
+        setShowErrorModal(true);
+      }
     }
   };
 
