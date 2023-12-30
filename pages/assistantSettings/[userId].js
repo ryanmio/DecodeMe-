@@ -30,20 +30,21 @@ const AssistantSettingsPage = ({ userData }) => {
       console.log('Attempting to update document in Firestore'); // Before Firestore operation
       const dbClient = getFirebaseFirestore(); // Updated Firestore instance
       const authClient = getFirebaseAuth(); // Get the Firebase Authentication instance
-      console.log('User ID:', userData.id); // Log the user ID
 
-      if (!authClient || !authClient.currentUser) {
-        console.log('No authenticated user'); // Log a message if there is no authenticated user
-        return; // Return from the function to prevent the updateDoc operation from being attempted
-      }
-
-      console.log('Authenticated user ID:', authClient.currentUser.uid); // Log the authenticated user's ID
-      const userDocRef = doc(dbClient, 'users', userData.id);
-      await updateDoc(userDocRef, { customInstructions });
-      console.log('Document successfully updated'); // After successful Firestore operation
-      console.log('Attempting to redirect to user page'); // Before redirecting
-      router.push(`/user/${userData.id}`);
-      console.log('Redirecting to user page'); // After initiating the redirect
+      authClient.onAuthStateChanged(async (user) => {
+        if (user) {
+          console.log('User ID:', userData.id); // Log the user ID
+          console.log('Authenticated user ID:', user.uid); // Log the authenticated user's ID
+          const userDocRef = doc(dbClient, 'users', userData.id);
+          await updateDoc(userDocRef, { customInstructions });
+          console.log('Document successfully updated'); // After successful Firestore operation
+          console.log('Attempting to redirect to user page'); // Before redirecting
+          router.push(`/user/${userData.id}`);
+          console.log('Redirecting to user page'); // After initiating the redirect
+        } else {
+          console.log('No authenticated user'); // Log a message if there is no authenticated user
+        }
+      });
     } catch (error) {
       console.error('Error updating document:', error); // Log any errors that occur
       // Log additional error details if available
