@@ -12,7 +12,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
   const metadata = {
     title: `Game Results for ${gameData?.leaderboardName}`,
     description: `Check out the game results for ${gameData?.leaderboardName} on DecodeMe!`,
-    image: 'https://decodeme.app/images/shareimage.jpeg',
+    image: 'https://decodeme.app/images/shareimage.png',
     url: `https://decodeme.app/results/${gameData?.id}`,
   };
 

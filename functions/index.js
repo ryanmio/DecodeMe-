@@ -279,11 +279,29 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   console.log(`Total score for user ${userId}:`, totalScore);
   console.log(`Average score for user ${userId}:`, averageScore);
 
+  // Initialize game counts for each learning level
+  const gameCountsByLevel = {
+    beginner: 0,
+    intermediate: 0,
+    expert: 0,
+  };
+
+  // Calculate the game counts for each learning level
+  for (const game of validGames) {
+    const level = game.learningLevel || 'intermediate'; // Use 'intermediate' as the default level
+    gameCountsByLevel[level]++;
+  }
+
+  // Calculate the lifetime score
+  let lifetimeScore = validGames.reduce((acc, game) => acc + game.score, 0);
+
   // Log the calculated stats before updating Firestore
   console.log(`Final stats for user: ${userId}`, {
     averageScore,
     highScore,
-    totalGames: validGames.length
+    totalGames: validGames.length,
+    gameCountsByLevel,
+    lifetimeScore // Log the lifetime score
   });
 
   console.log(`Updating stats for user: ${userId}`);
@@ -292,7 +310,9 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
   await userRef.set({
     averageScore,
     highScore,
-    totalGames: validGames.length
+    totalGames: validGames.length,
+    gameCountsByLevel,
+    lifetimeScore // Update the lifetime score in Firestore
   }, { merge: true });
 
   // Log a message after updating Firestore
