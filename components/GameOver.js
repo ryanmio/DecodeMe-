@@ -87,7 +87,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       longestStreak,
       sharedAt: new Date(),
       gameNumber,
-      learningLevel, // Add the learning level to the game stats
+      learningLevel,
     };
 
     const gameDocRef = doc(db, 'users', userId, 'games', gameId);
@@ -98,7 +98,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await recalculateUserStats({ userId });
 
     return gameStats;
-  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, learningLevel]); // Include learningLevel in the dependency array
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, learningLevel]);
 
   useEffect(() => {
     saveGameStatsToHistory();
@@ -129,7 +129,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
   const generateShareLink = async (shareId) => {
     const shareLink = `${APP_URL}/results/${shareId}`;
-    setShareUrl(shareLink); // Update the state with the generated URL
+    setShareUrl(shareLink);
   };
 
   const handleShareResults = async () => {
@@ -137,7 +137,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     setLoading(true);
 
     try {
-      // Use the leaderboardName prop instead of fetching it again
       let finalLeaderboardName = leaderboardName;
       if (!finalLeaderboardName) {
         setLoading(false);
@@ -150,7 +149,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
 
       await generateShareLink(shareId);
     } catch (error) {
-      console.error('Error in handleShareResults:', error); // Log any errors
+      console.error('Error in handleShareResults:', error);
       setError('Failed to share game history.');
     } finally {
       setLoading(false);

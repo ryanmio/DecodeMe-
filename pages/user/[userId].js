@@ -3,18 +3,17 @@ import { db } from '../../firebaseAdmin';
 import Head from 'next/head';
 import RootLayout from '../../components/layout';
 import Image from 'next/image';
-import { Button, Divider, Spacer } from '@nextui-org/react'; // Import NextUI components
-import { useRouter } from 'next/router'; // Import useRouter for navigation
-import NavigationButtons from '../../components/NavigationButtons'; // Import NavigationButtons
+import { Button, Divider, Spacer } from '@nextui-org/react';
+import { useRouter } from 'next/router';
+import NavigationButtons from '../../components/NavigationButtons';
 
 const UserStatsPage = ({ userData }) => {
-  const router = useRouter(); // Initialize useRouter
+  const router = useRouter();
 
   const resetGame = () => {
-    router.push('/'); // Navigate to home page
+    router.push('/');
   };
 
-  // Metadata for sharing
   const metadata = {
     title: `User Stats for ${userData?.leaderboardName}`,
     description: `Check out the user stats for ${userData?.leaderboardName} on DecodeMe!`,

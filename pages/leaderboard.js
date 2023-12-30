@@ -84,7 +84,7 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState('lifetime');
   const [data, setData] = useState(leaderboardData);
-  const [newData, setNewData] = useState(null); // New state for new data
+  const [newData, setNewData] = useState(null);
 
   const handleFilterChange = async (newFilter) => {
     setNewData(null);
