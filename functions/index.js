@@ -292,12 +292,16 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     gameCountsByLevel[level]++;
   }
 
+  // Calculate the lifetime score
+  let lifetimeScore = validGames.reduce((acc, game) => acc + game.score, 0);
+
   // Log the calculated stats before updating Firestore
   console.log(`Final stats for user: ${userId}`, {
     averageScore,
     highScore,
     totalGames: validGames.length,
-    gameCountsByLevel
+    gameCountsByLevel,
+    lifetimeScore // Log the lifetime score
   });
 
   console.log(`Updating stats for user: ${userId}`);
@@ -307,7 +311,8 @@ exports.recalculateUserStats = functions.https.onCall(async (data, context) => {
     averageScore,
     highScore,
     totalGames: validGames.length,
-    gameCountsByLevel
+    gameCountsByLevel,
+    lifetimeScore // Update the lifetime score in Firestore
   }, { merge: true });
 
   // Log a message after updating Firestore
