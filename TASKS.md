@@ -68,8 +68,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Add strikes to UI
 - [x] Implement daily streaks
 - [x] Implement high scores
-- [ ] Finalize post game review system and user messages and model
-- [ ] Implement notification for events like new hight score
+- [ ] Finalize post game review system and user messages
 
 ### Core Features
 - [x] Add "Log out" button in options menu
@@ -88,17 +87,25 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement User Stats page
 - [ ] Implement sign-in with gmail/github
 - [ ] Implement AI commands
+  - [ ] /Instruct
+  - [ ] /Help
+  - [ ] /Remember
 - [ ] Implement custom instructions
 - [ ] Implement GPT usage cap or rate limits
-- [ ] Add more stats to the history page like accuracy
-- [ ] Implement bug reporting
 - [ ] Implement account upgrade option
-- [ ] Implement shareable score previews
 
 ### Future Release Features
 - [ ] Implement challenge mode for friends
 - [ ] Implement language selector
 - [ ] Implement badges
+- [ ] Implement bug reporting
+- [ ] Add more stats to the history page like accuracy
+- [ ] Implement shareable score previews
+- [ ] Implement notification for events like new high score
+- [ ] Implement modular context blocks
+  - [ ] @convo-[conversationTitle]-[conversationDate]
+  - [ ] @question-[questionId]
+  - [ ] @memory-[memoryName]
  
 ### Testing
 - [ ] Test anonymous user flow
@@ -114,5 +121,4 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 
 ### Final Steps
 - [ ] Conduct user testing
-- [ ] Make necessary adjustments based on feedback
-- [ ] Final review and launch
+- [ ] Full launch
