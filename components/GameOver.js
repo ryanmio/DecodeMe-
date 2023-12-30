@@ -12,7 +12,7 @@ import ShareGameLink from './ShareGameLink';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
-const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user }) => {
+const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user, learningLevel }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -87,6 +87,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       longestStreak,
       sharedAt: new Date(),
       gameNumber,
+      learningLevel, // Add the learning level to the game stats
     };
 
     const gameDocRef = doc(db, 'users', userId, 'games', gameId);
@@ -97,7 +98,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await recalculateUserStats({ userId });
 
     return gameStats;
-  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName]);
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, learningLevel]); // Include learningLevel in the dependency array
 
   useEffect(() => {
     saveGameStatsToHistory();
