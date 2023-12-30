@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import dbClient from '../../app/src/utils/firebaseAdmin'; // Client-side db
 import RootLayout from '../../components/layout';
-import { Button, Input } from '@nextui-org/react';
+import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 
 const AssistantSettingsPage = ({ userData }) => {
@@ -38,37 +38,67 @@ const AssistantSettingsPage = ({ userData }) => {
             <p className="mt-2 text-gray-600">Customize the instructions for each aspect of the assistant</p>
             <form onSubmit={handleFormSubmit} style={{ maxWidth: '500px', margin: '0 auto', marginTop: '30px' }}>
               <div className="input-group" style={{ marginBottom: '15px' }}>
-                <label htmlFor="codeGen" style={{ display: 'block', marginBottom: '10px', fontWeight: 'normal' }}>Code Generation Instructions:</label>
-                <Input
+                <Textarea
                   id="codeGen"
-                  value={customInstructions.codeGen}
-                  onChange={(e) => handleInputChange('codeGen', e)}
+                  label="Code Generation Instructions:"
+                  variant="bordered"
                   placeholder="Enter your code generation instructions"
+                  value={customInstructions.codeGen}
+                  onValueChange={(value) => handleInputChange('codeGen', { target: { value } })}
+                  disableAnimation
+                  disableAutosize
                   fullWidth
+                  classNames={{
+                    base: "w-full",
+                    input: "resize-y min-h-[40px]",
+                  }}
+                  maxLength={280}
+                  helperText={customInstructions.codeGen.length > 280 ? "Maximum character limit of 280 exceeded." : ""}
+                  helperColor={customInstructions.codeGen.length > 280 ? "error" : "default"}
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '15px' }}>
-                <label htmlFor="chatbot" style={{ display: 'block', marginBottom: '10px', fontWeight: 'normal' }}>Chatbot Instructions:</label>
-                <Input
+                <Textarea
                   id="chatbot"
-                  value={customInstructions.chatbot}
-                  onChange={(e) => handleInputChange('chatbot', e)}
+                  label="Chatbot Instructions:"
+                  variant="bordered"
                   placeholder="Enter your chatbot instructions"
+                  value={customInstructions.chatbot}
+                  onValueChange={(value) => handleInputChange('chatbot', { target: { value } })}
+                  disableAnimation
+                  disableAutosize
                   fullWidth
+                  classNames={{
+                    base: "w-full",
+                    input: "resize-y min-h-[40px]",
+                  }}
+                  maxLength={280}
+                  helperText={customInstructions.chatbot.length > 280 ? "Maximum character limit of 280 exceeded." : ""}
+                  helperColor={customInstructions.chatbot.length > 280 ? "error" : "default"}
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '20px' }}>
-                <label htmlFor="endGame" style={{ display: 'block', marginBottom: '10px', fontWeight: 'normal' }}>End Game Message Instructions:</label>
-                <Input
+                <Textarea
                   id="endGame"
-                  value={customInstructions.endGame}
-                  onChange={(e) => handleInputChange('endGame', e)}
+                  label="End Game Message Instructions:"
+                  variant="bordered"
                   placeholder="Enter your end game message instructions"
+                  value={customInstructions.endGame}
+                  onValueChange={(value) => handleInputChange('endGame', { target: { value } })}
+                  disableAnimation
+                  disableAutosize
                   fullWidth
+                  classNames={{
+                    base: "w-full",
+                    input: "resize-y min-h-[40px]",
+                  }}
+                  maxLength={280}
+                  helperText={customInstructions.endGame.length > 280 ? "Maximum character limit of 280 exceeded." : ""}
+                  helperColor={customInstructions.endGame.length > 280 ? "error" : "default"}
                 />
               </div>
-              <div style={{ textAlign: 'right', marginTop: '20px' }}>
-                <Button color="primary" auto type="submit">
+              <div style={{ textAlign: 'center', marginTop: '20px' }}>
+                <Button color="primary" auto ghost variant="ghost" type="submit">
                   Save
                 </Button>
               </div>
