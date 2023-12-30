@@ -7,6 +7,9 @@ import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 import { doc, updateDoc } from 'firebase/firestore';
 
+// This constant defines the maximum character limit for the textareas
+const MAX_CHAR_LIMIT = 90;
+
 const AssistantSettingsPage = ({ userData }) => {
   const router = useRouter();
   const [customInstructions, setCustomInstructions] = useState({
@@ -25,16 +28,12 @@ const AssistantSettingsPage = ({ userData }) => {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-    console.log('Form submit initiated'); // Log when form submission starts
     try {
-      console.log('Attempting to update document in Firestore'); // Before Firestore operation
       const dbClient = getFirebaseFirestore(); // Updated Firestore instance
       const authClient = getFirebaseAuth(); // Get the Firebase Authentication instance
 
       authClient.onAuthStateChanged(async (user) => {
         if (user) {
-          console.log('User ID:', userData.id); // Log the user ID
-          console.log('Authenticated user ID:', user.uid); // Log the authenticated user's ID
           const userDocRef = doc(dbClient, 'users', userData.id);
           await updateDoc(userDocRef, { customInstructions });
           console.log('Document successfully updated'); // After successful Firestore operation
@@ -43,11 +42,7 @@ const AssistantSettingsPage = ({ userData }) => {
         }
       });
     } catch (error) {
-      console.error('Error updating document:', error); // Log any errors that occur
-      // Log additional error details if available
-      if (error.code) console.error('Error code:', error.code);
-      if (error.message) console.error('Error message:', error.message);
-      if (error.stack) console.error('Error stack:', error.stack);
+      console.error('Error updating document:', error);
     }
   };
 
@@ -74,9 +69,9 @@ const AssistantSettingsPage = ({ userData }) => {
                     base: "w-full",
                     input: "resize-y min-h-[40px]",
                   }}
-                  maxLength={280}
-                  helperText={customInstructions.codeGen.length > 280 ? "Maximum character limit of 280 exceeded." : ""}
-                  helperColor={customInstructions.codeGen.length > 280 ? "error" : "default"}
+                  maxLength={MAX_CHAR_LIMIT}
+                  helperText={customInstructions.codeGen.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
+                  helperColor={customInstructions.codeGen.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '15px' }}>
@@ -94,9 +89,9 @@ const AssistantSettingsPage = ({ userData }) => {
                     base: "w-full",
                     input: "resize-y min-h-[40px]",
                   }}
-                  maxLength={280}
-                  helperText={customInstructions.chatbot.length > 280 ? "Maximum character limit of 280 exceeded." : ""}
-                  helperColor={customInstructions.chatbot.length > 280 ? "error" : "default"}
+                  maxLength={MAX_CHAR_LIMIT}
+                  helperText={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
+                  helperColor={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '20px' }}>
@@ -114,9 +109,9 @@ const AssistantSettingsPage = ({ userData }) => {
                     base: "w-full",
                     input: "resize-y min-h-[40px]",
                   }}
-                  maxLength={280}
-                  helperText={customInstructions.endGame.length > 280 ? "Maximum character limit of 280 exceeded." : ""}
-                  helperColor={customInstructions.endGame.length > 280 ? "error" : "default"}
+                  maxLength={MAX_CHAR_LIMIT}
+                  helperText={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
+                  helperColor={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
               <div style={{ textAlign: 'right', marginTop: '20px' }}>
