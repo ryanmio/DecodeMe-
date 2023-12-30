@@ -1,7 +1,7 @@
 // pages/assistantSettings/[userId].js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getFirebaseFirestore } from '../../app/src/firebase'; // Updated import
+import { getFirebaseFirestore, getFirebaseAuth } from '../../app/src/firebase'; // Updated import
 import RootLayout from '../../components/layout';
 import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
@@ -29,6 +29,15 @@ const AssistantSettingsPage = ({ userData }) => {
     try {
       console.log('Attempting to update document in Firestore'); // Before Firestore operation
       const dbClient = getFirebaseFirestore(); // Updated Firestore instance
+      const authClient = getFirebaseAuth(); // Get the Firebase Authentication instance
+      console.log('User ID:', userData.id); // Log the user ID
+
+      if (!authClient || !authClient.currentUser) {
+        console.log('No authenticated user'); // Log a message if there is no authenticated user
+        return; // Return from the function to prevent the updateDoc operation from being attempted
+      }
+
+      console.log('Authenticated user ID:', authClient.currentUser.uid); // Log the authenticated user's ID
       const userDocRef = doc(dbClient, 'users', userData.id);
       await updateDoc(userDocRef, { customInstructions });
       console.log('Document successfully updated'); // After successful Firestore operation
