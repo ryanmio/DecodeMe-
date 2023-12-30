@@ -52,7 +52,7 @@ const UserStatsPage = ({ userData }) => {
             </div>
             <div className="flex items-center justify-center my-4">
               <span role="img" aria-label="trophy" style={{ fontSize: '2em', alignSelf: 'center' }}>🏆</span> 
-              <span className="text-6xl font-bold text-gray-900 ml-4" style={{ alignSelf: 'center' }}>100</span>
+              <span className="text-6xl font-bold text-gray-900 ml-4" style={{ alignSelf: 'center' }}>{userData?.lifetimeScore}</span>
             </div>
             <p className="text-center text-gray-700">This is your lifetime score</p>
             <div className="my-6">
@@ -65,15 +65,15 @@ const UserStatsPage = ({ userData }) => {
               <div className="space-y-2">
                 <div className="relative bg-gray-200 h-5 rounded-full shadow-inner">
                   <div className="bg-blue-500 h-5 rounded-full" style={{ width: `${beginnerWidth}%` }}></div>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-700">Beginner: {beginner}</span>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-900">Beginner: {beginner}</span>
                 </div>
                 <div className="relative bg-gray-200 h-5 rounded-full shadow-inner">
                   <div className="bg-blue-500 h-5 rounded-full" style={{ width: `${intermediateWidth}%` }}></div>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-700">Intermediate: {intermediate}</span>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-900">Intermediate: {intermediate}</span>
                 </div>
                 <div className="relative bg-gray-200 h-5 rounded-full shadow-inner">
                   <div className="bg-blue-500 h-5 rounded-full" style={{ width: `${expertWidth}%` }}></div>
-                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-700">Expert: {expert}</span>
+                  <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-900">Expert: {expert}</span>
                 </div>
               </div>
             </div>
