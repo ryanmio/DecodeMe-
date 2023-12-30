@@ -42,6 +42,15 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
     router.push('/leaderboard');
   };
 
+  const handleScorecard = () => {
+    const user = auth.currentUser;
+    if (!user) {
+      setShowAuthModal(true);
+    } else {
+      router.push(`/user/${user.uid}`);
+    }
+  };
+
   const handleUserAuth = (user) => {
     setShowAuthModal(false);
   };
@@ -49,6 +58,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   useHotkeys('shift+l', handleLogout);
   useHotkeys('shift+h', handleHistory);
   useHotkeys('shift+b', handleLeaderboard);
+  useHotkeys('shift+c', handleScorecard);
   useHotkeys('shift+s', () => {
     onSkipSubmit();
   });
@@ -70,8 +80,9 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
           </Button>
         </DropdownTrigger>
         <DropdownMenu variant="shadow" aria-label="Options menu">
-          {isLoggedIn && <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>}
+          {isLoggedIn && <DropdownItem key="scorecard" shortcut="⇧C" onClick={handleScorecard}>Scorecard</DropdownItem>}
           <DropdownItem key="leaderboard" shortcut="⇧B" onClick={handleLeaderboard}>Leaderboard</DropdownItem>
+          {isLoggedIn && <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>}
           {gameMode && !isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
           {isLoggedIn && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
         </DropdownMenu>
