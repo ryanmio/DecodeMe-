@@ -52,7 +52,7 @@ const UserStatsPage = ({ userData }) => {
             </div>
             <div className="flex items-center justify-center my-4">
               <span role="img" aria-label="trophy" style={{ fontSize: '2em', alignSelf: 'center' }}>🏆</span> 
-              <span className="text-6xl font-bold text-gray-900 ml-4" style={{ alignSelf: 'center' }}>{userData?.lifetimeScore}</span>
+              <span className="text-6xl font-bold text-gray-900 ml-4" style={{ alignSelf: 'center' }}>{userData?.lifetimeScore || 0}</span>
             </div>
             <p className="text-center text-gray-700">This is your lifetime score</p>
             <div className="my-6">
