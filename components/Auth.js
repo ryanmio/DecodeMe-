@@ -1,7 +1,7 @@
 // components/Auth.js
 import { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, GithubAuthProvider, signInWithPopup } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
@@ -49,6 +49,18 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       setShowErrorModal(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleGithubSignIn = async () => {
+    const provider = new GithubAuthProvider();
+    try {
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
+      onUserAuth(user);
+    } catch (error) {
+      setError(error.message);
+      setShowErrorModal(true);
     }
   };
 
@@ -129,6 +141,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
         />
         <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
         <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+        <button onClick={handleGithubSignIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In with GitHub</button>
       </div>
       {loading && <p className="mt-2 text-sm">Loading...</p>}
       {error && showErrorModal && (
