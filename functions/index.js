@@ -4,6 +4,7 @@ const axios = require('axios');
 const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
+const db = admin.firestore();
 
 exports.getCodeSnippet = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
@@ -109,6 +110,8 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate';
     const chatHistory = request.body.chatHistory || [];
+    const userId = request.body.userId; // Extract userId from request body
+
     if (!script) {
       console.error('No script provided.');
       return response.status(400).send('Please provide a script.');
@@ -151,6 +154,22 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
       const responseText = openaiResponse.data.choices[0].message.content.trim();
+
+      // Calculate tokens used
+      const tokensUsed = openaiResponse.data.usage.total_tokens;
+      console.log(`Tokens used by user ${userId}: ${tokensUsed}`); // Log tokens used
+
+      // Update Firestore in the background
+      const userRef = db.collection('users').doc(userId);
+      userRef.update({
+        gptCalls: admin.firestore.FieldValue.increment(1),
+        gptTokens: admin.firestore.FieldValue.increment(tokensUsed)
+      }).then(() => {
+        console.log(`Updated gptCalls and gptTokens for user ${userId}`); // Log successful update
+      }).catch(error => {
+        console.error('Error updating Firestore:', error);
+      });
+
       response.send({ response: responseText });
     } catch (error) {
       console.error('Error occurred while communicating with OpenAI:', error);
