@@ -465,8 +465,8 @@ exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate
 
 
 /**
- * This Cloud Function resets the usage data for all users. It is triggered by Cloud Scheduler every day at midnight.
- * The function fetches all users and sets their gptCalls and gptTokens to 0.
+ * This Cloud Function resets the usage data for non-anonymous users. It is triggered by Cloud Scheduler every day at midnight.
+ * The function fetches all users and sets their gptCalls and gptTokens to 0 if they are not anonymous.
  */
 exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => {
   // Fetch all users
@@ -475,18 +475,20 @@ exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (con
 
   console.log(`Fetched ${users.length} users`);
 
-  // Reset the usage data for each user
+  // Reset the usage data for each non-anonymous user
   for (const user of users) {
-    console.log(`Resetting usage data for user ${user.id}`);
+    if (!user.isAnonymous) {
+      console.log(`Resetting usage data for user ${user.id}`);
 
-    await admin.firestore().collection('users').doc(user.id).update({
-      gptCalls: 0,
-      gptTokens: 0,
-      capExceeded: false
-    });
+      await admin.firestore().collection('users').doc(user.id).update({
+        gptCalls: 0,
+        gptTokens: 0,
+        capExceeded: false
+      });
 
-    console.log(`Reset usage data for user ${user.id}`);
+      console.log(`Reset usage data for user ${user.id}`);
+    }
   }
 
-  console.log('Usage data reset for all users');
+  console.log('Usage data reset for non-anonymous users');
 });
