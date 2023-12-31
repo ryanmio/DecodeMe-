@@ -4,7 +4,7 @@ import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
 
-export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
+export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
   const [userMessage, setUserMessage] = useState(''); // Use state to manage the message
   const [isMaximized, setIsMaximized] = useState(false);
@@ -155,18 +155,20 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
             <Textarea
               value={userMessage} // Bind the text area to the state variable
               onChange={e => setUserMessage(e.target.value)} // Update the state on change
-              placeholder="Your message..."
+              placeholder={capExceeded ? "OpenAI Limit Exceeded" : "Your message..."}
               className="message-input"
               minRows={1}
               maxRows={3}
+              disabled={capExceeded} // Disable the input if capExceeded is true
             />
             <NextUIButton
               type="submit"
-              className="send-button"
+              className={`send-button ${capExceeded ? 'disabled' : ''}`}
               auto
               size="small"
               color="primary"
               bordered
+              disabled={capExceeded} // Disable the button if capExceeded is true
             >
               <span>Send</span>
             </NextUIButton>
