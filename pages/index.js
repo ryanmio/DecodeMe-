@@ -41,6 +41,7 @@ export default function Home() {
   const [selectedScript, setSelectedScript] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [leaderboardName, setLeaderboardName] = useState(null);
+  const [customInstructions, setCustomInstructions] = useState({}); // New state variable for customInstructions
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -171,7 +172,7 @@ export default function Home() {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationHistory, learningLevel }),
+        body: JSON.stringify({ conversationHistory, learningLevel, customInstructions }), // Pass customInstructions here
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -243,20 +244,25 @@ export default function Home() {
 
   useEffect(() => {
     if (userId && db) {
-      const fetchLearningLevel = async () => {
+      const fetchUserData = async () => {
         try {
           const userDocRef = doc(db, 'users', userId);
           const userDoc = await getDoc(userDocRef);
           const userData = userDoc.data();
-          if (userData && userData.learningLevel) {
-            setLearningLevel(userData.learningLevel);
+          if (userData) {
+            if (userData.learningLevel) {
+              setLearningLevel(userData.learningLevel);
+            }
+            // Fetch customInstructions and pass it to the state or a variable
+            const customInstructions = userData.customInstructions || {};
+            setCustomInstructions(customInstructions); // Assuming you have a state setter for customInstructions
           }
         } catch (error) {
-          alert('Failed to fetch learning level. Please try again.');
+          alert('Failed to fetch user data. Please try again.');
         }
       };
 
-      fetchLearningLevel();
+      fetchUserData();
     }
 
     const auth = getFirebaseAuth();

@@ -85,16 +85,16 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Create share game component with copy to clipboard link
 - [x] Implement Dynamic SEO
 - [x] Implement User Stats page
-- [ ] Implement sign-in with gmail/github
+- [ ] Implement custom instructions
 - [ ] Implement AI commands
   - [ ] /Instruct
   - [ ] /Help
   - [ ] /Remember
-- [ ] Implement custom instructions
 - [ ] Implement GPT usage cap or rate limits
 - [ ] Implement account upgrade option
 
 ### Future Release Features
+- [ ] Implement sign-in with gmail/github/snapchat
 - [ ] Implement challenge mode for friends
 - [ ] Implement language selector
 - [ ] Implement badges

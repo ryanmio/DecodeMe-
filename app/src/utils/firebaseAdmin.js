@@ -1,5 +1,5 @@
-// utils/firebaseClient.js
-import { initializeApp } from 'firebase/app';
+// app/src/utils/firebaseAdmin.js
+import { initializeApp, getApps } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
@@ -9,7 +9,15 @@ const firebaseConfig = {
   databaseURL: `https://${process.env.FIREBASE_PROJECT_ID}.firebaseio.com`
 };
 
-const app = initializeApp(firebaseConfig);
+let app;
+
+// Check if a Firebase instance doesn't exist, then initialize
+if (!getApps().length) {
+  app = initializeApp(firebaseConfig);
+} else {
+  app = getApps()[0];
+}
+
 const db = getFirestore(app);
 
 export default db;
