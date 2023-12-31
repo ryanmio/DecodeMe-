@@ -475,20 +475,25 @@ exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (con
 
   console.log(`Fetched ${users.length} users`);
 
+  // Initialize a batch
+  const batch = admin.firestore().batch();
+
   // Reset the usage data for each non-anonymous user
   for (const user of users) {
     if (!user.isAnonymous) {
       console.log(`Resetting usage data for user ${user.id}`);
 
-      await admin.firestore().collection('users').doc(user.id).update({
+      const userRef = admin.firestore().collection('users').doc(user.id);
+      batch.update(userRef, {
         gptCalls: 0,
         gptTokens: 0,
         capExceeded: false
       });
-
-      console.log(`Reset usage data for user ${user.id}`);
     }
   }
+
+  // Commit the batch
+  await batch.commit();
 
   console.log('Usage data reset for non-anonymous users');
 });
