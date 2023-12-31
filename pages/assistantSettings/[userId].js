@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { getFirebaseFirestore, getFirebaseAuth } from '../../app/src/firebase'; // Updated import
 import RootLayout from '../../components/layout';
+import NavigationButtons from '../../components/NavigationButtons'; // New import
 import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 import { doc, updateDoc } from 'firebase/firestore';
@@ -12,6 +13,11 @@ const MAX_CHAR_LIMIT = 90;
 
 const AssistantSettingsPage = ({ userData }) => {
   const router = useRouter();
+
+  const resetGame = () => {
+    router.push('/');
+  };
+
   const [customInstructions, setCustomInstructions] = useState({
     codeGen: userData?.customInstructions?.codeGen || '',
     chatbot: userData?.customInstructions?.chatbot || '',
@@ -51,6 +57,7 @@ const AssistantSettingsPage = ({ userData }) => {
       <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
+            <NavigationButtons resetGame={resetGame} question={{}} />
             <h1 className="text-2xl font-bold text-gray-900">Assistant Settings</h1>
             <p className="mt-2 text-gray-600">Customize the instructions for each aspect of the assistant</p>
             <form onSubmit={handleFormSubmit} style={{ maxWidth: '500px', margin: '0 auto', marginTop: '30px' }}>
