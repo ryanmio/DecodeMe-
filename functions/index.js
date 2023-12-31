@@ -440,17 +440,25 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
 
 exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate((change, context) => {
   const newValue = change.after.data();
+  
+  // Log the newValue object
+  console.log('newValue:', newValue);
 
   // Default gptCalls and gptTokens to 0 if they're undefined
   const gptCalls = newValue.gptCalls || 0;
   const gptTokens = newValue.gptTokens || 0;
 
+  console.log(`gptCalls: ${gptCalls}, gptTokens: ${gptTokens}`); // Log gptCalls and gptTokens
+
   const hasExceededCap = gptCalls >= 100 || gptTokens >= 10000;
 
+  console.log(`hasExceededCap: ${hasExceededCap}`); // Log hasExceededCap
+
   if (hasExceededCap) {
+    console.log('Updating capExceeded to true'); // Log before updating capExceeded
     return change.after.ref.update({ capExceeded: true });
   } else {
-    // Reset capExceeded to false if the user's usage is below the cap
+    console.log('Updating capExceeded to false'); // Log before updating capExceeded
     return change.after.ref.update({ capExceeded: false });
   }
 });
