@@ -430,3 +430,25 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
 
   console.log('Daily streaks and games in time frames updated for all users');
 });
+
+
+/**
+ * This function is a Firestore Trigger that gets triggered when a document in the 'users/{userId}' path is updated.
+ * It checks the updated usage data (gptCalls and gptTokens) of the user.
+ * If the user has exceeded the usage cap (100 calls or 10000 tokens), it updates the 'capExceeded' field of the user document to true.
+ */
+
+exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate((change, context) => {
+  const newValue = change.after.data();
+  const gptCalls = newValue.gptCalls;
+  const gptTokens = newValue.gptTokens;
+
+  const hasExceededCap = gptCalls >= 100 || gptTokens >= 10000;
+
+  if (hasExceededCap) {
+    return change.after.ref.update({ capExceeded: true });
+  } else {
+    // Reset capExceeded to false if the user's usage is below the cap
+    return change.after.ref.update({ capExceeded: false });
+  }
+});
