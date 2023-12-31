@@ -42,6 +42,7 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState([]);
   const [leaderboardName, setLeaderboardName] = useState(null);
   const [customInstructions, setCustomInstructions] = useState({}); // New state variable for customInstructions
+  const [capExceeded, setCapExceeded] = useState(false); // New state variable for capExceeded
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -53,13 +54,14 @@ export default function Home() {
     setUser(user);
     setUserId(user?.uid || null);
 
-    // Fetch leaderboardName from Firestore for all users
+    // Fetch leaderboardName and capExceeded from Firestore for all users
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
+        setCapExceeded(userData.capExceeded); // Update capExceeded state variable
       }
     }
   };
@@ -362,3 +364,4 @@ export default function Home() {
     </div>
   );
 }
+
