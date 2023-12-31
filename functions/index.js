@@ -45,7 +45,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         difficultyAdjustment = 'The code snippet should be complex and challenging, suitable for an expert.';
         break;
       default:
-        // No specific instruction for 'intermediate' or any other value
+      // No specific instruction for 'intermediate' or any other value
     }
 
     // Extract the codeGen custom instruction if it exists
@@ -440,7 +440,7 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
 
 exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate((change, context) => {
   const newValue = change.after.data();
-  
+
   // Log the newValue object
   console.log('newValue:', newValue);
 
@@ -461,4 +461,32 @@ exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate
     console.log('Updating capExceeded to false'); // Log before updating capExceeded
     return change.after.ref.update({ capExceeded: false });
   }
+});
+
+
+/**
+ * This Cloud Function resets the usage data for all users. It is triggered by Cloud Scheduler every day at midnight.
+ * The function fetches all users and sets their gptCalls and gptTokens to 0.
+ */
+exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => {
+  // Fetch all users
+  const usersSnapshot = await admin.firestore().collection('users').get();
+  const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  console.log(`Fetched ${users.length} users`);
+
+  // Reset the usage data for each user
+  for (const user of users) {
+    console.log(`Resetting usage data for user ${user.id}`);
+
+    await admin.firestore().collection('users').doc(user.id).update({
+      gptCalls: 0,
+      gptTokens: 0,
+      capExceeded: false
+    });
+
+    console.log(`Reset usage data for user ${user.id}`);
+  }
+
+  console.log('Usage data reset for all users');
 });
