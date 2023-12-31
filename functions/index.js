@@ -476,7 +476,8 @@ exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (con
   console.log(`Fetched ${users.length} users`);
 
   // Initialize a batch
-  const batch = admin.firestore().batch();
+  let batch = admin.firestore().batch();
+  let operationCount = 0;
 
   // Reset the usage data for each non-anonymous user
   for (const user of users) {
@@ -489,11 +490,22 @@ exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (con
         gptTokens: 0,
         capExceeded: false
       });
+
+      operationCount++;
+
+      // If the batch has 500 operations, commit the batch and start a new one
+      if (operationCount === 500) {
+        await batch.commit();
+        batch = admin.firestore().batch();
+        operationCount = 0;
+      }
     }
   }
 
-  // Commit the batch
-  await batch.commit();
+  // Commit the remaining operations in the batch
+  if (operationCount > 0) {
+    await batch.commit();
+  }
 
   console.log('Usage data reset for non-anonymous users');
 });
