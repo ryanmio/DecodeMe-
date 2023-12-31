@@ -5,15 +5,14 @@ const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
 
-// This function is an HTTP Cloud Function that receives a game mode and a user message as input.
-// It communicates with the OpenAI API to generate a Python code snippet based on the game mode and user message.
-// The generated code snippet and the conversation history are returned in the response.
 exports.getCodeSnippet = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const gameMode = request.query.gameMode;
     let conversationHistory = request.body.conversationHistory || [];
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
+    const customInstructions = request.body.customInstructions || {}; // Extract custom instructions from request body, default to an empty object
+    console.log('Custom Instructions:', customInstructions); // Log the custom instructions
 
     if (!gameMode) {
       return response.status(400).send('Please provide a game mode.');
@@ -48,10 +47,18 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         // No specific instruction for 'intermediate' or any other value
     }
 
+    // Extract the codeGen custom instruction if it exists
+    const customInstructionsCodeGen = customInstructions.codeGen ? customInstructions.codeGen : '';
+    console.log('Code Generation Custom Instruction:', customInstructionsCodeGen); // Log the codeGen instruction
+
+    const systemMessage = `You are a coding challenge generator. Generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Ensure both options reasonable so the game is challenging. Adjust the difficulty based on the user's previous answer: make it noticeably harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment} ${customInstructionsCodeGen}`;
+
+    console.log('System message:', systemMessage); // Log the system message
+
     const data = {
       model: 'gpt-4-1106-preview',
       messages: [
-        { role: 'system', content: `You are a coding challenge generator. Generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Ensure both options reasonable so the game is challenging. Adjust the difficulty based on the user's previous answer: make it noticeably harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment}` },
+        { role: 'system', content: systemMessage },
         ...(conversationHistory.length === 0 ? [{ role: 'user', content: `Generate a short python script in a code block and two multiple choice options for what the script does. Format the options like this: "A) [correct answer]\nB) [incorrect answer]". Both options should be plausible - the user wants a challenge. Start simple but increase the difficulty of the next script after each correct response. Incorporate fun elements like emojis, humor, and creative puzzles. Your message should only include a python script in a code block and the two answer choices, no greetings, small talk, narration, or commentary.` }] : []),
         ...conversationHistory,
       ]
