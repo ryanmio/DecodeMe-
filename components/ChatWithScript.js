@@ -6,10 +6,9 @@ import NewChatIcon from '../app/src/icons/newChatIcon';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
 
-  const userMessageRef = useRef('');
+  const [userMessage, setUserMessage] = useState(''); // Use state to manage the message
   const [isMaximized, setIsMaximized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const textAreaRef = useRef(null);
   const chatHistoryRef = useRef(null);
 
   useEffect(() => {
@@ -26,11 +25,10 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const handleChatSubmit = async (event) => {
     event.preventDefault();
-    const messageToSend = userMessageRef.current;
+    const messageToSend = userMessage; // Use state variable
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
-    userMessageRef.current = '';
-    textAreaRef.current.value = '';
+    setUserMessage(''); // Clear the message state
     try {
       const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
@@ -54,7 +52,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   const toggleMaximize = () => setIsMaximized(!isMaximized);
 
   const sendStarterMessage = (starter) => {
-    userMessageRef.current = starter;
+    setUserMessage(starter);
     handleChatSubmit({ preventDefault: () => { } });
   };
 
@@ -155,9 +153,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
           )}
           <form onSubmit={handleChatSubmit} className="chat-input">
             <Textarea
-              ref={textAreaRef}
-              defaultValue=""
-              onChange={e => userMessageRef.current = e.target.value}
+              value={userMessage} // Bind the text area to the state variable
+              onChange={e => setUserMessage(e.target.value)} // Update the state on change
               placeholder="Your message..."
               className="message-input"
               minRows={1}
