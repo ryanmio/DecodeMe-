@@ -90,11 +90,12 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] /Instruct
   - [ ] /Help
   - [ ] /Remember
-- [ ] Implement GPT usage cap or rate limits
+- [x] Implement GPT usage cap or rate limits
 - [ ] Implement account upgrade option
-- [ ] Sidebar Mode for Chat
+- [ ] Fix bug i introduced recently with the convo starts being blank in convo history
 
 ### Future Release Features
+- [ ] Sidebar Mode for Chat
 - [ ] Implement sign-in with gmail/github/snapchat
 - [ ] Implement challenge mode for friends
 - [ ] Implement language selector
