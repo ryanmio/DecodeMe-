@@ -4,12 +4,11 @@ import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
 
-export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat }) {
+export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
-  const userMessageRef = useRef('');
+  const [userMessage, setUserMessage] = useState(''); // Use state to manage the message
   const [isMaximized, setIsMaximized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const textAreaRef = useRef(null);
   const chatHistoryRef = useRef(null);
 
   useEffect(() => {
@@ -24,13 +23,11 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     console.error(error);
   }
 
-  const handleChatSubmit = async (event) => {
+  const handleChatSubmit = async (event, messageToSend = userMessage) => { // Modified to accept a message parameter
     event.preventDefault();
-    const messageToSend = userMessageRef.current;
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
-    userMessageRef.current = '';
-    textAreaRef.current.value = '';
+    setUserMessage(''); // Clear the message state
     try {
       const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
@@ -54,8 +51,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   const toggleMaximize = () => setIsMaximized(!isMaximized);
 
   const sendStarterMessage = (starter) => {
-    userMessageRef.current = starter;
-    handleChatSubmit({ preventDefault: () => { } });
+    handleChatSubmit({ preventDefault: () => { } }, starter); // Pass the starter message directly to handleChatSubmit
   };
 
   const updateLearningLevelInFirebase = async (level) => {
@@ -155,21 +151,22 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
           )}
           <form onSubmit={handleChatSubmit} className="chat-input">
             <Textarea
-              ref={textAreaRef}
-              defaultValue=""
-              onChange={e => userMessageRef.current = e.target.value}
-              placeholder="Your message..."
+              value={userMessage} // Bind the text area to the state variable
+              onChange={e => setUserMessage(e.target.value)} // Update the state on change
+              placeholder={capExceeded ? "OpenAI Limit Exceeded" : "Your message..."}
               className="message-input"
               minRows={1}
               maxRows={3}
+              disabled={capExceeded} // Disable the input if capExceeded is true
             />
             <NextUIButton
               type="submit"
-              className="send-button"
+              className={`send-button ${capExceeded ? 'disabled' : ''}`}
               auto
               size="small"
               color="primary"
               bordered
+              disabled={capExceeded} // Disable the button if capExceeded is true
             >
               <span>Send</span>
             </NextUIButton>

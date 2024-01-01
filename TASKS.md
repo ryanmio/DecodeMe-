@@ -90,10 +90,11 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] /Instruct
   - [ ] /Help
   - [ ] /Remember
-- [ ] Implement GPT usage cap or rate limits
+- [x] Implement GPT usage cap or rate limits
 - [ ] Implement account upgrade option
 
 ### Future Release Features
+- [ ] Sidebar Mode for Chat
 - [ ] Implement sign-in with gmail/github/snapchat
 - [ ] Implement challenge mode for friends
 - [ ] Implement language selector
@@ -106,6 +107,10 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] @convo-[conversationTitle]-[conversationDate]
   - [ ] @question-[questionId]
   - [ ] @memory-[memoryName]
+
+### Bugs and Issues
+- [ ] Need user feedback while user waits for message in chat. implement a "assistant is typing" animation similar to this: https://dev.to/3mustard/create-a-typing-animation-in-react-17o0
+- [ ] 
  
 ### Testing
 - [ ] Test anonymous user flow

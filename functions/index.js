@@ -4,6 +4,7 @@ const axios = require('axios');
 const cors = require('cors')({ origin: true });
 
 admin.initializeApp();
+const db = admin.firestore();
 
 exports.getCodeSnippet = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
@@ -44,7 +45,7 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
         difficultyAdjustment = 'The code snippet should be complex and challenging, suitable for an expert.';
         break;
       default:
-        // No specific instruction for 'intermediate' or any other value
+      // No specific instruction for 'intermediate' or any other value
     }
 
     // Extract the codeGen custom instruction if it exists
@@ -109,6 +110,8 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate';
     const chatHistory = request.body.chatHistory || [];
+    const userId = request.body.userId; // Extract userId from request body
+
     if (!script) {
       console.error('No script provided.');
       return response.status(400).send('Please provide a script.');
@@ -151,6 +154,22 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     try {
       const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
       const responseText = openaiResponse.data.choices[0].message.content.trim();
+
+      // Calculate tokens used
+      const tokensUsed = openaiResponse.data.usage.total_tokens;
+      console.log(`Tokens used by user ${userId}: ${tokensUsed}`); // Log tokens used
+
+      // Update Firestore in the background
+      const userRef = db.collection('users').doc(userId);
+      userRef.update({
+        gptCalls: admin.firestore.FieldValue.increment(1),
+        gptTokens: admin.firestore.FieldValue.increment(tokensUsed)
+      }).then(() => {
+        console.log(`Updated gptCalls and gptTokens for user ${userId}`); // Log successful update
+      }).catch(error => {
+        console.error('Error updating Firestore:', error);
+      });
+
       response.send({ response: responseText });
     } catch (error) {
       console.error('Error occurred while communicating with OpenAI:', error);
@@ -410,4 +429,108 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
   }
 
   console.log('Daily streaks and games in time frames updated for all users');
+});
+
+
+/**
+ * This function is a Firestore Trigger that gets triggered when a document in the 'users/{userId}' path is updated.
+ * It checks the updated usage data (gptCalls and gptTokens) of the user.
+ * If the user has exceeded the usage cap (100 calls or 10000 tokens), it updates the 'capExceeded' field of the user document to true.
+ */
+exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate((change, context) => {
+  const newValue = change.after.data();
+  const oldValue = change.before.data();
+
+  // Log the newValue object
+  console.log('newValue:', newValue);
+
+  // Default gptCalls, gptTokens, gptCallsCap, and gptTokensCap to 0 if they're undefined
+  const gptCalls = newValue.gptCalls || 0;
+  const gptTokens = newValue.gptTokens || 0;
+  const gptCallsCap = newValue.gptCallsCap || 100;
+  const gptTokensCap = newValue.gptTokensCap || 100000;
+
+  console.log(`gptCalls: ${gptCalls}, gptTokens: ${gptTokens}`); // Log gptCalls and gptTokens
+
+  const hasExceededCap = gptCalls >= gptCallsCap || gptTokens >= gptTokensCap;
+
+  console.log(`hasExceededCap: ${hasExceededCap}`); // Log hasExceededCap
+
+  // Only update capExceeded if its new value is different from the current one
+  if (hasExceededCap !== oldValue.capExceeded) {
+    if (hasExceededCap) {
+      console.log('Updating capExceeded to true'); // Log before updating capExceeded
+      return change.after.ref.update({ capExceeded: true });
+    } else {
+      console.log('Updating capExceeded to false'); // Log before updating capExceeded
+      return change.after.ref.update({ capExceeded: false });
+    }
+  } else {
+    return null;  // No update needed
+  }
+});
+
+
+/**
+ * This Cloud Function resets the usage data for non-anonymous users. It is triggered by Cloud Scheduler every day at midnight.
+ * The function fetches all users and sets their gptCalls and gptTokens to 0 if they are not anonymous.
+ * Before resetting, it increments lifetimeGptCalls and lifetimeGptTokens fields by the current values of gptCalls and gptTokens.
+ */
+exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (context) => {
+  // Fetch all users
+  const usersSnapshot = await admin.firestore().collection('users').get();
+  const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  console.log(`Fetched ${users.length} users`);
+
+  // Initialize a batch
+  let batch = admin.firestore().batch();
+  let operationCount = 0;
+
+  // Reset the usage data for each non-anonymous user
+  for (const user of users) {
+    if (!user.isAnonymous) {
+      console.log(`Resetting usage data for user ${user.id}`);
+
+      const userRef = admin.firestore().collection('users').doc(user.id);
+      
+      // Increment lifetimeGptCalls and lifetimeGptTokens by the current values of gptCalls and gptTokens
+      batch.update(userRef, {
+        lifetimeGptCalls: admin.firestore.FieldValue.increment(user.gptCalls || 0),
+        lifetimeGptTokens: admin.firestore.FieldValue.increment(user.gptTokens || 0),
+        gptCalls: 0,
+        gptTokens: 0,
+        capExceeded: false
+      });
+
+      operationCount++;
+
+      // If the batch has 500 operations, commit the batch and start a new one
+      if (operationCount === 500) {
+        await batch.commit();
+        batch = admin.firestore().batch();
+        operationCount = 0;
+      }
+    }
+  }
+
+  // Commit the remaining operations in the batch
+  if (operationCount > 0) {
+    await batch.commit();
+  }
+
+  console.log('Usage data reset for non-anonymous users');
+});
+
+/**
+ * This function is a Firestore Trigger that gets triggered when a new document in the 'users/{userId}' path is created.
+ * It adds gptCallsCap and gptTokensCap fields to the new user's document with initial values of 100 and 100,000 respectively.
+ */
+exports.initializeUserCaps = functions.firestore.document('users/{userId}').onCreate((snap, context) => {
+  const userRef = snap.ref;
+
+  return userRef.update({
+    gptCallsCap: 100,
+    gptTokensCap: 100000
+  });
 });

@@ -9,7 +9,7 @@ import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
 import { getFirebaseAuth, getFirebaseFirestore } from '../app/src/firebase';
 import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore'; // Added onSnapshot import
 import GameOver from '../components/GameOver';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
@@ -42,6 +42,7 @@ export default function Home() {
   const [chatHistory, setChatHistory] = useState([]);
   const [leaderboardName, setLeaderboardName] = useState(null);
   const [customInstructions, setCustomInstructions] = useState({}); // New state variable for customInstructions
+  const [capExceeded, setCapExceeded] = useState(false); // New state variable for capExceeded
 
   const questionLimit = 20;
   const strikeLimit = 1;
@@ -53,13 +54,15 @@ export default function Home() {
     setUser(user);
     setUserId(user?.uid || null);
 
-    // Fetch leaderboardName from Firestore for all users
+    // Fetch leaderboardName and capExceeded from Firestore for all users
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
+        setCapExceeded(userData.capExceeded || false); // Update capExceeded state variable
+        console.log(`capExceeded for user ${user.uid}: ${userData.capExceeded || false}`); // Log capExceeded
       }
     }
   };
@@ -84,7 +87,14 @@ export default function Home() {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/chatWithScript`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ script: question.codeSnippet, userMessage: messageToSend, chatHistory: updatedChatHistory, learningLevel }),
+        body: JSON.stringify({
+          script: question.codeSnippet,
+          userMessage: messageToSend,
+          chatHistory: updatedChatHistory,
+          learningLevel,
+          userId,
+          customInstructions
+        }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -152,6 +162,8 @@ export default function Home() {
     }).catch(() => {
       alert('Failed to log answer. Please try again.');
     });
+
+    console.log(`capExceeded before submitting answer: ${capExceeded || false}`); // Log capExceeded before submitting answer
 
     setIsFirebaseUpdated(true);
   };
@@ -243,6 +255,23 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
+    let unsubscribe = () => {};
+
+    if (userId && db) {
+      const userDocRef = doc(db, 'users', userId);
+      unsubscribe = onSnapshot(userDocRef, (doc) => {
+        const userData = doc.data();
+        if (userData) {
+          setCapExceeded(userData.capExceeded || false);
+        }
+      });
+    }
+
+    // Clean up the listener when the component unmounts or userId/db changes
+    return () => unsubscribe();
+  }, [userId, db]);
+
+  useEffect(() => {
     if (userId && db) {
       const fetchUserData = async () => {
         try {
@@ -284,7 +313,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
-          {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} userId={userId} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} />}
+          {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} userId={userId} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
