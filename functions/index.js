@@ -528,3 +528,49 @@ exports.initializeUserCaps = functions.firestore.document('users/{userId}').onCr
     gptTokensCap: 100000
   });
 });
+
+
+
+
+// one time function to add cap fields to existing users
+async function addCapsToExistingUsers() {
+  // Fetch all users
+  const usersSnapshot = await admin.firestore().collection('users').get();
+  const users = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+  console.log(`Fetched ${users.length} users`);
+
+  // Initialize a batch
+  let batch = admin.firestore().batch();
+  let operationCount = 0;
+
+  // Add gptCallsCap and gptTokensCap fields to each user
+  for (const user of users) {
+    console.log(`Adding caps to user ${user.id}`);
+
+    const userRef = admin.firestore().collection('users').doc(user.id);
+
+    batch.update(userRef, {
+      gptCallsCap: 100,
+      gptTokensCap: 100000
+    });
+
+    operationCount++;
+
+    // If the batch has 500 operations, commit the batch and start a new one
+    if (operationCount === 500) {
+      await batch.commit();
+      batch = admin.firestore().batch();
+      operationCount = 0;
+    }
+  }
+
+  // Commit the remaining operations in the batch
+  if (operationCount > 0) {
+    await batch.commit();
+  }
+
+  console.log('Added caps to all users');
+}
+
+addCapsToExistingUsers();
