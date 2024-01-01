@@ -437,20 +437,21 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
  * It checks the updated usage data (gptCalls and gptTokens) of the user.
  * If the user has exceeded the usage cap (100 calls or 10000 tokens), it updates the 'capExceeded' field of the user document to true.
  */
-
 exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate((change, context) => {
   const newValue = change.after.data();
 
   // Log the newValue object
   console.log('newValue:', newValue);
 
-  // Default gptCalls and gptTokens to 0 if they're undefined
+  // Default gptCalls, gptTokens, gptCallsCap, and gptTokensCap to 0 if they're undefined
   const gptCalls = newValue.gptCalls || 0;
   const gptTokens = newValue.gptTokens || 0;
+  const gptCallsCap = newValue.gptCallsCap || 100;
+  const gptTokensCap = newValue.gptTokensCap || 100000;
 
   console.log(`gptCalls: ${gptCalls}, gptTokens: ${gptTokens}`); // Log gptCalls and gptTokens
 
-  const hasExceededCap = gptCalls >= 100 || gptTokens >= 10000;
+  const hasExceededCap = gptCalls >= gptCallsCap || gptTokens >= gptTokensCap;
 
   console.log(`hasExceededCap: ${hasExceededCap}`); // Log hasExceededCap
 
@@ -513,4 +514,17 @@ exports.resetUsageData = functions.pubsub.schedule('0 0 * * *').onRun(async (con
   }
 
   console.log('Usage data reset for non-anonymous users');
+});
+
+/**
+ * This function is a Firestore Trigger that gets triggered when a new document in the 'users/{userId}' path is created.
+ * It adds gptCallsCap and gptTokensCap fields to the new user's document with initial values of 100 and 100,000 respectively.
+ */
+exports.initializeUserCaps = functions.firestore.document('users/{userId}').onCreate((snap, context) => {
+  const userRef = snap.ref;
+
+  return userRef.update({
+    gptCallsCap: 100,
+    gptTokensCap: 100000
+  });
 });
