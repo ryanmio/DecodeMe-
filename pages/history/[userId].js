@@ -87,7 +87,7 @@ const HistoryPage = () => {
   };
 
   const resetGame = () => {
-    router.push('/'); // Navigate to home page
+    router.push('/');
   };
 
   const metadata = {

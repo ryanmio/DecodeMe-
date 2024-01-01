@@ -35,7 +35,7 @@ const AssistantSettingsPage = ({ userData }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const dbClient = getFirebaseFirestore(); // Updated Firestore instance
+      const dbClient = getFirebaseFirestore();
       const authClient = getFirebaseAuth(); // Get the Firebase Authentication instance
 
       authClient.onAuthStateChanged(async (user) => {
