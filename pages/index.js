@@ -41,11 +41,10 @@ export default function Home() {
   const [selectedScript, setSelectedScript] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [leaderboardName, setLeaderboardName] = useState(null);
-  const [customInstructions, setCustomInstructions] = useState({}); // New state variable for customInstructions
-  const [capExceeded, setCapExceeded] = useState(false); // New state variable for capExceeded
+  const [customInstructions, setCustomInstructions] = useState({});
+  const [capExceeded, setCapExceeded] = useState(false);
 
-  const questionLimit = 20;
-  const strikeLimit = 1;
+  const strikeLimit = 2;
 
   // Conversation starters
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
@@ -61,7 +60,7 @@ export default function Home() {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
-        setCapExceeded(userData.capExceeded || false); // Update capExceeded state variable
+        setCapExceeded(userData.capExceeded || false);
       }
     }
   };
@@ -189,7 +188,7 @@ export default function Home() {
         const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
         const codeSnippet = responseText.match(/```(.|\n)*?```/)?.[0] || '';
         let options = responseText.match(/A\) .*\nB\) .*/)?.[0].split('\n') || [];
-        // Uncomment the line below to remove the "A) " and "B) " prefixes
+        // comment the line add the "A) " and "B) " prefixes
         options = options.map(option => option.slice(3));
         setQuestion({ codeSnippet, options });
         if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
@@ -281,7 +280,7 @@ export default function Home() {
             }
             // Fetch customInstructions and pass it to the state or a variable
             const customInstructions = userData.customInstructions || {};
-            setCustomInstructions(customInstructions); // Assuming you have a state setter for customInstructions
+            setCustomInstructions(customInstructions);
           }
         } catch (error) {
           alert('Failed to fetch user data. Please try again.');
