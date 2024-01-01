@@ -439,6 +439,7 @@ exports.updateDailyStreaks = functions.pubsub.schedule('0 0 * * *').onRun(async 
  */
 exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate((change, context) => {
   const newValue = change.after.data();
+  const oldValue = change.before.data();
 
   // Log the newValue object
   console.log('newValue:', newValue);
@@ -455,12 +456,17 @@ exports.checkUsageData = functions.firestore.document('users/{userId}').onUpdate
 
   console.log(`hasExceededCap: ${hasExceededCap}`); // Log hasExceededCap
 
-  if (hasExceededCap) {
-    console.log('Updating capExceeded to true'); // Log before updating capExceeded
-    return change.after.ref.update({ capExceeded: true });
+  // Only update capExceeded if its new value is different from the current one
+  if (hasExceededCap !== oldValue.capExceeded) {
+    if (hasExceededCap) {
+      console.log('Updating capExceeded to true'); // Log before updating capExceeded
+      return change.after.ref.update({ capExceeded: true });
+    } else {
+      console.log('Updating capExceeded to false'); // Log before updating capExceeded
+      return change.after.ref.update({ capExceeded: false });
+    }
   } else {
-    console.log('Updating capExceeded to false'); // Log before updating capExceeded
-    return change.after.ref.update({ capExceeded: false });
+    return null;  // No update needed
   }
 });
 
