@@ -107,6 +107,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] @convo-[conversationTitle]-[conversationDate]
   - [ ] @question-[questionId]
   - [ ] @memory-[memoryName]
+- [ ] Dark Mode
 
 ### Bugs and Issues
 - [ ] Need user feedback while user waits for message in chat. implement a "assistant is typing" animation similar to this: https://dev.to/3mustard/create-a-typing-animation-in-react-17o0
