@@ -110,7 +110,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Dark Mode
 
 ### Bugs and Issues
-- [ ] Need user feedback while user waits for message in chat. implement a "assistant is typing" animation similar to this: https://dev.to/3mustard/create-a-typing-animation-in-react-17o0
 - [ ] Layout shift when loading auth component as logged out user
 - [ ] Options menu on leaderboard page has no other options other than leaderboard
 - [ ] Assistant settings save needs to give user confirmation. Add toast.
@@ -122,8 +121,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Scorecard stats should have tool tip with description
 - [ ] Options menu icon should probably be a down icon or something differnt now that it is a contextual dropdown menu
 - [ ] Button colors should be consistent throughout app
-- [ ] Closing Chat window clears chat
-- [ ] Remove unused dependencies
+- [ ] Switch out the heart icon for a react-icon https://react-icons.github.io/react-icons/search/#q=heart
  
 ### Testing
 - [ ] Test anonymous user flow
