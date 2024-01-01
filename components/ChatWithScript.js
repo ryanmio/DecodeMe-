@@ -10,7 +10,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   const [userMessage, setUserMessage] = useState(''); // Use state to manage the message
   const [isMaximized, setIsMaximized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
-  const [isAssistantTyping, setIsAssistantTyping] = useState(true); // TEMPORARILY SET TO TRUE FOR STYLE TESTING
+  const [isAssistantTyping, setIsAssistantTyping] = useState(false);
   const chatHistoryRef = useRef(null);
 
   useEffect(() => {
@@ -182,3 +182,4 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     </div>
   );
 }
+

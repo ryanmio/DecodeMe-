@@ -83,7 +83,10 @@
 
 .chat-history {
   height: calc(100% - 86px);
-  overflow-y: scroll;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
 }
 
 .chat-input {
@@ -112,10 +115,11 @@
 
 .message {
   padding: 8px;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
   border-radius: 10px;
   width: fit-content;
   clear: both;
+  flex-shrink: 0;
 }
 
 .user-message {
@@ -245,14 +249,12 @@
 
 /* Typing indicator in the chat window */
 .typing {
-  width: 5em;
-  height: 2em;
   position: relative;
   padding: 10px;
-  margin-left: 5px;
-  margin-bottom: 5px;
+  margin: 10px 10px 0; /* Adjust the top margin to create space, and left margin to align with system messages */
   background: #e6e6e6;
   border-radius: 20px;
+  align-self: flex-start; /* Keeps the typing indicator aligned to the left */
 }
 
 .typing__dot {
@@ -377,6 +379,3 @@
   margin: -5px 0 -5px auto;
   display: block;
 }
-
-
-
