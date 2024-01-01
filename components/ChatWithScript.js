@@ -3,11 +3,11 @@ import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, Drop
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
-import TypingAnimation from './TypingAnimation'; // Import TypingAnimation component
+import TypingAnimation from './TypingAnimation';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
-  const [userMessage, setUserMessage] = useState(''); // Use state to manage the message
+  const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [isAssistantTyping, setIsAssistantTyping] = useState(false);
@@ -25,12 +25,12 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     console.error(error);
   }
 
-  const handleChatSubmit = async (event, messageToSend = userMessage) => { // Modified to accept a message parameter
+  const handleChatSubmit = async (event, messageToSend = userMessage) => { 
     event.preventDefault();
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
-    setUserMessage(''); // Clear the message state
-    setIsAssistantTyping(true); // Start typing animation
+    setUserMessage('');
+    setIsAssistantTyping(true);
     try {
       const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
@@ -38,7 +38,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     } catch (error) {
       handleError(error);
     } finally {
-      setIsAssistantTyping(false); // Stop typing animation
+      setIsAssistantTyping(false);
     }
   };
   
@@ -157,13 +157,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
           )}
           <form onSubmit={handleChatSubmit} className="chat-input">
             <Textarea
-              value={userMessage} // Bind the text area to the state variable
-              onChange={e => setUserMessage(e.target.value)} // Update the state on change
+              value={userMessage}
+              onChange={e => setUserMessage(e.target.value)}
               placeholder={capExceeded ? "OpenAI Limit Exceeded" : "Your message..."}
               className="message-input"
               minRows={1}
               maxRows={3}
-              disabled={capExceeded} // Disable the input if capExceeded is true
+              disabled={capExceeded}
             />
             <NextUIButton
               type="submit"
@@ -172,7 +172,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
               size="small"
               color="primary"
               bordered
-              disabled={capExceeded} // Disable the button if capExceeded is true
+              disabled={capExceeded}
             >
               <span>Send</span>
             </NextUIButton>
