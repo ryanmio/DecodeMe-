@@ -92,7 +92,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] /Remember
 - [x] Implement GPT usage cap or rate limits
 - [ ] Implement account upgrade option
-- [ ] Fix bug i introduced recently with the convo starts being blank in convo history
 
 ### Future Release Features
 - [ ] Sidebar Mode for Chat
@@ -108,6 +107,10 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] @convo-[conversationTitle]-[conversationDate]
   - [ ] @question-[questionId]
   - [ ] @memory-[memoryName]
+
+### Bugs and Issues
+- [ ] Need user feedback while user waits for message in chat. implement a "assistant is typing" animation similar to this: https://dev.to/3mustard/create-a-typing-animation-in-react-17o0
+- [ ] 
  
 ### Testing
 - [ ] Test anonymous user flow
