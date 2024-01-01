@@ -23,9 +23,8 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     console.error(error);
   }
 
-  const handleChatSubmit = async (event) => {
+  const handleChatSubmit = async (event, messageToSend = userMessage) => { // Modified to accept a message parameter
     event.preventDefault();
-    const messageToSend = userMessage; // Use state variable
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
     setUserMessage(''); // Clear the message state
@@ -52,8 +51,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   const toggleMaximize = () => setIsMaximized(!isMaximized);
 
   const sendStarterMessage = (starter) => {
-    setUserMessage(starter);
-    handleChatSubmit({ preventDefault: () => { } });
+    handleChatSubmit({ preventDefault: () => { } }, starter); // Pass the starter message directly to handleChatSubmit
   };
 
   const updateLearningLevelInFirebase = async (level) => {
