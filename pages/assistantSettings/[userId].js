@@ -42,9 +42,7 @@ const AssistantSettingsPage = ({ userData }) => {
         if (user) {
           const userDocRef = doc(dbClient, 'users', userData.id);
           await updateDoc(userDocRef, { customInstructions });
-          console.log('Document successfully updated'); // After successful Firestore operation
         } else {
-          console.log('No authenticated user'); // Log a message if there is no authenticated user
         }
       });
     } catch (error) {

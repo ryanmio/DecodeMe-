@@ -62,7 +62,6 @@ export default function Home() {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
         setCapExceeded(userData.capExceeded || false); // Update capExceeded state variable
-        console.log(`capExceeded for user ${user.uid}: ${userData.capExceeded || false}`); // Log capExceeded
       }
     }
   };
@@ -162,8 +161,6 @@ export default function Home() {
     }).catch(() => {
       alert('Failed to log answer. Please try again.');
     });
-
-    console.log(`capExceeded before submitting answer: ${capExceeded || false}`); // Log capExceeded before submitting answer
 
     setIsFirebaseUpdated(true);
   };
