@@ -110,7 +110,19 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 
 ### Bugs and Issues
 - [ ] Need user feedback while user waits for message in chat. implement a "assistant is typing" animation similar to this: https://dev.to/3mustard/create-a-typing-animation-in-react-17o0
-- [ ] 
+- [ ] Layout shift when loading auth component as logged out user
+- [ ] Options menu on leaderboard page has no other options other than leaderboard
+- [ ] Assistant settings save needs to give user confirmation. Add toast.
+- [ ] Chatbot and Endgame Custom Instructions should be disabled until functional
+- [ ] Options menu on Assistant Settings page has no options other than leaderboard
+- [ ] Game History needs loading animaton to prevent massive layout shift
+- [ ] Game History should have chat with tutor button and enable chat window
+- [ ] Game History should have sort by score feature
+- [ ] Scorecard stats should have tool tip with description
+- [ ] Options menu icon should probably be a down icon or something differnt now that it is a contextual dropdown menu
+- [ ] Button colors should be consistent throughout app
+- [ ] Closing Chat window clears chat
+- [ ] Remove unused dependencies
  
 ### Testing
 - [ ] Test anonymous user flow
