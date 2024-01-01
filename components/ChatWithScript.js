@@ -3,12 +3,14 @@ import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, Drop
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
+import TypingAnimation from './TypingAnimation'; // Import TypingAnimation component
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
   const [userMessage, setUserMessage] = useState(''); // Use state to manage the message
   const [isMaximized, setIsMaximized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isAssistantTyping, setIsAssistantTyping] = useState(true); // TEMPORARILY SET TO TRUE FOR STYLE TESTING
   const chatHistoryRef = useRef(null);
 
   useEffect(() => {
@@ -28,12 +30,15 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
     setUserMessage(''); // Clear the message state
+    setIsAssistantTyping(true); // Start typing animation
     try {
       const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
       setChatHistory(newChatHistory);
     } catch (error) {
       handleError(error);
+    } finally {
+      setIsAssistantTyping(false); // Stop typing animation
     }
   };
   
@@ -139,6 +144,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
                 </ReactMarkdown>
               </div>
             ))}
+            {isAssistantTyping && <TypingAnimation />}
           </ScrollShadow>
           {chatHistory.length === 0 && (
             <div className="conversation-starters">
