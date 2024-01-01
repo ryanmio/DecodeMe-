@@ -9,7 +9,7 @@ import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
 import { getFirebaseAuth, getFirebaseFirestore } from '../app/src/firebase';
 import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore'; // Added onSnapshot import
 import GameOver from '../components/GameOver';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
@@ -253,6 +253,23 @@ export default function Home() {
       setTimeout(() => setShowScoreSparkle(false), 1000);
     }
   }, [score]);
+
+  useEffect(() => {
+    let unsubscribe = () => {};
+
+    if (userId && db) {
+      const userDocRef = doc(db, 'users', userId);
+      unsubscribe = onSnapshot(userDocRef, (doc) => {
+        const userData = doc.data();
+        if (userData) {
+          setCapExceeded(userData.capExceeded || false);
+        }
+      });
+    }
+
+    // Clean up the listener when the component unmounts or userId/db changes
+    return () => unsubscribe();
+  }, [userId, db]);
 
   useEffect(() => {
     if (userId && db) {
