@@ -43,3 +43,34 @@ To interact with Firebase, initialize your Firebase project and replace the Fire
 6. Users can view their game history on the history page.
 
 
+## GPT Usage caps
+
+
+## Dynamic SEO
+
+
+## SSR/SSG/ISR
+
+
+## Reusable GPT Chat Component
+
+
+## Assistant Behavior
+
+
+## Custom Instructions
+
+
+## Learning Levels
+
+
+## User Stats
+
+
+## Modular context elements
+
+
+## Commands (future build)
+
+
+## 
