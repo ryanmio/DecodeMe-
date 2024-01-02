@@ -24,7 +24,8 @@ export default function Home() {
   const [score, setScore] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(true); // Added isLoading state
+  const [isAuthLoading, setIsAuthLoading] = useState(true); // Changed isLoading to isAuthLoading
+  const [isQuestionsLoading, setIsQuestionsLoading] = useState(false); // Added isQuestionsLoading state
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
   const db = getFirebaseFirestore();
@@ -63,7 +64,7 @@ export default function Home() {
         setCapExceeded(userData.capExceeded || false);
       }
     }
-    setIsLoading(false); // Set isLoading to false after checking auth state
+    setIsAuthLoading(false); // Set isAuthLoading to false after checking auth state
   };
 
   const handleGameModeSelect = mode => {
@@ -176,7 +177,7 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
-    setIsLoading(true);
+    setIsQuestionsLoading(true); // Set isQuestionsLoading to true before fetching a new question
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -199,7 +200,7 @@ export default function Home() {
     } catch (error) {
       alert('Failed to fetch code snippet. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsQuestionsLoading(false); // Set isQuestionsLoading to false after fetching a new question
     }
   };
 
@@ -209,7 +210,8 @@ export default function Home() {
     setScore(0);
     setQuestionsAnswered(0);
     setConversationHistory([]);
-    setIsLoading(false);
+    setIsAuthLoading(false); // Reset isAuthLoading state
+    setIsQuestionsLoading(false); // Reset isQuestionsLoading state
     setCurrentStreak(0);
     setLongestStreak(0);
     setStrikes(0);
@@ -292,7 +294,10 @@ export default function Home() {
     }
 
     const auth = getFirebaseAuth();
-    const unsubscribe = auth.onAuthStateChanged(handleUserUpdate);
+    const unsubscribe = auth.onAuthStateChanged(user => {
+      handleUserUpdate(user);
+      setIsAuthLoading(false); // Set isAuthLoading to false after checking auth state
+    });
     return unsubscribe;
   }, [userId, db]);
 
@@ -321,8 +326,8 @@ export default function Home() {
             </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
-          <div className="auth-container" style={isLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
-            {isLoading ? <Spinner label="Initializing..." color="warning" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> : 
+          <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
+            {isAuthLoading ? <Spinner label="Initializing..." color="warning" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} setIsAuthLoading={setIsAuthLoading} /> : 
             !gameMode ? (
               <>
                 <Tabs
@@ -356,11 +361,11 @@ export default function Home() {
                   />
                 </> :
                 <>
-                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
+                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isQuestionsLoading} />
                   <UserAnswerInput
                     options={question.options}
                     onAnswerSubmit={handleAnswerSubmit}
-                    disabled={isLoading}
+                    disabled={isQuestionsLoading}
                     correctAnswerIndex={correctAnswerIndex}
                     setScore={setScore}
                   />

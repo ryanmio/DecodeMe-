@@ -6,7 +6,7 @@ import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
-export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
+export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoading }) {
   const [isClient, setIsClient] = useState(false);
   const [authChecked, setAuthChecked] = useState(false);
   const [leaderboardName, setLeaderboardName] = useState('');
@@ -32,9 +32,11 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   }, [auth, onUserAuth]);  
 
   const handleAnonymousSignIn = async () => {
+    setIsAuthLoading(true);
     if (!leaderboardName) {
       setError('Please enter a leaderboard name.');
       setShowErrorModal(true);
+      setIsAuthLoading(false);
       return;
     }
 
@@ -49,10 +51,12 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       setShowErrorModal(true);
     } finally {
       setLoading(false);
+      setIsAuthLoading(false);
     }
   };
 
   const handleAuthentication = async (authMethod) => {
+    setIsAuthLoading(true);
     setLoading(true);
     try {
       return await authMethod();
@@ -60,6 +64,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       setError(error.message);
     } finally {
       setLoading(false);
+      setIsAuthLoading(false);
     }
   };
 
@@ -73,6 +78,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   };
 
   const handleUpgradeAccount = async () => {
+    setIsAuthLoading(true);
     if (auth.currentUser) {
       try {
         const credential = EmailAuthProvider.credential(email, password);
@@ -88,6 +94,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
         setError(error.message);
       } finally {
         setLoading(false);
+        setIsAuthLoading(false);
       }
     }
   };
@@ -130,7 +137,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
         <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
         <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
       </div>
-      {loading && <p className="mt-2 text-sm">Loading...</p>}
       {error && showErrorModal && (
         <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
           <ModalContent>
@@ -149,4 +155,5 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
   onLeaderboardNameSet: PropTypes.func.isRequired,
+  setIsAuthLoading: PropTypes.func.isRequired,
 };
