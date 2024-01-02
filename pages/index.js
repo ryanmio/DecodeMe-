@@ -24,7 +24,7 @@ export default function Home() {
   const [score, setScore] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Added isLoading state
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
   const db = getFirebaseFirestore();
@@ -63,6 +63,7 @@ export default function Home() {
         setCapExceeded(userData.capExceeded || false);
       }
     }
+    setIsLoading(false); // Set isLoading to false after checking auth state
   };
 
   const handleGameModeSelect = mode => {
@@ -321,7 +322,7 @@ export default function Home() {
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container">
-            {!user ? <Spinner label="Initializing..." color="warning" /> : 
+            {isLoading ? <Spinner label="Initializing..." color="warning" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> : 
             !gameMode ? (
               <>
                 <Tabs
@@ -363,7 +364,7 @@ export default function Home() {
                     correctAnswerIndex={correctAnswerIndex}
                     setScore={setScore}
                   />
-                </>}
+                </>)}
           </div>
           {showEndGameModal && (
             <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
