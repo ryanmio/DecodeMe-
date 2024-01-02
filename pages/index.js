@@ -11,7 +11,7 @@ import { getFirebaseAuth, getFirebaseFirestore } from '../app/src/firebase';
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore'; // Added onSnapshot import
 import GameOver from '../components/GameOver';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab, Spinner } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
 import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
@@ -321,7 +321,7 @@ export default function Home() {
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container">
-            {!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> :
+            {!user ? <Spinner label="Initializing..." color="warning" /> : 
             !gameMode ? (
               <>
                 <Tabs
