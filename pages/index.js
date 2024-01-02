@@ -321,7 +321,7 @@ export default function Home() {
             </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
-          <div className="auth-container">
+          <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
             {isLoading ? <Spinner label="Initializing..." color="warning" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> : 
             !gameMode ? (
               <>
