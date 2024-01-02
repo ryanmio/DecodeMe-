@@ -320,7 +320,8 @@ export default function Home() {
             </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
-          {!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> :
+          <div className="auth-container">
+            {!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> :
             !gameMode ? (
               <>
                 <Tabs
@@ -363,6 +364,7 @@ export default function Home() {
                     setScore={setScore}
                   />
                 </>}
+          </div>
           {showEndGameModal && (
             <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
               <ModalContent>

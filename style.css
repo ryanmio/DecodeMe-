@@ -31,6 +31,10 @@
     width: 500px;
   }
 
+  .auth-container {
+    min-height: 300px;
+  }
+
 
   /* Chat window styles */
   
