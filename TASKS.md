@@ -114,7 +114,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Options menu on leaderboard page has no other options other than leaderboard
 - [ ] Assistant settings save needs to give user confirmation. Add toast.
 - [ ] Chatbot and Endgame Custom Instructions should be disabled until functional
-- [ ] Options menu on Assistant Settings page has no options other than leaderboard
 - [ ] Game History needs loading animaton to prevent massive layout shift
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Game History should have sort by score feature

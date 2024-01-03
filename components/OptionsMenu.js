@@ -4,16 +4,16 @@ import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import { IoOptions } from "react-icons/io5";
-import { getFirebaseAuth } from '../app/src/firebase';
 import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
+import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
 
 const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const router = useRouter();
-  const auth = getFirebaseAuth();
+  const { user, loading } = useAuth(); // Use the useAuth hook to get the user and loading state
 
   const handleLogout = () => {
     onOpen();
@@ -30,7 +30,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   };
 
   const handleHistory = () => {
-    const user = auth.currentUser;
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -43,7 +42,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   };
 
   const handleScorecard = () => {
-    const user = auth.currentUser;
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -52,7 +50,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   };
 
   const handleAssistantSettings = () => {
-    const user = auth.currentUser;
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -73,8 +70,12 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
     onSkipSubmit();
   });
 
-  const user = auth.currentUser;
   const isLoggedIn = user !== null;
+
+  if (loading) {
+    // Firebase Auth is still loading, don't render anything
+    return null;
+  }
 
   return (
     <>
