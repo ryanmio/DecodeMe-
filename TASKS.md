@@ -110,7 +110,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Dark Mode
 
 ### Bugs and Issues
-- [ ] Layout shift when loading auth component as logged out user
+- [x] Layout shift when loading auth component as logged out user
 - [ ] Options menu on leaderboard page has no other options other than leaderboard
 - [ ] Assistant settings save needs to give user confirmation. Add toast.
 - [ ] Chatbot and Endgame Custom Instructions should be disabled until functional
