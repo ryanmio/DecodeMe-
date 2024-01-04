@@ -1,14 +1,12 @@
 // components/Auth.js
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoading }) {
-  const [isClient, setIsClient] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,19 +15,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
   const [showErrorModal, setShowErrorModal] = useState(false);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
-
-  
-  useEffect(() => {
-    setIsClient(true);
-    if (onUserAuth) {
-      const unsubscribe = onAuthStateChanged(auth, user => {
-        onUserAuth(user);
-        setLoading(false);
-        setAuthChecked(true);
-      });
-      return () => unsubscribe();
-    }
-  }, [auth, onUserAuth]);  
 
   const handleAnonymousSignIn = async () => {
     setIsAuthLoading(true);
@@ -102,10 +87,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
   const closeErrorModal = () => {
     setShowErrorModal(false);
   };
-
-  if (!isClient || !authChecked) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
