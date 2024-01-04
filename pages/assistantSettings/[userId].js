@@ -1,18 +1,20 @@
 // pages/assistantSettings/[userId].js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getFirebaseFirestore, getFirebaseAuth } from '../../app/src/firebase'; // Updated import
+import { getFirebaseFirestore } from '../../app/src/firebase'; // Updated import
 import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons'; // New import
 import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 import { doc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../../contexts/AuthContext'; // New import
 
 // This constant defines the maximum character limit for the textareas
 const MAX_CHAR_LIMIT = 90;
 
 const AssistantSettingsPage = ({ userData }) => {
   const router = useRouter();
+  const { user, loading } = useAuth(); // Use the useAuth hook to get the user and loading state
 
   const resetGame = () => {
     router.push('/');
@@ -36,15 +38,11 @@ const AssistantSettingsPage = ({ userData }) => {
     event.preventDefault();
     try {
       const dbClient = getFirebaseFirestore();
-      const authClient = getFirebaseAuth(); // Get the Firebase Authentication instance
 
-      authClient.onAuthStateChanged(async (user) => {
-        if (user) {
-          const userDocRef = doc(dbClient, 'users', userData.id);
-          await updateDoc(userDocRef, { customInstructions });
-        } else {
-        }
-      });
+      if (user) {
+        const userDocRef = doc(dbClient, 'users', userData.id);
+        await updateDoc(userDocRef, { customInstructions });
+      }
     } catch (error) {
       console.error('Error updating document:', error);
     }
