@@ -1,11 +1,15 @@
+// components/ChatWithScript.js
 import React, { useState, useEffect, useRef } from 'react';
 import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Listbox, ListboxItem } from "@nextui-org/react";
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
 import TypingAnimation from './TypingAnimation';
+import { useAuth } from '../contexts/AuthContext'; // Added useAuth import
 
-export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, userId, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
+export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
+
+  const { user } = useAuth(); // Use useAuth hook to get user
 
   const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
@@ -182,4 +186,3 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     </div>
   );
 }
-
