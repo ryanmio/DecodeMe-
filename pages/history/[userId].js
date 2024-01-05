@@ -108,7 +108,7 @@ const HistoryPage = () => {
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
             {isLoading ? (
-              <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+              <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
                 <Spinner label="Initializing..." color="warning" />
               </div>
             ) : (
