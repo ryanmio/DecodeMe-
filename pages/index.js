@@ -227,6 +227,23 @@ export default function Home() {
     }
   };
 
+  const handleUserUpdate = async (user) => {
+    setUser(user);
+    setUserId(user?.uid || null);
+
+    // Fetch leaderboardName and capExceeded from Firestore for all users
+    if (user) {
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setLeaderboardName(userData.leaderboardName);
+        setCapExceeded(userData.capExceeded || false);
+      }
+    }
+    setIsAuthLoading(false); // Set isAuthLoading to false after checking auth state
+  };
+
   useEffect(() => {
     if (score > 0) {
       setShowScoreSparkle(true);
