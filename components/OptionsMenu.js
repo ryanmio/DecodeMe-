@@ -9,7 +9,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
 import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
 
-const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
+const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => { // Add disabled prop
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const router = useRouter();
@@ -73,8 +73,18 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   const isLoggedIn = user !== null;
 
   if (loading) {
-    // Firebase Auth is still loading, don't render anything
-    return null;
+    // Render a disabled or loading state for the OptionsMenu
+    return (
+      <Button
+        variant="flat"
+        auto
+        disabled
+        className="custom-button"
+        style={{ background: 'transparent' }}
+      >
+        <IoOptions size={24} color="#22D3EE" />
+      </Button>
+    );
   }
 
   return (
