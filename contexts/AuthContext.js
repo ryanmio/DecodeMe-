@@ -8,7 +8,6 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const auth = getFirebaseAuth();
-  console.log('AuthContext auth:', auth); // Log the auth object after it's initialized
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {

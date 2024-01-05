@@ -15,14 +15,12 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => { // A
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
   const { user, loading, auth } = useAuth(); // Use the useAuth hook to get the user, loading state, and auth object
-  console.log('OptionsMenu auth:', auth);
 
   const handleLogout = () => {
     onOpen();
   };
 
   const confirmLogout = async () => {
-    console.log('confirmLogout auth:', auth);
     try {
       await signOut(auth);
       router.push('/');
