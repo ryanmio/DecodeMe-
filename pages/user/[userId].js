@@ -86,7 +86,7 @@ const UserStatsPage = ({ userData }) => {
             <Divider />
             <Spacer y={1} />
             <div className="flex justify-around mt-4 space-x-4">
-              <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/history')}>
+              <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push(`/history/${userData?.id}`)}>
                 Game History
               </Button>
               <Button color="secondary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/leaderboard')}>
