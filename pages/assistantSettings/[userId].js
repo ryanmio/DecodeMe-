@@ -80,7 +80,7 @@ const AssistantSettingsPage = ({ userData }) => {
                   helperColor={customInstructions.codeGen.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
-              <div className="input-group" style={{ marginBottom: '15px' }}>
+              {/* <div className="input-group" style={{ marginBottom: '15px' }}>
                 <Textarea
                   id="chatbot"
                   label="Chatbot Instructions:"
@@ -98,7 +98,7 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "error" : "default"}
-                  disabled // Add this line
+                  disabled
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '20px' }}>
@@ -119,9 +119,9 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "error" : "default"}
-                  disabled // Add this line
+                  disabled
                 />
-              </div>
+              </div> */}
               <div style={{ textAlign: 'right', marginTop: '20px' }}>
                 <Button color="primary" auto ghost variant="ghost" type="submit">
                   Save
