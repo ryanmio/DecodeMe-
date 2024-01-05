@@ -6,7 +6,7 @@ import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
-export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoading }) {
+export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -17,11 +17,11 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
   const auth = getFirebaseAuth();
 
   const handleAnonymousSignIn = async () => {
-    setIsAuthLoading(true);
+    setLoading(true);
     if (!leaderboardName) {
       setError('Please enter a leaderboard name.');
       setShowErrorModal(true);
-      setIsAuthLoading(false);
+      setLoading(false);
       return;
     }
 
@@ -36,12 +36,10 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
       setShowErrorModal(true);
     } finally {
       setLoading(false);
-      setIsAuthLoading(false);
     }
   };
 
   const handleAuthentication = async (authMethod) => {
-    setIsAuthLoading(true);
     setLoading(true);
     try {
       return await authMethod();
@@ -49,7 +47,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
       setError(error.message);
     } finally {
       setLoading(false);
-      setIsAuthLoading(false);
     }
   };
 
@@ -63,7 +60,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
   };
 
   const handleUpgradeAccount = async () => {
-    setIsAuthLoading(true);
+    setLoading(true);
     if (auth.currentUser) {
       try {
         const credential = EmailAuthProvider.credential(email, password);
@@ -79,7 +76,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
         setError(error.message);
       } finally {
         setLoading(false);
-        setIsAuthLoading(false);
       }
     }
   };
@@ -136,5 +132,4 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, setIsAuthLoadin
 Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
   onLeaderboardNameSet: PropTypes.func.isRequired,
-  setIsAuthLoading: PropTypes.func.isRequired,
 };

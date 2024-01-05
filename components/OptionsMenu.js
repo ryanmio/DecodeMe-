@@ -12,14 +12,17 @@ import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
 const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => { // Add disabled prop
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
-  const { user, loading } = useAuth(); // Use the useAuth hook to get the user and loading state
+  const { user, loading, auth } = useAuth(); // Use the useAuth hook to get the user, loading state, and auth object
+  console.log('OptionsMenu auth:', auth);
 
   const handleLogout = () => {
     onOpen();
   };
 
   const confirmLogout = async () => {
+    console.log('confirmLogout auth:', auth);
     try {
       await signOut(auth);
       router.push('/');
@@ -158,7 +161,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => { // A
       {showAuthModal && (
         <Modal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)}>
           <ModalContent>
-            <Auth onUserAuth={handleUserAuth} />
+          <Auth onUserAuth={handleUserAuth} onLeaderboardNameSet={handleLeaderboardNameSet} setIsAuthLoading={setIsAuthLoading} />
           </ModalContent>
         </Modal>
       )}
