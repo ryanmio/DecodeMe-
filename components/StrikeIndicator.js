@@ -1,6 +1,6 @@
 // StrikeIndicator.js
 import React from 'react';
-import { HeartIcon } from '@heroicons/react/24/solid';
+import { IoHeart } from "react-icons/io5"; // import the new icon
 import { Tooltip } from "@nextui-org/react";
 
 export default function StrikeIndicator({ strikes, limit }) {
@@ -8,7 +8,7 @@ export default function StrikeIndicator({ strikes, limit }) {
     <Tooltip content={`${limit - strikes} lives remaining`} placement="bottom">
       <div className="flex items-center">
         {Array.from({ length: limit }, (_, index) => (
-          <HeartIcon
+          <IoHeart // use the new icon
             key={index}
             className={`h-6 w-6 ${index < (limit - strikes) ? 'text-red-500' : 'text-gray-300'} mx-1`}
             style={{ display: index < (limit - strikes) ? 'block' : 'none' }}
@@ -18,4 +18,3 @@ export default function StrikeIndicator({ strikes, limit }) {
     </Tooltip>
   );
 }
-
