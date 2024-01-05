@@ -115,12 +115,12 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Game History needs loading animaton to prevent massive layout shift
 - [x] Assistant settings save needs to give user confirmation. Add toast.
 - [x] Chatbot and Endgame Custom Instructions should be disabled until functional
+- [x] Switch out the heart icon for a react-icon https://react-icons.github.io/react-icons/search/#q=heart
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Game History should have sort by score feature
 - [ ] Scorecard stats should have tool tip with description
 - [ ] Options menu icon should probably be a down icon or something differnt now that it is a contextual dropdown menu
 - [ ] Button colors should be consistent throughout app
-- [ ] Switch out the heart icon for a react-icon https://react-icons.github.io/react-icons/search/#q=heart
  
 ### Testing
 - [ ] Test anonymous user flow
