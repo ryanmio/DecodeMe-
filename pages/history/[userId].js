@@ -8,6 +8,7 @@ import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
 import { Pagination } from '@nextui-org/react';
+import { useAuth } from '../../contexts/AuthContext'; // Added useAuth import
 
 const HistoryPage = () => {
   const [userData, setUserData] = useState(null);
@@ -15,15 +16,15 @@ const HistoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 3;
   const router = useRouter();
-  const { userId } = router.query; // Get the user ID from the URL
+  const { user } = useAuth(); // Use useAuth hook to get user
 
   useEffect(() => {
-    // Only fetch data if the userId is available
-    if (userId) {
+    // Only fetch data if the user is available
+    if (user) {
       const fetchUserDataAndHistory = async () => {
         try {
           const db = getFirebaseFirestore();
-          const userRef = doc(db, 'users', userId);
+          const userRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
           const userDoc = await getDoc(userRef);
           if (userDoc.exists()) {
             setUserData(userDoc.data());
@@ -75,7 +76,7 @@ const HistoryPage = () => {
 
       fetchUserDataAndHistory();
     }
-  }, [userId]);
+  }, [user]); // Changed dependency from userId to user
 
   // Calculate the games to display based on pagination
   const indexOfLastGame = currentPage * gamesPerPage;
@@ -91,7 +92,7 @@ const HistoryPage = () => {
   };
 
   const metadata = {
-    title: `DecodeMe Game History for ${userData?.leaderboardName}`,
+    title: `History for ${userData?.leaderboardName}`,
     description: `Explore detailed game history for ${userData?.leaderboardName} on DecodeMe, the leading online gaming platform.`,
     image: '/images/shareimage.png',
     url: `${process.env.NEXT_PUBLIC_APP_URL}/history/${userData?.id}`,
@@ -153,3 +154,4 @@ async function fetchCollection(ref, collectionName) {
 }
 
 export default HistoryPage;
+
