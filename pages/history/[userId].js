@@ -109,7 +109,7 @@ const HistoryPage = () => {
             </div>
             {isLoading ? (
               <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
-                <Spinner label="Initializing..." color="warning" />
+                <Spinner label="Loading history..." color="primary" />
               </div>
             ) : (
               currentGames.map((gameHistory, index) => {
