@@ -8,6 +8,7 @@ import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 import { doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext'; // New import
+import { toast } from 'react-hot-toast'; // New import
 
 // This constant defines the maximum character limit for the textareas
 const MAX_CHAR_LIMIT = 90;
@@ -42,9 +43,11 @@ const AssistantSettingsPage = ({ userData }) => {
       if (user) {
         const userDocRef = doc(dbClient, 'users', userData.id);
         await updateDoc(userDocRef, { customInstructions });
+        toast.success('Settings saved successfully!');
       }
     } catch (error) {
       console.error('Error updating document:', error);
+      toast.error('Failed to save settings.');
     }
   };
 
@@ -95,6 +98,7 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "error" : "default"}
+                  disabled // Add this line
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '20px' }}>
@@ -115,6 +119,7 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "error" : "default"}
+                  disabled // Add this line
                 />
               </div>
               <div style={{ textAlign: 'right', marginTop: '20px' }}>
