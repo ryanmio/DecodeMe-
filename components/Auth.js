@@ -5,6 +5,7 @@ import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWit
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { toast } from 'react-hot-toast';
 
 export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const [leaderboardName, setLeaderboardName] = useState('');
@@ -44,19 +45,40 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
     try {
       return await authMethod();
     } catch (error) {
+      console.error(error);
       setError(error.message);
+      toast.error(error.message);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
   const signUp = async () => {
-    const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
-    await setDoc(doc(db, 'users', user.uid), { email });
+    if (!email || !password) {
+      toast.error('Please enter your email and password.');
+      return;
+    }
+    try {
+      const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
+      await setDoc(doc(db, 'users', user.uid), { email });
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   const signIn = async () => {
-    await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+    if (!email || !password) {
+      toast.error('Please enter your email and password.');
+      return;
+    }
+    try {
+      await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   const handleUpgradeAccount = async () => {
