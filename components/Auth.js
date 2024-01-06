@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { toast } from 'react-hot-toast';
 
 const firebaseAuthErrorCodes = {
@@ -152,3 +151,4 @@ Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
   onLeaderboardNameSet: PropTypes.func.isRequired,
 };
+
