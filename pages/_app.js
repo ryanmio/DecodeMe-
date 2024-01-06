@@ -2,11 +2,11 @@ import '/style.css';
 import '/tailwind.css';
 import { NextUIProvider } from "@nextui-org/react";
 import { Toaster } from 'react-hot-toast';
-import { AuthProvider } from '../contexts/AuthContext'; // Import the AuthProvider
+import { AuthProvider } from '../contexts/AuthContext';
 
 export default function MyApp({ Component, pageProps }) {
   return (
-    <AuthProvider> {/* Wrap your application with the AuthProvider */}
+    <AuthProvider>
       <NextUIProvider>
         <Toaster position="top-right" />
         <Component {...pageProps} />
