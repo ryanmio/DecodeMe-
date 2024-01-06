@@ -7,24 +7,24 @@ import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
 import UserAnswerInput from '../components/UserAnswerInput';
 import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
-import { getFirebaseAuth, getFirebaseFirestore } from '../app/src/firebase';
+import { getFirebaseFirestore } from '../app/src/firebase';
+import { useAuth } from '../contexts/AuthContext'; // Added useAuth import
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore'; // Added onSnapshot import
 import GameOver from '../components/GameOver';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab, Spinner } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
 import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-  const [userId, setUserId] = useState(null);
+  const { user, loading: isAuthLoading } = useAuth(); // Use useAuth hook to get user and loading state
   const [gameMode, setGameMode] = useState(null);
   const [question, setQuestion] = useState({ codeSnippet: null, options: [] });
   const [score, setScore] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isQuestionsLoading, setIsQuestionsLoading] = useState(false); // Added isQuestionsLoading state
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
   const db = getFirebaseFirestore();
@@ -41,31 +41,13 @@ export default function Home() {
   const [selectedScript, setSelectedScript] = useState(null);
   const [chatHistory, setChatHistory] = useState([]);
   const [leaderboardName, setLeaderboardName] = useState(null);
-  const [customInstructions, setCustomInstructions] = useState({}); // New state variable for customInstructions
-  const [capExceeded, setCapExceeded] = useState(false); // New state variable for capExceeded
+  const [customInstructions, setCustomInstructions] = useState({});
+  const [capExceeded, setCapExceeded] = useState(false);
 
-  const questionLimit = 20;
-  const strikeLimit = 1;
+  const strikeLimit = 2;
 
   // Conversation starters
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
-
-  const handleUserUpdate = async (user) => {
-    setUser(user);
-    setUserId(user?.uid || null);
-
-    // Fetch leaderboardName and capExceeded from Firestore for all users
-    if (user) {
-      const userDocRef = doc(db, 'users', user.uid);
-      const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists()) {
-        const userData = userDoc.data();
-        setLeaderboardName(userData.leaderboardName);
-        setCapExceeded(userData.capExceeded || false); // Update capExceeded state variable
-        console.log(`capExceeded for user ${user.uid}: ${userData.capExceeded || false}`); // Log capExceeded
-      }
-    }
-  };
 
   const handleGameModeSelect = mode => {
     setGameMode(mode);
@@ -92,7 +74,7 @@ export default function Home() {
           userMessage: messageToSend,
           chatHistory: updatedChatHistory,
           learningLevel,
-          userId,
+          userId: user.uid, // Use user.uid from useAuth hook
           customInstructions
         }),
       });
@@ -139,11 +121,10 @@ export default function Home() {
     setIsGameOver(gameOver);
 
     // Log the answered question in Firestore
-    const auth = await getFirebaseAuth();
     const questionId = uuidv4();
 
     // Create a reference to the 'game' document
-    const gameDoc = doc(db, 'users', userId, 'games', gameId);
+    const gameDoc = doc(db, 'users', user.uid, 'games', gameId); // Use user.uid from useAuth hook
 
     // When creating a new game, initialize the score and longest streak to 0
     await setDoc(gameDoc, { timestamp: new Date(), score: 0, longestStreak: 0 }, { merge: true });
@@ -163,8 +144,6 @@ export default function Home() {
       alert('Failed to log answer. Please try again.');
     });
 
-    console.log(`capExceeded before submitting answer: ${capExceeded || false}`); // Log capExceeded before submitting answer
-
     setIsFirebaseUpdated(true);
   };
 
@@ -179,7 +158,7 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
-    setIsLoading(true);
+    setIsQuestionsLoading(true); // Set isQuestionsLoading to true before fetching a new question
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -192,7 +171,7 @@ export default function Home() {
         const responseText = data.conversationHistory[data.conversationHistory.length - 1].content;
         const codeSnippet = responseText.match(/```(.|\n)*?```/)?.[0] || '';
         let options = responseText.match(/A\) .*\nB\) .*/)?.[0].split('\n') || [];
-        // Uncomment the line below to remove the "A) " and "B) " prefixes
+        // comment the line add the "A) " and "B) " prefixes
         options = options.map(option => option.slice(3));
         setQuestion({ codeSnippet, options });
         if (conversationHistory && (conversationHistory.length === 0 || responseText !== conversationHistory[conversationHistory.length - 1].content)) {
@@ -202,7 +181,7 @@ export default function Home() {
     } catch (error) {
       alert('Failed to fetch code snippet. Please try again.');
     } finally {
-      setIsLoading(false);
+      setIsQuestionsLoading(false); // Set isQuestionsLoading to false after fetching a new question
     }
   };
 
@@ -212,7 +191,8 @@ export default function Home() {
     setScore(0);
     setQuestionsAnswered(0);
     setConversationHistory([]);
-    setIsLoading(false);
+    setIsAuthLoading(false); // Reset isAuthLoading state
+    setIsQuestionsLoading(false); // Reset isQuestionsLoading state
     setCurrentStreak(0);
     setLongestStreak(0);
     setStrikes(0);
@@ -236,15 +216,32 @@ export default function Home() {
   };
 
   const updateLearningLevelInFirebase = async (level) => {
-    if (userId && db) {
+    if (user && db) { // Use user from useAuth hook
       try {
-        const userDocRef = doc(db, 'users', userId);
+        const userDocRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
         await updateDoc(userDocRef, { learningLevel: level });
         setLearningLevel(level);
       } catch (error) {
         alert('Failed to update learning level. Please try again.');
       }
     }
+  };
+
+  const handleUserUpdate = async (user) => {
+    setUser(user);
+    setUserId(user?.uid || null);
+
+    // Fetch leaderboardName and capExceeded from Firestore for all users
+    if (user) {
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setLeaderboardName(userData.leaderboardName);
+        setCapExceeded(userData.capExceeded || false);
+      }
+    }
+    setIsAuthLoading(false); // Set isAuthLoading to false after checking auth state
   };
 
   useEffect(() => {
@@ -257,8 +254,8 @@ export default function Home() {
   useEffect(() => {
     let unsubscribe = () => {};
 
-    if (userId && db) {
-      const userDocRef = doc(db, 'users', userId);
+    if (user && db) { // Use user from useAuth hook
+      const userDocRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
       unsubscribe = onSnapshot(userDocRef, (doc) => {
         const userData = doc.data();
         if (userData) {
@@ -269,13 +266,13 @@ export default function Home() {
 
     // Clean up the listener when the component unmounts or userId/db changes
     return () => unsubscribe();
-  }, [userId, db]);
+  }, [user, db]); // Use user from useAuth hook
 
   useEffect(() => {
-    if (userId && db) {
+    if (user && db) { // Use user from useAuth hook
       const fetchUserData = async () => {
         try {
-          const userDocRef = doc(db, 'users', userId);
+          const userDocRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
           const userDoc = await getDoc(userDocRef);
           const userData = userDoc.data();
           if (userData) {
@@ -284,7 +281,7 @@ export default function Home() {
             }
             // Fetch customInstructions and pass it to the state or a variable
             const customInstructions = userData.customInstructions || {};
-            setCustomInstructions(customInstructions); // Assuming you have a state setter for customInstructions
+            setCustomInstructions(customInstructions);
           }
         } catch (error) {
           alert('Failed to fetch user data. Please try again.');
@@ -293,11 +290,7 @@ export default function Home() {
 
       fetchUserData();
     }
-
-    const auth = getFirebaseAuth();
-    const unsubscribe = auth.onAuthStateChanged(handleUserUpdate);
-    return unsubscribe;
-  }, [userId, db]);
+  }, [user, db]); // Use user from useAuth hook
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
@@ -313,7 +306,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <NavigationButtons resetGame={resetGame} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
-          {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} userId={userId} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
+          {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
           <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
@@ -324,7 +317,8 @@ export default function Home() {
             </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
-          {!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> :
+          <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
+            {isAuthLoading ? <Spinner label="Initializing..." color="Default" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} /> : 
             !gameMode ? (
               <>
                 <Tabs
@@ -339,34 +333,35 @@ export default function Home() {
                 <GameModeSelection onGameModeSelect={handleGameModeSelect} />
               </>
             ) :
-              isGameOver && userId && gameId && isFirebaseUpdated ?
+              isGameOver && user && gameId && isFirebaseUpdated ?
                 <>
                   <GameOver
                     score={score}
                     questionsAnswered={questionsAnswered}
                     conversationHistory={conversationHistory}
                     gameId={gameId}
-                    userId={userId}
+                    userId={user.uid} // Use user.uid from useAuth hook
                     db={db}
                     longestStreak={longestStreak}
                     incorrectAnswers={incorrectAnswers}
                     currentStreak={currentStreak}
                     handleChatWithTutor={handleChatWithTutor}
                     leaderboardName={leaderboardName}
-                    user={user}
+                    user={user} // Use user from useAuth hook
                     learningLevel={learningLevel}
                   />
                 </> :
                 <>
-                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isLoading} />
+                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isQuestionsLoading} />
                   <UserAnswerInput
                     options={question.options}
                     onAnswerSubmit={handleAnswerSubmit}
-                    disabled={isLoading}
+                    disabled={isQuestionsLoading}
                     correctAnswerIndex={correctAnswerIndex}
                     setScore={setScore}
                   />
-                </>}
+                </>)}
+          </div>
           {showEndGameModal && (
             <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
               <ModalContent>

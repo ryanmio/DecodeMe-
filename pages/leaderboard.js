@@ -64,7 +64,7 @@ export const getStaticProps = async () => {
     };
     return { 
       props,
-      revalidate: 300, // Regenerate the page every 5 minutes
+      revalidate: 7200, // Regenerate the page every 2 hours
     };
   } catch (error) {
     console.error("Error in getStaticProps:", error);
@@ -74,7 +74,7 @@ export const getStaticProps = async () => {
     };
     return { 
       props,
-      revalidate: 300, // Regenerate the page every 5 minutes
+      revalidate: 7200, // Regenerate the page every 2 hours
     };
   }
 };

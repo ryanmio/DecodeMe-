@@ -13,7 +13,6 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
     const customInstructions = request.body.customInstructions || {}; // Extract custom instructions from request body, default to an empty object
-    console.log('Custom Instructions:', customInstructions); // Log the custom instructions
 
     if (!gameMode) {
       return response.status(400).send('Please provide a game mode.');
@@ -50,11 +49,8 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
 
     // Extract the codeGen custom instruction if it exists
     const customInstructionsCodeGen = customInstructions.codeGen ? customInstructions.codeGen : '';
-    console.log('Code Generation Custom Instruction:', customInstructionsCodeGen); // Log the codeGen instruction
 
     const systemMessage = `You are a coding challenge generator. Generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Ensure both options reasonable so the game is challenging. Adjust the difficulty based on the user's previous answer: make it noticeably harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment} ${customInstructionsCodeGen}`;
-
-    console.log('System message:', systemMessage); // Log the system message
 
     const data = {
       model: 'gpt-4-1106-preview',
@@ -110,10 +106,9 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     const userMessage = request.body.userMessage;
     const learningLevel = request.body.learningLevel || 'intermediate';
     const chatHistory = request.body.chatHistory || [];
-    const userId = request.body.userId; // Extract userId from request body
+    const userId = request.body.userId;
 
     if (!script) {
-      console.error('No script provided.');
       return response.status(400).send('Please provide a script.');
     }
 
@@ -157,25 +152,17 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 
       // Calculate tokens used
       const tokensUsed = openaiResponse.data.usage.total_tokens;
-      console.log(`Tokens used by user ${userId}: ${tokensUsed}`); // Log tokens used
 
       // Update Firestore in the background
       const userRef = db.collection('users').doc(userId);
       userRef.update({
         gptCalls: admin.firestore.FieldValue.increment(1),
         gptTokens: admin.firestore.FieldValue.increment(tokensUsed)
-      }).then(() => {
-        console.log(`Updated gptCalls and gptTokens for user ${userId}`); // Log successful update
-      }).catch(error => {
-        console.error('Error updating Firestore:', error);
-      });
+      }).catch(error => {});
 
       response.send({ response: responseText });
     } catch (error) {
-      console.error('Error occurred while communicating with OpenAI:', error);
-      if (error.response) {
-        console.error('Error Response:', error.response.data);
-      }
+      if (error.response) {}
       response.status(500).send('An error occurred while communicating with OpenAI.');
     }
   });

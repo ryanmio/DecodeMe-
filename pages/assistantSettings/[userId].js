@@ -1,18 +1,21 @@
 // pages/assistantSettings/[userId].js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getFirebaseFirestore, getFirebaseAuth } from '../../app/src/firebase'; // Updated import
+import { getFirebaseFirestore } from '../../app/src/firebase'; // Updated import
 import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons'; // New import
 import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 import { doc, updateDoc } from 'firebase/firestore';
+import { useAuth } from '../../contexts/AuthContext'; // New import
+import { toast } from 'react-hot-toast'; // New import
 
 // This constant defines the maximum character limit for the textareas
 const MAX_CHAR_LIMIT = 90;
 
 const AssistantSettingsPage = ({ userData }) => {
   const router = useRouter();
+  const { user, loading } = useAuth(); // Use the useAuth hook to get the user and loading state
 
   const resetGame = () => {
     router.push('/');
@@ -35,20 +38,16 @@ const AssistantSettingsPage = ({ userData }) => {
   const handleFormSubmit = async (event) => {
     event.preventDefault();
     try {
-      const dbClient = getFirebaseFirestore(); // Updated Firestore instance
-      const authClient = getFirebaseAuth(); // Get the Firebase Authentication instance
+      const dbClient = getFirebaseFirestore();
 
-      authClient.onAuthStateChanged(async (user) => {
-        if (user) {
-          const userDocRef = doc(dbClient, 'users', userData.id);
-          await updateDoc(userDocRef, { customInstructions });
-          console.log('Document successfully updated'); // After successful Firestore operation
-        } else {
-          console.log('No authenticated user'); // Log a message if there is no authenticated user
-        }
-      });
+      if (user) {
+        const userDocRef = doc(dbClient, 'users', userData.id);
+        await updateDoc(userDocRef, { customInstructions });
+        toast.success('Settings saved successfully!');
+      }
     } catch (error) {
       console.error('Error updating document:', error);
+      toast.error('Failed to save settings.');
     }
   };
 
@@ -81,7 +80,7 @@ const AssistantSettingsPage = ({ userData }) => {
                   helperColor={customInstructions.codeGen.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
-              <div className="input-group" style={{ marginBottom: '15px' }}>
+              {/* <div className="input-group" style={{ marginBottom: '15px' }}>
                 <Textarea
                   id="chatbot"
                   label="Chatbot Instructions:"
@@ -99,6 +98,7 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "error" : "default"}
+                  disabled
                 />
               </div>
               <div className="input-group" style={{ marginBottom: '20px' }}>
@@ -119,8 +119,9 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "error" : "default"}
+                  disabled
                 />
-              </div>
+              </div> */}
               <div style={{ textAlign: 'right', marginTop: '20px' }}>
                 <Button color="primary" auto ghost variant="ghost" type="submit">
                   Save

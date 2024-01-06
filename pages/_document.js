@@ -11,7 +11,6 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head>
-          <title>DecodeMe!</title>
           <meta name="description" content="DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way." />
           <meta name="keywords" content="coding,game,learning,interactive,fun" />
           <meta property="og:url" content="https://decodeme.app" />

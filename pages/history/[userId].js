@@ -7,7 +7,8 @@ import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
-import { Pagination } from '@nextui-org/react';
+import { Pagination, Spinner } from '@nextui-org/react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const HistoryPage = () => {
   const [userData, setUserData] = useState(null);
@@ -15,25 +16,23 @@ const HistoryPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const gamesPerPage = 3;
   const router = useRouter();
-  const { userId } = router.query; // Get the user ID from the URL
+  const { user } = useAuth();
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Only fetch data if the userId is available
-    if (userId) {
+    if (user) {
       const fetchUserDataAndHistory = async () => {
         try {
           const db = getFirebaseFirestore();
-          const userRef = doc(db, 'users', userId);
+          const userRef = doc(db, 'users', user.uid);
           const userDoc = await getDoc(userRef);
           if (userDoc.exists()) {
             setUserData(userDoc.data());
 
-            // Fetch game history
             const gamesSnapshot = await fetchCollection(userRef, 'games');
             let historyData = await Promise.all(gamesSnapshot.docs.map(async (gameDocSnapshot) => {
               const { id: gameId, ...gameData } = gameDocSnapshot.data();
 
-              // Fetch game history for each game
               const historySnapshot = await fetchCollection(gameDocSnapshot.ref, 'history');
               const gameHistory = historySnapshot.docs.map(docSnapshot => ({
                 id: docSnapshot.id,
@@ -55,13 +54,12 @@ const HistoryPage = () => {
               };
             }));
 
-            // Adjust the filter to treat null scores and longest streaks as 0
             historyData = historyData.filter(game => {
               const score = game.gameStats.score !== null ? game.gameStats.score : 0;
               const longestStreak = game.gameStats.longestStreak !== null ? game.gameStats.longestStreak : 0;
               const gameNumber = game.gameStats.gameNumber;
-              const scoreIsValid = score !== 'N/A'; // Since we're defaulting to 0, we don't need to check for null here
-              const longestStreakIsValid = longestStreak !== 'N/A'; // Similarly, default to 0 for longest streak
+              const scoreIsValid = score !== 'N/A';
+              const longestStreakIsValid = longestStreak !== 'N/A';
               const gameNumberIsValid = gameNumber !== '000' && gameNumber != null;
               return scoreIsValid && longestStreakIsValid && gameNumberIsValid;
             });
@@ -70,14 +68,15 @@ const HistoryPage = () => {
           }
         } catch (error) {
           console.error('Error fetching user data and history:', error);
+        } finally {
+          setIsLoading(false);
         }
       };
 
       fetchUserDataAndHistory();
     }
-  }, [userId]);
+  }, [user]);
 
-  // Calculate the games to display based on pagination
   const indexOfLastGame = currentPage * gamesPerPage;
   const indexOfFirstGame = indexOfLastGame - gamesPerPage;
   const currentGames = userHistory.slice(indexOfFirstGame, indexOfLastGame);
@@ -87,11 +86,11 @@ const HistoryPage = () => {
   };
 
   const resetGame = () => {
-    router.push('/'); // Navigate to home page
+    router.push('/');
   };
 
   const metadata = {
-    title: `DecodeMe Game History for ${userData?.leaderboardName}`,
+    title: `History for ${userData?.leaderboardName}`,
     description: `Explore detailed game history for ${userData?.leaderboardName} on DecodeMe, the leading online gaming platform.`,
     image: '/images/shareimage.png',
     url: `${process.env.NEXT_PUBLIC_APP_URL}/history/${userData?.id}`,
@@ -108,32 +107,37 @@ const HistoryPage = () => {
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
             </div>
-            {currentGames.map((gameHistory, index) => {
-              return gameHistory?.gameStats && (
-                <div key={gameHistory.gameId || index} className="bg-white p-6 rounded-lg shadow-md mb-4">
-                  <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                      Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
-                    </h2>
-                    <span className="text-sm text-gray-500">
-                      {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
-                    </span>
-                  </div>
-                  <div className="border-t pt-4">
-                    <div className="flex justify-between items-center">
-                      <div className="text-lg text-gray-700">
-                        Score: {gameHistory.gameStats.score !== null && gameHistory.gameStats.score !== undefined ? gameHistory.gameStats.score : 'N/A'}
-                      </div>
-                      <div className="text-lg text-gray-700">
-                        Longest Streak: {gameHistory.gameStats.longestStreak !== null && gameHistory.gameStats.longestStreak !== undefined ? gameHistory.gameStats.longestStreak : 'N/A'}
+            {isLoading ? (
+              <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
+                <Spinner label="Loading history..." color="primary" />
+              </div>
+            ) : (
+              currentGames.map((gameHistory, index) => {
+                return gameHistory?.gameStats && (
+                  <div key={gameHistory.gameId || index} className="bg-white p-6 rounded-lg shadow-md mb-4">
+                    <div className="flex justify-between items-center mb-4">
+                      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                        Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
+                      </h2>
+                      <span className="text-sm text-gray-500">
+                        {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+                      </span>
+                    </div>
+                    <div className="border-t pt-4">
+                      <div className="flex justify-between items-center">
+                        <div className="text-lg text-gray-700">
+                          Score: {gameHistory.gameStats.score !== null && gameHistory.gameStats.score !== undefined ? gameHistory.gameStats.score : 'N/A'}
+                        </div>
+                        <div className="text-lg text-gray-700">
+                          Longest Streak: {gameHistory.gameStats.longestStreak !== null && gameHistory.gameStats.longestStreak !== undefined ? gameHistory.gameStats.longestStreak : 'N/A'}
+                        </div>
                       </div>
                     </div>
+                    {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
                   </div>
-                  {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
-                </div>
-              )
-            })}
-
+                )
+              })
+            )}
             <Pagination
               total={Math.ceil(userHistory.length / gamesPerPage)}
               page={currentPage}

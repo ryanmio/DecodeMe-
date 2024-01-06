@@ -4,16 +4,17 @@ import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
 import { IoOptions } from "react-icons/io5";
-import { getFirebaseAuth } from '../app/src/firebase';
 import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
+import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
 
-const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
+const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => { // Add disabled prop
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
+  const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
-  const auth = getFirebaseAuth();
+  const { user, loading, auth } = useAuth(); // Use the useAuth hook to get the user, loading state, and auth object
 
   const handleLogout = () => {
     onOpen();
@@ -30,7 +31,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   };
 
   const handleHistory = () => {
-    const user = auth.currentUser;
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -43,7 +43,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   };
 
   const handleScorecard = () => {
-    const user = auth.currentUser;
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -52,7 +51,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
   };
 
   const handleAssistantSettings = () => {
-    const user = auth.currentUser;
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -73,8 +71,22 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
     onSkipSubmit();
   });
 
-  const user = auth.currentUser;
   const isLoggedIn = user !== null;
+
+  if (loading) {
+    // Render a disabled or loading state for the OptionsMenu
+    return (
+      <Button
+        variant="flat"
+        auto
+        disabled
+        className="custom-button"
+        style={{ background: 'transparent' }}
+      >
+        <IoOptions size={24} color="#22D3EE" />
+      </Button>
+    );
+  }
 
   return (
     <>
@@ -147,7 +159,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver }) => {
       {showAuthModal && (
         <Modal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)}>
           <ModalContent>
-            <Auth onUserAuth={handleUserAuth} />
+          <Auth onUserAuth={handleUserAuth} onLeaderboardNameSet={handleLeaderboardNameSet} setIsAuthLoading={setIsAuthLoading} />
           </ModalContent>
         </Modal>
       )}

@@ -1,14 +1,12 @@
 // components/Auth.js
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { onAuthStateChanged, signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 
 export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
-  const [isClient, setIsClient] = useState(false);
-  const [authChecked, setAuthChecked] = useState(false);
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,23 +16,12 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
-  
-  useEffect(() => {
-    setIsClient(true);
-    if (onUserAuth) {
-      const unsubscribe = onAuthStateChanged(auth, user => {
-        onUserAuth(user);
-        setLoading(false);
-        setAuthChecked(true);
-      });
-      return () => unsubscribe();
-    }
-  }, [auth, onUserAuth]);  
-
   const handleAnonymousSignIn = async () => {
+    setLoading(true);
     if (!leaderboardName) {
       setError('Please enter a leaderboard name.');
       setShowErrorModal(true);
+      setLoading(false);
       return;
     }
 
@@ -73,6 +60,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   };
 
   const handleUpgradeAccount = async () => {
+    setLoading(true);
     if (auth.currentUser) {
       try {
         const credential = EmailAuthProvider.credential(email, password);
@@ -95,10 +83,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const closeErrorModal = () => {
     setShowErrorModal(false);
   };
-
-  if (!isClient || !authChecked) {
-    return null;
-  }
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
@@ -130,7 +114,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
         <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
         <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
       </div>
-      {loading && <p className="mt-2 text-sm">Loading...</p>}
       {error && showErrorModal && (
         <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
           <ModalContent>

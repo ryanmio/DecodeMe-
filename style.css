@@ -31,6 +31,10 @@
     width: 500px;
   }
 
+  .auth-container {
+    min-height: 300px;
+  }
+
 
   /* Chat window styles */
   
@@ -83,7 +87,10 @@
 
 .chat-history {
   height: calc(100% - 86px);
-  overflow-y: scroll;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 1rem;
 }
 
 .chat-input {
@@ -112,10 +119,11 @@
 
 .message {
   padding: 8px;
-  margin: 10px;
+  margin: 10px 10px 0 10px;
   border-radius: 10px;
   width: fit-content;
   clear: both;
+  flex-shrink: 0;
 }
 
 .user-message {
@@ -243,6 +251,53 @@
   background-color: gray;
 }
 
+/* Typing indicator in the chat window */
+.typing {
+  position: relative;
+  padding: 10px;
+  margin: 10px 10px 0; /* Adjust the top margin to create space, and left margin to align with system messages */
+  background: #e6e6e6;
+  border-radius: 20px;
+  align-self: flex-start; /* Keeps the typing indicator aligned to the left */
+}
+
+.typing__dot {
+  float: left;
+  width: 8px;
+  height: 8px;
+  margin: 0 4px;
+  background: #8d8c91;
+  border-radius: 50%;
+  opacity: 0;
+  animation: loadingFade 1s infinite;
+}
+
+.typing__dot:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.typing__dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing__dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes loadingFade {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.8;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+
+
 
 /* Base Listbox styling */
 .listbox {
@@ -328,4 +383,3 @@
   margin: -5px 0 -5px auto;
   display: block;
 }
-

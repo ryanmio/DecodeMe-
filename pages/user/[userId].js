@@ -1,8 +1,8 @@
 // pages/user/[userId].js
+// aka scorecard page
 import { db } from '../../firebaseAdmin';
 import Head from 'next/head';
 import RootLayout from '../../components/layout';
-import Image from 'next/image';
 import { Button, Divider, Spacer } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import NavigationButtons from '../../components/NavigationButtons';
@@ -51,7 +51,7 @@ const UserStatsPage = ({ userData }) => {
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <NavigationButtons resetGame={resetGame} question={{}} /> {/* Add this line */}
+            <NavigationButtons resetGame={resetGame} question={{}} />
             <div className="flex justify-between items-center">
               <h1 className="text-2xl font-bold text-gray-900">{capitalize(userData?.leaderboardName)} Score</h1>
               <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
@@ -86,7 +86,7 @@ const UserStatsPage = ({ userData }) => {
             <Divider />
             <Spacer y={1} />
             <div className="flex justify-around mt-4 space-x-4">
-              <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/history')}>
+              <Button color="primary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push(`/history/${userData?.id}`)}>
                 Game History
               </Button>
               <Button color="secondary" auto style={{ backgroundColor: '#007BFF', color: 'white' }} onClick={() => router.push('/leaderboard')}>
@@ -126,7 +126,9 @@ export const getServerSideProps = async ({ params }) => {
   } catch (error) {
     console.error('Error fetching data in getServerSideProps:', error);
     return {
-      notFound: true,
+      props: {
+        error: error.message,
+      },
     };
   }
 };
