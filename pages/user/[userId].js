@@ -1,13 +1,17 @@
 // pages/user/[userId].js
+// aka scorecard page
 import { db } from '../../firebaseAdmin';
 import Head from 'next/head';
 import RootLayout from '../../components/layout';
-import Image from 'next/image';
 import { Button, Divider, Spacer } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import NavigationButtons from '../../components/NavigationButtons';
 
-const UserStatsPage = ({ userData }) => {
+const UserStatsPage = ({ userData, error }) => {
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   const router = useRouter();
 
   const resetGame = () => {
@@ -126,7 +130,9 @@ export const getServerSideProps = async ({ params }) => {
   } catch (error) {
     console.error('Error fetching data in getServerSideProps:', error);
     return {
-      notFound: true,
+      props: {
+        error: error.message,
+      },
     };
   }
 };
