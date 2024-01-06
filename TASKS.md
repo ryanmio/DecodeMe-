@@ -1,7 +1,14 @@
 # DecodeMe! Project Tasks
 
-## Overview
+## App Overview
 DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way. Users can choose from multiple game modes including multiple-choice, open-ended questions, and data analysis challenges.
+
+## Instructions for AI Agents
+- The user is on MacOS using VS Code IDE
+- The user uses macos terminal
+- Never generate typescript even if the user provides an example in typescript
+- An implementation plan is a step by step, start-to-finish outline of everything required to complete to given task.
+- Always check your work by reviewing the conversation up to that point and correcting any previous errors or inconsistencies.
 
 ## Tech Stack
 - Next.js
