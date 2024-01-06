@@ -11,7 +11,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - Always check your work by reviewing the conversation up to that point and correcting any previous errors or inconsistencies.
 
 ## Tech Stack
-- Next.js
+- Next.js using pages router
 - Firebase (Firestore, Authentication, Functions)
 - OpenAI GPT-4 API
 - Framer Motion
@@ -124,6 +124,12 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Options menu icon should probably be a down icon or something differnt now that it is a contextual dropdown menu
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
+- [ ] Improve New user flow
+- [ ] add wrong password toast
+- [ ] prevent create account until email + password are entered
+- [ ] add forgot password link
+- [ ] error handling on auth component
+- [ ] ask for leaderboard name after account create
  
 ### Testing
 - [ ] Test anonymous user flow
