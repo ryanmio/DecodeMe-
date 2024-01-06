@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
-import { IoOptions } from "react-icons/io5";
+import { FiMenu } from "react-icons/fi"; // Import FiMenu instead of IoOptions
 import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
@@ -82,7 +82,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
         className="custom-button"
         style={{ background: 'transparent' }}
       >
-        <IoOptions size={24} color="#22D3EE" />
+        <FiMenu size={24} color="#22D3EE" /> {/* Use FiMenu instead of IoOptions */}
       </Button>
     );
   }
@@ -97,7 +97,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
             className="custom-button"
             style={{ background: 'transparent' }}
           >
-            <IoOptions size={24} color="#22D3EE" />
+            <FiMenu size={24} color="#22D3EE" /> {/* Use FiMenu instead of IoOptions */}
           </Button>
         </DropdownTrigger>
         <DropdownMenu variant="shadow" aria-label="Options menu">
