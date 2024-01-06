@@ -103,6 +103,7 @@ const UserStatsPage = ({ userData }) => {
 export const getServerSideProps = async ({ params }) => {
   try {
     const { userId } = params;
+    console.log(params); // Added this line to log the received parameters
 
     let userData = null;
 
