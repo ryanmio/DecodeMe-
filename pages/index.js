@@ -8,9 +8,9 @@ import UserAnswerInput from '../components/UserAnswerInput';
 import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
 import { getFirebaseFirestore } from '../app/src/firebase';
-import { useAuth } from '../contexts/AuthContext'; // Added useAuth import
+import { useAuth } from '../contexts/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
-import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore'; // Added onSnapshot import
+import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
 import GameOver from '../components/GameOver';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs, Tab, Spinner } from "@nextui-org/react";
 import StrikeIndicator from '../components/StrikeIndicator';
@@ -18,13 +18,13 @@ import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 
 export default function Home() {
-  const { user, loading: isAuthLoading } = useAuth(); // Use useAuth hook to get user and loading state
+  const { user, loading: isAuthLoading } = useAuth();
   const [gameMode, setGameMode] = useState(null);
   const [question, setQuestion] = useState({ codeSnippet: null, options: [] });
   const [score, setScore] = useState(0);
   const [questionsAnswered, setQuestionsAnswered] = useState(0);
   const [conversationHistory, setConversationHistory] = useState([]);
-  const [isQuestionsLoading, setIsQuestionsLoading] = useState(false); // Added isQuestionsLoading state
+  const [isQuestionsLoading, setIsQuestionsLoading] = useState(false);
   const [correctAnswerIndex] = useState(0);
   const [showScoreSparkle, setShowScoreSparkle] = useState(false);
   const db = getFirebaseFirestore();
@@ -74,7 +74,7 @@ export default function Home() {
           userMessage: messageToSend,
           chatHistory: updatedChatHistory,
           learningLevel,
-          userId: user.uid, // Use user.uid from useAuth hook
+          userId: user.uid,
           customInstructions
         }),
       });
@@ -124,7 +124,7 @@ export default function Home() {
     const questionId = uuidv4();
 
     // Create a reference to the 'game' document
-    const gameDoc = doc(db, 'users', user.uid, 'games', gameId); // Use user.uid from useAuth hook
+    const gameDoc = doc(db, 'users', user.uid, 'games', gameId);
 
     // When creating a new game, initialize the score and longest streak to 0
     await setDoc(gameDoc, { timestamp: new Date(), score: 0, longestStreak: 0 }, { merge: true });
@@ -163,7 +163,7 @@ export default function Home() {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ conversationHistory, learningLevel, customInstructions }), // Pass customInstructions here
+        body: JSON.stringify({ conversationHistory, learningLevel, customInstructions }),
       });
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const data = await response.json();
@@ -181,7 +181,7 @@ export default function Home() {
     } catch (error) {
       alert('Failed to fetch code snippet. Please try again.');
     } finally {
-      setIsQuestionsLoading(false); // Set isQuestionsLoading to false after fetching a new question
+      setIsQuestionsLoading(false);
     }
   };
 
@@ -191,8 +191,8 @@ export default function Home() {
     setScore(0);
     setQuestionsAnswered(0);
     setConversationHistory([]);
-    setIsAuthLoading(false); // Reset isAuthLoading state
-    setIsQuestionsLoading(false); // Reset isQuestionsLoading state
+    setIsAuthLoading(false);
+    setIsQuestionsLoading(false);
     setCurrentStreak(0);
     setLongestStreak(0);
     setStrikes(0);
@@ -216,9 +216,9 @@ export default function Home() {
   };
 
   const updateLearningLevelInFirebase = async (level) => {
-    if (user && db) { // Use user from useAuth hook
+    if (user && db) {
       try {
-        const userDocRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
+        const userDocRef = doc(db, 'users', user.uid);
         await updateDoc(userDocRef, { learningLevel: level });
         setLearningLevel(level);
       } catch (error) {
@@ -241,7 +241,7 @@ export default function Home() {
         setCapExceeded(userData.capExceeded || false);
       }
     }
-    setIsAuthLoading(false); // Set isAuthLoading to false after checking auth state
+    setIsAuthLoading(false);
   };
 
   useEffect(() => {
@@ -254,8 +254,8 @@ export default function Home() {
   useEffect(() => {
     let unsubscribe = () => {};
 
-    if (user && db) { // Use user from useAuth hook
-      const userDocRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
+    if (user && db) {
+      const userDocRef = doc(db, 'users', user.uid);
       unsubscribe = onSnapshot(userDocRef, (doc) => {
         const userData = doc.data();
         if (userData) {
@@ -269,10 +269,10 @@ export default function Home() {
   }, [user, db]); // Use user from useAuth hook
 
   useEffect(() => {
-    if (user && db) { // Use user from useAuth hook
+    if (user && db) {
       const fetchUserData = async () => {
         try {
-          const userDocRef = doc(db, 'users', user.uid); // Use user.uid from useAuth hook
+          const userDocRef = doc(db, 'users', user.uid);
           const userDoc = await getDoc(userDocRef);
           const userData = userDoc.data();
           if (userData) {
@@ -290,7 +290,7 @@ export default function Home() {
 
       fetchUserData();
     }
-  }, [user, db]); // Use user from useAuth hook
+  }, [user, db]);
 
   return (
     <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
@@ -340,14 +340,14 @@ export default function Home() {
                     questionsAnswered={questionsAnswered}
                     conversationHistory={conversationHistory}
                     gameId={gameId}
-                    userId={user.uid} // Use user.uid from useAuth hook
+                    userId={user.uid}
                     db={db}
                     longestStreak={longestStreak}
                     incorrectAnswers={incorrectAnswers}
                     currentStreak={currentStreak}
                     handleChatWithTutor={handleChatWithTutor}
                     leaderboardName={leaderboardName}
-                    user={user} // Use user from useAuth hook
+                    user={user}
                     learningLevel={learningLevel}
                   />
                 </> :
