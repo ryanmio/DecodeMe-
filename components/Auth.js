@@ -7,13 +7,13 @@ import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { toast } from 'react-hot-toast';
 
 const firebaseAuthErrorCodes = {
-  'auth/email-already-in-use': 'The email address is already in use by another account.',
+  'auth/email-already-in-use': 'The email address is already in use.',
   'auth/user-disabled': 'This account has been disabled.',
   'auth/user-not-found': 'No user found with this email.',
   'auth/wrong-password': 'Wrong password.',
-  'auth/invalid-email': 'The email address is not valid.',
+  'auth/invalid-email': 'Hmm... email address is not valid...',
   'auth/operation-not-allowed': 'Operation not allowed.',
-  'auth/weak-password': 'The password is too weak.',
+  'auth/weak-password': 'Your password is too weak. 💪',
 };
 
 export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
