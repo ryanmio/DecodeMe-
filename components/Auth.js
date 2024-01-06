@@ -7,6 +7,16 @@ import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { toast } from 'react-hot-toast';
 
+const firebaseAuthErrorCodes = {
+  'auth/email-already-in-use': 'The email address is already in use by another account.',
+  'auth/user-disabled': 'This account has been disabled.',
+  'auth/user-not-found': 'No user found with this email.',
+  'auth/wrong-password': 'Wrong password.',
+  'auth/invalid-email': 'The email address is not valid.',
+  'auth/operation-not-allowed': 'Operation not allowed.',
+  'auth/weak-password': 'The password is too weak.',
+};
+
 export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
@@ -47,7 +57,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
     } catch (error) {
       console.error(error);
       setError(error.message);
-      toast.error(error.message);
       throw error;
     } finally {
       setLoading(false);
@@ -56,7 +65,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 
   const signUp = async () => {
     if (!email || !password) {
-      toast.error('Please enter your email and password.');
+      toast.error('Please enter your email and a password to create an account.');
       return;
     }
     try {
@@ -64,16 +73,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       await setDoc(doc(db, 'users', user.uid), { email });
     } catch (error) {
       console.error(error);
-      switch (error.code) {
-        case 'auth/email-already-in-use':
-          toast.error('The email address is already in use by another account.');
-          break;
-        case 'auth/invalid-email':
-          toast.error('The email address is not valid.');
-          break;
-        default:
-          toast.error(error.message);
-      }
+      const message = firebaseAuthErrorCodes[error.code] || 'An unknown error occurred.';
+      toast.error(message);
     }
   };
 
@@ -86,16 +87,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
     } catch (error) {
       console.error(error);
-      switch (error.code) {
-        case 'auth/user-not-found':
-          toast.error('No user found with this email.');
-          break;
-        case 'auth/wrong-password':
-          toast.error('Wrong password.');
-          break;
-        default:
-          toast.error(error.message);
-      }
+      const message = firebaseAuthErrorCodes[error.code] || 'An unknown error occurred.';
+      toast.error(message);
     }
   };
 
