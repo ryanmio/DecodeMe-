@@ -1,3 +1,4 @@
+// components/GameHistory.js
 import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
