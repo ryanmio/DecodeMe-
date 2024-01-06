@@ -191,7 +191,6 @@ export default function Home() {
     setScore(0);
     setQuestionsAnswered(0);
     setConversationHistory([]);
-    setIsAuthLoading(false);
     setIsQuestionsLoading(false);
     setCurrentStreak(0);
     setLongestStreak(0);
@@ -230,7 +229,7 @@ export default function Home() {
   const handleUserUpdate = async (user) => {
     setUser(user);
     setUserId(user?.uid || null);
-
+  
     // Fetch leaderboardName and capExceeded from Firestore for all users
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
@@ -241,7 +240,6 @@ export default function Home() {
         setCapExceeded(userData.capExceeded || false);
       }
     }
-    setIsAuthLoading(false);
   };
 
   useEffect(() => {
