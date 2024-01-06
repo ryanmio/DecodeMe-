@@ -42,8 +42,10 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       onUserAuth(user);
       onLeaderboardNameSet(leaderboardName);
     } catch (error) {
-      setError('Failed to sign in anonymously.');
-      toast.error('Failed to sign in anonymously.');
+      console.error(error);
+      const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
+      setError(message);
+      toast.error(message);
     } finally {
       setLoading(false);
     }
