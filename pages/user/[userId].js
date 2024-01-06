@@ -3,6 +3,7 @@
 import { db } from '../../firebaseAdmin';
 import Head from 'next/head';
 import RootLayout from '../../components/layout';
+import Image from 'next/image';
 import { Button, Divider, Spacer } from '@nextui-org/react';
 import { useRouter } from 'next/router';
 import NavigationButtons from '../../components/NavigationButtons';
