@@ -18,13 +18,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - React Code Blocks
 - NextUI
 
-## Setup
-- Create Next.js app using `create-next-app`
-- Set up Firebase project and enable Firestore and Authentication
-- Install Firebase CLI and initialize Firebase Functions in project
-- Get API key from OpenAI and integrate GPT-4 API for game logic
-- Install necessary npm packages: `framer-motion`, `react-code-blocks`, `@nextui-org/react`
-
 
 ## Core Features
 1. User Authentication
