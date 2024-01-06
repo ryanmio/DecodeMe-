@@ -5,11 +5,11 @@ import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
 import TypingAnimation from './TypingAnimation';
-import { useAuth } from '../contexts/AuthContext'; // Added useAuth import
+import { useAuth } from '../contexts/AuthContext';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
-  const { user } = useAuth(); // Use useAuth hook to get user
+  const { user } = useAuth();
 
   const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);

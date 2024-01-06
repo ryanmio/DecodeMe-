@@ -3,11 +3,11 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import { FaHome } from 'react-icons/fa';
 import OptionsMenu from '../components/OptionsMenu';
-import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
+import { useAuth } from '../contexts/AuthContext';
 
 const NavigationButtons = ({ resetGame, question, onSkipSubmit, gameMode, isGameOver }) => {
   const router = useRouter();
-  const { loading } = useAuth(); // Use the useAuth hook to get the loading state
+  const { loading } = useAuth();
 
   const handleHomeClick = () => {
     resetGame();

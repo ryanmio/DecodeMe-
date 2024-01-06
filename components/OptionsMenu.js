@@ -1,5 +1,4 @@
 // components/OptionsMenu.js
-
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
@@ -7,14 +6,14 @@ import { IoOptions } from "react-icons/io5";
 import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
-import { useAuth } from '../contexts/AuthContext'; // Import the useAuth hook
+import { useAuth } from '../contexts/AuthContext';
 
-const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => { // Add disabled prop
+const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
-  const { user, loading, auth } = useAuth(); // Use the useAuth hook to get the user, loading state, and auth object
+  const { user, loading, auth } = useAuth();
 
   const handleLogout = () => {
     onOpen();
