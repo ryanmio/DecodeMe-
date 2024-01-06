@@ -23,7 +23,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
@@ -31,7 +30,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
     setLoading(true);
     if (!leaderboardName) {
       setError('Please enter a leaderboard name.');
-      setShowErrorModal(true);
+      toast.error('Please enter a leaderboard name.');
       setLoading(false);
       return;
     }
@@ -44,7 +43,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       onLeaderboardNameSet(leaderboardName);
     } catch (error) {
       setError('Failed to sign in anonymously.');
-      setShowErrorModal(true);
+      toast.error('Failed to sign in anonymously.');
     } finally {
       setLoading(false);
     }
@@ -113,10 +112,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
     }
   };
 
-  const closeErrorModal = () => {
-    setShowErrorModal(false);
-  };
-
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
       <input
@@ -147,17 +142,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
         <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
         <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
       </div>
-      {error && showErrorModal && (
-        <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
-          <ModalContent>
-            <ModalHeader>Error</ModalHeader>
-            <ModalBody>{error}</ModalBody>
-            <ModalFooter>
-              <Button color="primary" onClick={closeErrorModal}>Close</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
-      )}
     </div>
   );
 }
