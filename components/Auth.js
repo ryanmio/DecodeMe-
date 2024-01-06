@@ -40,6 +40,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
       onUserAuth(user);
       onLeaderboardNameSet(leaderboardName);
+      setError(null); // clear the error state
     } catch (error) {
       console.error(error);
       const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
@@ -66,8 +67,10 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const signUp = async () => {
     if (!email || !password) {
       toast.error('Please enter your email and a password to create an account.');
+      setLoading(false); // set loading to false in error scenario
       return;
     }
+    setLoading(true);
     try {
       const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
       await setDoc(doc(db, 'users', user.uid), { email });
