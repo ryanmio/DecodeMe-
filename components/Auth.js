@@ -64,7 +64,16 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       await setDoc(doc(db, 'users', user.uid), { email });
     } catch (error) {
       console.error(error);
-      toast.error(error.message);
+      switch (error.code) {
+        case 'auth/email-already-in-use':
+          toast.error('The email address is already in use by another account.');
+          break;
+        case 'auth/invalid-email':
+          toast.error('The email address is not valid.');
+          break;
+        default:
+          toast.error(error.message);
+      }
     }
   };
 
@@ -77,7 +86,16 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
     } catch (error) {
       console.error(error);
-      toast.error(error.message);
+      switch (error.code) {
+        case 'auth/user-not-found':
+          toast.error('No user found with this email.');
+          break;
+        case 'auth/wrong-password':
+          toast.error('Wrong password.');
+          break;
+        default:
+          toast.error(error.message);
+      }
     }
   };
 
