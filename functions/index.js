@@ -118,6 +118,12 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
       return response.status(500).send('Server configuration error.');
     }
 
+    // Fetch the user's custom instructions from Firestore
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const customInstructions = userDoc.data().customInstructions || {}; // Extract custom instructions from user document, default to an empty object
+    const customInstructionsChatbot = customInstructions.chatbot ? customInstructions.chatbot : '';
+
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
     const headers = {
       'Authorization': `Bearer ${openaiKey}`,
@@ -128,13 +134,13 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
     let assistantBehavior;
     switch (learningLevel) {
       case 'beginner':
-        assistantBehavior = `You are an assistant explaining Python scripts to a young beginner with no coding background. Presently, the user is viewing the script: ${script}. Use very simple language suitable for an elementary school student. Break down coding concepts into easy-to-understand parts. Be patient and clear, using short sentences for a mobile-friendly experience. Avoid technical jargon and explain each step as if it's the user's first encounter with coding.`;
+        assistantBehavior = `You are an assistant explaining Python scripts to a young beginner with no coding background. Presently, the user is viewing the script: ${script}. Use very simple language suitable for an elementary school student. Break down coding concepts into easy-to-understand parts. Be patient and clear, using short sentences for a mobile-friendly experience. Avoid technical jargon and explain each step as if it's the user's first encounter with coding. ${customInstructionsChatbot}`;
         break;
       case 'expert':
-        assistantBehavior = `You are a helpful assistant. The user, with an advanced engineering degree, is viewing the Python script: ${script}. Assume deep technical knowledge and provide quick, direct responses. Focus on expert-level insights, omitting basic explanations. Keep responses brief, precise, and to the point, suitable for a quick mobile review.`;
+        assistantBehavior = `You are a helpful assistant. The user, with an advanced engineering degree, is viewing the Python script: ${script}. Assume deep technical knowledge and provide quick, direct responses. Focus on expert-level insights, omitting basic explanations. Keep responses brief, precise, and to the point, suitable for a quick mobile review. ${customInstructionsChatbot}`;
         break;
       default:
-        assistantBehavior = `You are an assistant guiding an intermediate learner through Python scripts. The user is looking at the script: ${script}. Assume basic familiarity with programming but explain more advanced concepts. Use clear, concise language that bridges fundamental understanding to more complex ideas. Keep explanations detailed yet accessible, and maintain mobile-friendly sentence lengths.`;
+        assistantBehavior = `You are an assistant guiding an intermediate learner through Python scripts. The user is looking at the script: ${script}. Assume basic familiarity with programming but explain more advanced concepts. Use clear, concise language that bridges fundamental understanding to more complex ideas. Keep explanations detailed yet accessible, and maintain mobile-friendly sentence lengths. ${customInstructionsChatbot}`;
     }
 
     const data = {
@@ -154,7 +160,6 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
       const tokensUsed = openaiResponse.data.usage.total_tokens;
 
       // Update Firestore in the background
-      const userRef = db.collection('users').doc(userId);
       userRef.update({
         gptCalls: admin.firestore.FieldValue.increment(1),
         gptTokens: admin.firestore.FieldValue.increment(tokensUsed)
@@ -178,12 +183,18 @@ exports.chatWithScript = functions.https.onRequest((request, response) => {
 exports.fetchPostGameMessage = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     console.log('Data received in fetchPostGameMessage:', request.body);
-    const { score, incorrectAnswers, userStats, leaderboardName } = request.body;
+    const { score, incorrectAnswers, userStats, leaderboardName, userId } = request.body;
     const openaiKey = functions.config().openai?.key;
     if (!openaiKey) {
       console.error('Server configuration error.');
       return response.status(500).send('Server configuration error.');
     }
+
+    // Fetch the user's custom instructions from Firestore
+    const userRef = db.collection('users').doc(userId);
+    const userDoc = await userRef.get();
+    const customInstructions = userDoc.data().customInstructions || {}; // Extract custom instructions from user document, default to an empty object
+    const customInstructionsChatbot = customInstructions.chatbot ? customInstructions.chatbot : '';
 
     const apiUrl = 'https://api.openai.com/v1/chat/completions';
     const headers = {
@@ -191,7 +202,7 @@ exports.fetchPostGameMessage = functions.https.onRequest((request, response) => 
       'Content-Type': 'application/json',
     };
 
-    const systemMessage = `You are an AI that reviews the user's game performance and provides a short, encouraging message.`;
+    const systemMessage = `You are an AI that reviews the user's game performance and provides a short, encouraging message. ${customInstructionsChatbot}`;
     const userMessage = `My score is ${score}. I answered these questions incorrectly: ${incorrectAnswers}. My user stats are: ${userStats}. Refer to me by my username: ${leaderboardName}.`;
 
     console.log('System Message:', systemMessage);

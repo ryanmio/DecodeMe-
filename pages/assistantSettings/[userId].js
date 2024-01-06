@@ -1,14 +1,14 @@
 // pages/assistantSettings/[userId].js
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import { getFirebaseFirestore } from '../../app/src/firebase'; // Updated import
+import { getFirebaseFirestore } from '../../app/src/firebase';
 import RootLayout from '../../components/layout';
-import NavigationButtons from '../../components/NavigationButtons'; // New import
+import NavigationButtons from '../../components/NavigationButtons';
 import { Button, Textarea } from '@nextui-org/react';
 import { db as dbServer } from '../../firebaseAdmin'; // Server-side db
 import { doc, updateDoc } from 'firebase/firestore';
 import { useAuth } from '../../contexts/AuthContext'; // New import
-import { toast } from 'react-hot-toast'; // New import
+import { toast } from 'react-hot-toast';
 
 // This constant defines the maximum character limit for the textareas
 const MAX_CHAR_LIMIT = 90;
@@ -63,9 +63,9 @@ const AssistantSettingsPage = ({ userData }) => {
               <div className="input-group" style={{ marginBottom: '15px' }}>
                 <Textarea
                   id="codeGen"
-                  label="Code Generation Instructions:"
+                  label="Gameplay:"
                   variant="bordered"
-                  placeholder="Enter your code generation instructions"
+                  placeholder="Example: I like short scripts"
                   value={customInstructions.codeGen}
                   onValueChange={(value) => handleInputChange('codeGen', { target: { value } })}
                   disableAnimation
@@ -80,12 +80,12 @@ const AssistantSettingsPage = ({ userData }) => {
                   helperColor={customInstructions.codeGen.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
-              {/* <div className="input-group" style={{ marginBottom: '15px' }}>
+              <div className="input-group" style={{ marginBottom: '15px' }}>
                 <Textarea
                   id="chatbot"
-                  label="Chatbot Instructions:"
+                  label="Assistant Behavior:"
                   variant="bordered"
-                  placeholder="Enter your chatbot instructions"
+                  placeholder="Example: I like direct responses"
                   value={customInstructions.chatbot}
                   onValueChange={(value) => handleInputChange('chatbot', { target: { value } })}
                   disableAnimation
@@ -98,15 +98,15 @@ const AssistantSettingsPage = ({ userData }) => {
                   maxLength={MAX_CHAR_LIMIT}
                   helperText={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
                   helperColor={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "error" : "default"}
-                  disabled
                 />
               </div>
+              {/* 
               <div className="input-group" style={{ marginBottom: '20px' }}>
                 <Textarea
                   id="endGame"
                   label="End Game Message Instructions:"
                   variant="bordered"
-                  placeholder="Enter your end game message instructions"
+                  placeholder="Example: "
                   value={customInstructions.endGame}
                   onValueChange={(value) => handleInputChange('endGame', { target: { value } })}
                   disableAnimation

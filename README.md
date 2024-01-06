@@ -43,6 +43,8 @@ To interact with Firebase, initialize your Firebase project and replace the Fire
 6. Users can view their game history on the history page.
 
 
+## GPT Game Engine
+
 ## GPT Usage caps
 
 
@@ -71,6 +73,3 @@ To interact with Firebase, initialize your Firebase project and replace the Fire
 
 
 ## Commands (future build)
-
-
-## 
