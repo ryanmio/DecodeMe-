@@ -15,7 +15,7 @@ const MAX_CHAR_LIMIT = 90;
 
 const AssistantSettingsPage = ({ userData }) => {
   const router = useRouter();
-  const { user, loading } = useAuth(); // Use the useAuth hook to get the user and loading state
+  const { user, loading } = useAuth();
 
   const resetGame = () => {
     router.push('/');
