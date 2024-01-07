@@ -110,6 +110,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] @memory-[memoryName]
 - [ ] Dark Mode
 - [ ] leadeboard name generator 
+- [ ] sound effects
+- [ ] whisper api
 
 ### Bugs and Issues
 - [x] Layout shift when loading auth component as logged out user

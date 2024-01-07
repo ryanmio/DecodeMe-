@@ -22,8 +22,13 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [formMode, setFormMode] = useState('guest');
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
+
+  const handleFormModeChange = (mode) => {
+    setFormMode(mode);
+  };
 
   const handleAnonymousSignIn = async () => {
     setLoading(true);
@@ -65,8 +70,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   };
 
   const signUp = async () => {
-    if (!email || !password) {
-      toast.error('Please enter your email and a password to create an account.');
+    if (formMode === 'createAccount' && (!email || !password || !leaderboardName)) {
+      toast.error('Please enter your email, password, and leaderboard name to create an account.');
       setLoading(false); // set loading to false in error scenario
       return;
     }
@@ -118,33 +123,39 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
-      <input
-        type="text"
-        value={leaderboardName}
-        onChange={(e) => setLeaderboardName(e.target.value)}
-        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-        placeholder="Leaderboard Name"
-      />
+      {formMode !== 'signIn' && (
+        <input
+          type="text"
+          value={leaderboardName}
+          onChange={(e) => setLeaderboardName(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+          placeholder="Leaderboard Name"
+        />
+      )}
       <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Play as Guest</button>
       <div className="w-full border-b border-gray-300 my-4"></div>
       <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
       <div className="flex flex-col space-y-2">
-        <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-          placeholder="Email"
-        />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-          placeholder="Password"
-        />
-        <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
-        <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+        {formMode !== 'guest' && (
+          <>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
+              placeholder="Password"
+            />
+          </>
+        )}
+        <button onClick={formMode === 'signIn' ? signIn : () => handleFormModeChange('signIn')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
+        <button onClick={formMode === 'createAccount' ? signUp : () => handleFormModeChange('createAccount')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
       </div>
     </div>
   );
@@ -154,4 +165,3 @@ Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
   onLeaderboardNameSet: PropTypes.func.isRequired,
 };
-
