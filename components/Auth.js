@@ -30,6 +30,13 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
     setFormMode(mode);
   };
 
+  const getPlayButtonText = () => {
+    if (formMode === 'guest') {
+      return 'Play as Guest';
+    }
+    return `Play as ${leaderboardName || 'Guest'}`;
+  };
+
   const handleAnonymousSignIn = async () => {
     setLoading(true);
     if (!leaderboardName) {
@@ -39,20 +46,26 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       return;
     }
 
-    setLoading(true);
-    try {
-      const { user } = await signInAnonymously(auth);
-      await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
-      onUserAuth(user);
-      onLeaderboardNameSet(leaderboardName);
-      setError(null); // clear the error state
-    } catch (error) {
-      console.error(error);
-      const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
-      setError(message);
-      toast.error(message);
-    } finally {
-      setLoading(false);
+    if (formMode === 'guest') {
+      setLoading(true);
+      try {
+        const { user } = await signInAnonymously(auth);
+        await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
+        onUserAuth(user);
+        onLeaderboardNameSet(leaderboardName);
+        setError(null); // clear the error state
+      } catch (error) {
+        console.error(error);
+        const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
+        setError(message);
+        toast.error(message);
+      } finally {
+        setLoading(false);
+      }
+    } else if (formMode === 'signIn') {
+      signIn();
+    } else if (formMode === 'createAccount') {
+      signUp();
     }
   };
 
@@ -132,30 +145,32 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
           placeholder="Leaderboard Name"
         />
       )}
-      <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Play as Guest</button>
+      {formMode !== 'guest' && (
+        <>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-2 py-1 border border-gray-300 rounded text-sm mb-2"
+            placeholder="Email"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-2 py-1 border border-gray-300 rounded text-sm mb-2"
+            placeholder="Password"
+          />
+        </>
+      )}
+      <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
+        {getPlayButtonText()}
+      </button>
       <div className="w-full border-b border-gray-300 my-4"></div>
       <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
       <div className="flex flex-col space-y-2">
-        {formMode !== 'guest' && (
-          <>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-              placeholder="Email"
-            />
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-              placeholder="Password"
-            />
-          </>
-        )}
-        <button onClick={formMode === 'signIn' ? signIn : () => handleFormModeChange('signIn')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
-        <button onClick={formMode === 'createAccount' ? signUp : () => handleFormModeChange('createAccount')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+        <button onClick={() => handleFormModeChange('signIn')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
+        <button onClick={() => handleFormModeChange('createAccount')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
       </div>
     </div>
   );
