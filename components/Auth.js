@@ -42,35 +42,41 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
     }
   };
 
-  const handleAnonymousSignIn = async () => {
+  const handleSubmit = async () => {
     setLoading(true);
-    if (!leaderboardName) {
-      setError('Please enter a leaderboard name.');
-      toast.error('Please enter a leaderboard name.');
-      setLoading(false);
-      return;
-    }
 
-    if (formMode === 'guest') {
-      setLoading(true);
-      try {
-        const { user } = await signInAnonymously(auth);
-        await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
-        onUserAuth(user);
-        onLeaderboardNameSet(leaderboardName);
-        setError(null); // clear the error state
-      } catch (error) {
-        console.error(error);
-        const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
-        setError(message);
-        toast.error(message);
-      } finally {
-        setLoading(false);
-      }
-    } else if (formMode === 'signIn') {
-      signIn(); // Call the signIn function directly
-    } else if (formMode === 'createAccount') {
-      signUp();
+    switch (formMode) {
+      case 'guest':
+        if (!leaderboardName) {
+          setError('Please enter a leaderboard name.');
+          toast.error('Please enter a leaderboard name.');
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const { user } = await signInAnonymously(auth);
+          await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
+          onUserAuth(user);
+          onLeaderboardNameSet(leaderboardName);
+          setError(null); // clear the error state
+        } catch (error) {
+          console.error(error);
+          const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
+          setError(message);
+          toast.error(message);
+        } finally {
+          setLoading(false);
+        }
+        break;
+
+      case 'signIn':
+        signIn(); // Call the signIn function directly
+        break;
+
+      case 'createAccount':
+        signUp();
+        break;
     }
   };
 
@@ -168,7 +174,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
           />
         </>
       )}
-      <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
+      <button onClick={handleSubmit} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
         {getPlayButtonText()}
       </button>
       {formMode === 'guest' && (
