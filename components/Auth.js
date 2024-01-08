@@ -31,10 +31,16 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
   };
 
   const getPlayButtonText = () => {
-    if (formMode === 'guest') {
-      return 'Play as Guest';
+    switch (formMode) {
+      case 'guest':
+        return 'Play as Guest';
+      case 'signIn':
+        return 'Sign In';
+      case 'createAccount':
+        return `Play as ${leaderboardName || 'Guest'}`;
+      default:
+        return 'Play';
     }
-    return `Play as ${leaderboardName || 'Guest'}`;
   };
 
   const handleAnonymousSignIn = async () => {
@@ -63,7 +69,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
         setLoading(false);
       }
     } else if (formMode === 'signIn') {
-      signIn();
+      signIn(); // Call the signIn function directly
     } else if (formMode === 'createAccount') {
       signUp();
     }
