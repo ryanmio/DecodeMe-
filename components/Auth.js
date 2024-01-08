@@ -166,12 +166,16 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
         {getPlayButtonText()}
       </button>
-      <div className="w-full border-b border-gray-300 my-4"></div>
-      <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
-      <div className="flex flex-col space-y-2">
-        <button onClick={() => handleFormModeChange('signIn')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
-        <button onClick={() => handleFormModeChange('createAccount')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
-      </div>
+      {formMode === 'guest' && (
+        <>
+          <div className="w-full border-b border-gray-300 my-4"></div>
+          <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
+          <div className="flex flex-col space-y-2">
+            <button onClick={() => handleFormModeChange('signIn')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
+            <button onClick={() => handleFormModeChange('createAccount')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+          </div>
+        </>
+      )}
     </div>
   );
 }
