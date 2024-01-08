@@ -71,10 +71,20 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
         break;
 
       case 'signIn':
+        if (!email || !password) {
+          toast.error('Please enter your email and password.');
+          setLoading(false);
+          return;
+        }
         signIn(); // Call the signIn function directly
         break;
 
       case 'createAccount':
+        if (!email || !password || !leaderboardName) {
+          toast.error('Please enter your email, password, and leaderboard name to create an account.');
+          setLoading(false);
+          return;
+        }
         signUp();
         break;
     }
@@ -94,11 +104,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   const signUp = async () => {
-    if (formMode === 'createAccount' && (!email || !password || !leaderboardName)) {
-      toast.error('Please enter your email, password, and leaderboard name to create an account.');
-      setLoading(false); // set loading to false in error scenario
-      return;
-    }
     setLoading(true);
     try {
       const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
@@ -111,10 +116,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   const signIn = async () => {
-    if (!email || !password) {
-      toast.error('Please enter your email and password.');
-      return;
-    }
     try {
       await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
     } catch (error) {
