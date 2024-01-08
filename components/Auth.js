@@ -76,7 +76,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
           setLoading(false);
           return;
         }
-        signIn(); // Call the signIn function directly
+        signIn();
         break;
 
       case 'createAccount':
