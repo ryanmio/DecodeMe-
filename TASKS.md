@@ -92,6 +92,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] /Help
   - [ ] /Remember
 - [ ] Implement account upgrade option
+- [ ] Mobile Styles
 
 ### Future Release Features
 - [ ] Sidebar Mode for Chat
@@ -109,6 +110,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
   - [ ] @memory-[memoryName]
 - [ ] Dark Mode
 - [ ] leadeboard name generator 
+- [ ] sound effects
+- [ ] whisper api
 
 ### Bugs and Issues
 - [x] Layout shift when loading auth component as logged out user
@@ -119,17 +122,17 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Switch out the heart icon for a react-icon https://react-icons.github.io/react-icons/search/#q=heart
 - [x] Scorecard stats should have tool tip with description
 - [x] Add 404 Page
+- [x] add wrong password toast
+- [x] prevent create account until email + password are entered
+- [x] error handling on auth component
+- [x] ask for leaderboard name after account create
+- [x] Improve New user flow
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Game History should have sort by score feature
 - [ ] Options menu icon should probably be a down icon or something differnt now that it is a contextual dropdown menu
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
-- [ ] Improve New user flow
-- [ ] add wrong password toast
-- [ ] prevent create account until email + password are entered
 - [ ] add forgot password link
-- [ ] error handling on auth component
-- [ ] ask for leaderboard name after account create
  
 ### Testing
 - [ ] Test anonymous user flow

@@ -255,10 +255,10 @@
 .typing {
   position: relative;
   padding: 10px;
-  margin: 10px 10px 0; /* Adjust the top margin to create space, and left margin to align with system messages */
+  margin: 10px 10px 0; 
   background: #e6e6e6;
   border-radius: 20px;
-  align-self: flex-start; /* Keeps the typing indicator aligned to the left */
+  align-self: flex-start;
 }
 
 .typing__dot {

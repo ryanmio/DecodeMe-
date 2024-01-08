@@ -1,41 +1,106 @@
 // components/Auth.js
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { toast } from 'react-hot-toast';
 
-export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
+const firebaseAuthErrorCodes = {
+  'auth/email-already-in-use': 'The email address is already in use.',
+  'auth/user-disabled': 'This account has been disabled.',
+  'auth/user-not-found': 'No user found with this email.',
+  'auth/wrong-password': 'Wrong password.',
+  'auth/invalid-email': 'Hmm... email address is not valid...',
+  'auth/operation-not-allowed': 'Operation not allowed.',
+  'auth/weak-password': 'Your password is too weak. 💪',
+};
+
+export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFormMode }) {
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [showErrorModal, setShowErrorModal] = useState(false);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
-  const handleAnonymousSignIn = async () => {
+  const handleFormModeChange = (mode) => {
+    setFormMode(mode);
+  };
+
+  const getPlayButtonText = () => {
+    switch (formMode) {
+      case 'guest':
+        return 'Play as Guest';
+      case 'signIn':
+        return 'Sign In';
+      case 'createAccount':
+        return `Create Account`;
+      default:
+        return 'Play';
+    }
+  };
+
+  const handleSubmit = async () => {
     setLoading(true);
-    if (!leaderboardName) {
-      setError('Please enter a leaderboard name.');
-      setShowErrorModal(true);
-      setLoading(false);
+
+    switch (formMode) {
+      case 'guest':
+        if (!leaderboardName) {
+          setError('Please enter a leaderboard name.');
+          toast.error('Please enter a leaderboard name.');
+          setLoading(false);
+          return;
+        }
+
+        try {
+          const { user } = await signInAnonymously(auth);
+          await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
+          onUserAuth(user);
+          onLeaderboardNameSet(leaderboardName);
+          setError(null); // clear the error state
+        } catch (error) {
+          console.error(error);
+          const message = firebaseAuthErrorCodes[error.code] || 'Failed to sign in anonymously.';
+          setError(message);
+          toast.error(message);
+        } finally {
+          setLoading(false);
+        }
+        break;
+
+      case 'signIn':
+        if (!email || !password) {
+          toast.error('Please enter your email and password.');
+          setLoading(false);
+          return;
+        }
+        signIn();
+        break;
+
+      case 'createAccount':
+        if (!email || !password || !leaderboardName) {
+          toast.error('Please enter your email, password, and leaderboard name to create an account.');
+          setLoading(false);
+          return;
+        }
+        signUp();
+        break;
+    }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast.error('Please enter your email to reset your password.');
       return;
     }
-
-    setLoading(true);
     try {
-      const { user } = await signInAnonymously(auth);
-      await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
-      onUserAuth(user);
-      onLeaderboardNameSet(leaderboardName);
+      await sendPasswordResetEmail(auth, email);
+      toast.success('Password reset email sent!');
     } catch (error) {
-      setError('Failed to sign in anonymously.');
-      setShowErrorModal(true);
-    } finally {
-      setLoading(false);
+      console.error(error);
+      toast.error('Failed to send password reset email.');
     }
   };
 
@@ -44,86 +109,88 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
     try {
       return await authMethod();
     } catch (error) {
+      console.error(error);
       setError(error.message);
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
   const signUp = async () => {
-    const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
-    await setDoc(doc(db, 'users', user.uid), { email });
-  };
-
-  const signIn = async () => {
-    await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
-  };
-
-  const handleUpgradeAccount = async () => {
     setLoading(true);
-    if (auth.currentUser) {
-      try {
-        const credential = EmailAuthProvider.credential(email, password);
-        const { user } = await linkWithCredential(auth.currentUser, credential);
-        const oldDocRef = doc(db, 'guests', user.uid);
-        const newDocRef = doc(db, 'users', user.uid);
-        const docData = (await oldDocRef.get()).data();
-        if (docData) {
-          await setDoc(newDocRef, docData);
-          await deleteDoc(oldDocRef);
-        }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
+    try {
+      const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
+      await setDoc(doc(db, 'users', user.uid), { email });
+    } catch (error) {
+      console.error(error);
+      const message = firebaseAuthErrorCodes[error.code] || 'An unknown error occurred.';
+      toast.error(message);
     }
   };
 
-  const closeErrorModal = () => {
-    setShowErrorModal(false);
+  const signIn = async () => {
+    try {
+      await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+    } catch (error) {
+      console.error(error);
+      const message = firebaseAuthErrorCodes[error.code] || 'An unknown error occurred.';
+      toast.error(message);
+    }
   };
 
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
-      <input
-        type="text"
-        value={leaderboardName}
-        onChange={(e) => setLeaderboardName(e.target.value)}
-        className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-        placeholder="Leaderboard Name"
-      />
-      <button onClick={handleAnonymousSignIn} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">Play as Guest</button>
-      <div className="w-full border-b border-gray-300 my-4"></div>
-      <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
-      <div className="flex flex-col space-y-2">
+      {formMode !== 'signIn' && (
         <input
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-          placeholder="Email"
+          type="text"
+          value={leaderboardName}
+          onChange={(e) => setLeaderboardName(e.target.value)}
+          className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+          placeholder="Leaderboard Name"
         />
-        <input
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="w-full px-2 py-1 border border-gray-300 rounded text-sm"
-          placeholder="Password"
-        />
-        <button onClick={signIn} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
-        <button onClick={signUp} disabled={loading} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
-      </div>
-      {error && showErrorModal && (
-        <Modal isOpen={showErrorModal} onClose={closeErrorModal}>
-          <ModalContent>
-            <ModalHeader>Error</ModalHeader>
-            <ModalBody>{error}</ModalBody>
-            <ModalFooter>
-              <Button color="primary" onClick={closeErrorModal}>Close</Button>
-            </ModalFooter>
-          </ModalContent>
-        </Modal>
+      )}
+      {formMode !== 'guest' && (
+        <>
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+            placeholder="Email"
+          />
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+            placeholder="Password"
+          />
+        </>
+      )}
+      <button onClick={handleSubmit} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
+        {getPlayButtonText()}
+      </button>
+      {formMode === 'signIn' && (
+        <div className="text-center mt-2">
+          <button
+            onClick={handlePasswordReset}
+            className="text-blue-600 hover:text-blue-800 text-sm"
+            type="button"
+          >
+            Forgot Password?
+          </button>
+        </div>
+      )}
+      {formMode === 'guest' && (
+        <>
+          <div className="w-full border-b border-gray-300 my-4"></div>
+          <p className="text-gray-500 mb-2 text-sm">To save your progress:</p>
+          <div className="flex flex-row space-x-2">
+            <button onClick={() => handleFormModeChange('signIn')} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">Sign In</button>
+            <button onClick={() => handleFormModeChange('createAccount')} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">Create Account</button>
+          </div>
+        </>
       )}
     </div>
   );
@@ -132,4 +199,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
   onLeaderboardNameSet: PropTypes.func.isRequired,
+  formMode: PropTypes.string.isRequired,
+  setFormMode: PropTypes.func.isRequired,
 };
