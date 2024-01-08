@@ -125,27 +125,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
     }
   };
 
-  const handleUpgradeAccount = async () => {
-    setLoading(true);
-    if (auth.currentUser) {
-      try {
-        const credential = EmailAuthProvider.credential(email, password);
-        const { user } = await linkWithCredential(auth.currentUser, credential);
-        const oldDocRef = doc(db, 'guests', user.uid);
-        const newDocRef = doc(db, 'users', user.uid);
-        const docData = (await oldDocRef.get()).data();
-        if (docData) {
-          await setDoc(newDocRef, docData);
-          await deleteDoc(oldDocRef);
-        }
-      } catch (error) {
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-  };
-
   return (
     <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
       {formMode !== 'signIn' && (
