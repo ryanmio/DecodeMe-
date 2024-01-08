@@ -5,12 +5,13 @@ import { FiHome } from 'react-icons/fi'; // Import FiHome instead of FaHome
 import OptionsMenu from '../components/OptionsMenu';
 import { useAuth } from '../contexts/AuthContext';
 
-const NavigationButtons = ({ resetGame, question, onSkipSubmit, gameMode, isGameOver }) => {
+const NavigationButtons = ({ resetGame, resetAuthFormMode, question, onSkipSubmit, gameMode, isGameOver }) => {
   const router = useRouter();
   const { loading } = useAuth();
 
   const handleHomeClick = () => {
     resetGame();
+    resetAuthFormMode(); // Reset the auth form mode to 'guest'
     router.push('/').catch((error) => {
       console.error('Failed to navigate to home:', error);
     });

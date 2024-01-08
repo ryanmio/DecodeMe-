@@ -16,13 +16,12 @@ const firebaseAuthErrorCodes = {
   'auth/weak-password': 'Your password is too weak. 💪',
 };
 
-export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
+export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFormMode }) {
   const [leaderboardName, setLeaderboardName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [formMode, setFormMode] = useState('guest');
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
@@ -37,7 +36,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       case 'signIn':
         return 'Sign In';
       case 'createAccount':
-        return `Play as ${leaderboardName || 'Guest'}`;
+        return `Create Account`;
       default:
         return 'Play';
     }
@@ -175,10 +174,10 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
       {formMode === 'guest' && (
         <>
           <div className="w-full border-b border-gray-300 my-4"></div>
-          <p className="text-gray-500 mb-2 text-sm">Or sign in to save your progress</p>
-          <div className="flex flex-col space-y-2">
-            <button onClick={() => handleFormModeChange('signIn')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Sign In</button>
-            <button onClick={() => handleFormModeChange('createAccount')} className="w-full px-2 py-1 bg-blue-500 text-white rounded text-sm">Create Account</button>
+          <p className="text-gray-500 mb-2 text-sm">To save your progress:</p>
+          <div className="flex flex-row space-x-2">
+            <button onClick={() => handleFormModeChange('signIn')} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">Sign In</button>
+            <button onClick={() => handleFormModeChange('createAccount')} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">Create Account</button>
           </div>
         </>
       )}
@@ -189,4 +188,6 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet }) {
 Auth.propTypes = {
   onUserAuth: PropTypes.func.isRequired,
   onLeaderboardNameSet: PropTypes.func.isRequired,
+  formMode: PropTypes.string.isRequired,
+  setFormMode: PropTypes.func.isRequired,
 };
