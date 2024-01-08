@@ -1,7 +1,7 @@
 // components/Auth.js
 import { useState } from 'react';
 import PropTypes from 'prop-types';
-import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { toast } from 'react-hot-toast';
@@ -90,6 +90,20 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
     }
   };
 
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast.error('Please enter your email to reset your password.');
+      return;
+    }
+    try {
+      await sendPasswordResetEmail(auth, email);
+      toast.success('Password reset email sent!');
+    } catch (error) {
+      console.error(error);
+      toast.error('Failed to send password reset email.');
+    }
+  };
+
   const handleAuthentication = async (authMethod) => {
     setLoading(true);
     try {
@@ -157,6 +171,17 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
       <button onClick={handleSubmit} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
         {getPlayButtonText()}
       </button>
+      {formMode === 'signIn' && (
+        <div className="text-center mt-2">
+          <button
+            onClick={handlePasswordReset}
+            className="text-blue-600 hover:text-blue-800 text-sm"
+            type="button"
+          >
+            Forgot Password?
+          </button>
+        </div>
+      )}
       {formMode === 'guest' && (
         <>
           <div className="w-full border-b border-gray-300 my-4"></div>
