@@ -18,6 +18,11 @@ const HistoryPage = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
+  const [sortOption, setSortOption] = useState('score');
+
+  const handleSortOptionChange = (newSortOption) => {
+    setSortOption(newSortOption);
+  };
 
   useEffect(() => {
     if (user) {
@@ -64,6 +69,12 @@ const HistoryPage = () => {
               return scoreIsValid && longestStreakIsValid && gameNumberIsValid;
             });
 
+            if (sortOption === 'score') {
+              historyData.sort((a, b) => b.gameStats.score - a.gameStats.score);
+            } else if (sortOption === 'date') {
+              historyData.sort((a, b) => b.timestamp.seconds - a.timestamp.seconds);
+            }
+
             setUserHistory(historyData);
           }
         } catch (error) {
@@ -75,7 +86,7 @@ const HistoryPage = () => {
 
       fetchUserDataAndHistory();
     }
-  }, [user]);
+  }, [user, sortOption]);
 
   const indexOfLastGame = currentPage * gamesPerPage;
   const indexOfFirstGame = indexOfLastGame - gamesPerPage;
@@ -106,6 +117,10 @@ const HistoryPage = () => {
             <div className="results-header mb-4">
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
+              <select value={sortOption} onChange={(e) => handleSortOptionChange(e.target.value)}>
+                <option value="score">Score</option>
+                <option value="date">Date</option>
+              </select>
             </div>
             {isLoading ? (
               <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
