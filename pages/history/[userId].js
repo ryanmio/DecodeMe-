@@ -18,7 +18,7 @@ const HistoryPage = () => {
   const router = useRouter();
   const { user } = useAuth();
   const [isLoading, setIsLoading] = useState(true);
-  const [sortOption, setSortOption] = useState('score');
+  const [sortOption, setSortOption] = useState('date');
 
   const handleSortOptionChange = (newSortOption) => {
     setSortOption(newSortOption);
