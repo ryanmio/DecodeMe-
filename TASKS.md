@@ -1,11 +1,11 @@
 # DecodeMe! Project Tasks
 
 ## App Overview
-DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way. Users can choose from multiple game modes including multiple-choice, open-ended questions, and data analysis challenges.
+DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way. Users can choose from multiple game modes including multiple-choice, open-ended questions, and a daily challenge.
 
-## Instructions for AI Agents
-- The user is on MacOS using VS Code IDE
-- The user uses macos terminal
+## Instructions for AI Agent (YOUR INSTRUCTIONS)
+- The user is on MacOS using Visual Studio Code
+- The user prefers MacOS terminal
 - Never generate typescript even if the user provides an example in typescript
 - An implementation plan is a step by step, start-to-finish outline of everything required to complete to given task.
 - Always check your work by reviewing the conversation up to that point and correcting any previous errors or inconsistencies.
@@ -56,8 +56,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 ### Game Logic
 - [x] Develop function for fetching code snippets
 - [x] Implement multiple-choice questions logic
-- [ ] Implement open-ended questions logic (save for future release)
-- [ ] Implement daily challenge questions logic (save for future release)
 
 ### Scoring and Feedback
 - [x] Develop scoring algorithm
@@ -70,7 +68,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement high scores
 - [ ] Finalize post game review system and user messages
 
-### Core Features
+### Core Tasks
 - [x] Add "Log out" button in options menu
 - [x] Implement history of past questions in options menu
 - [x] Style the game history
@@ -87,31 +85,30 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Implement User Stats page
 - [x] Implement GPT usage cap or rate limits
 - [x] Implement custom instructions
+- [ ] Custom instruction guardrails
+- [ ] Leadeboard name generator 
+- [ ] Sound effects
 - [ ] Implement AI commands
   - [ ] /Instruct
   - [ ] /Help
   - [ ] /Remember
-- [ ] Implement account upgrade option
-- [ ] Mobile Styles
 
 ### Future Release Features
 - [ ] Sidebar Mode for Chat
-- [ ] Implement sign-in with gmail/github/snapchat
-- [ ] Implement challenge mode for friends
-- [ ] Implement language selector
-- [ ] Implement badges
-- [ ] Implement bug reporting
-- [ ] Add more stats to the history page like accuracy
-- [ ] Implement shareable score previews
-- [ ] Implement notification for events like new high score
+- [ ] Open-ended mode
+- [ ] Daily challenge mode
+- [ ] sign-in with google/github
+- [ ] Support for other lanaguages aside from python
+- [ ] Profile badges
+- [ ] Bug reporting
+- [ ] Shareable score previews
+- [ ] Notification for events like new high score
+- [ ] Dark Mode
+- [ ] Whisper api
 - [ ] Implement modular context blocks
   - [ ] @convo-[conversationTitle]-[conversationDate]
   - [ ] @question-[questionId]
   - [ ] @memory-[memoryName]
-- [ ] Dark Mode
-- [ ] leadeboard name generator 
-- [ ] sound effects
-- [ ] whisper api
 
 ### Bugs and Issues
 - [x] Layout shift when loading auth component as logged out user
@@ -119,7 +116,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Game History needs loading animaton to prevent massive layout shift
 - [x] Assistant settings save needs to give user confirmation. Add toast.
 - [x] Chatbot and Endgame Custom Instructions should be disabled until functional
-- [x] Switch out the heart icon for a react-icon https://react-icons.github.io/react-icons/search/#q=heart
+- [x] Switch out the heart icon for a react-icon
 - [x] Scorecard stats should have tool tip with description
 - [x] Add 404 Page
 - [x] add wrong password toast
@@ -128,10 +125,12 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] ask for leaderboard name after account create
 - [x] Improve New user flow
 - [x] add forgot password link
-- [ ] Game History should have sort by score feature
+- [x] Game History should have sort by score feature
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
+- [ ] Implement account upgrade option
+- [ ] Needs mobile styles
  
 ### Testing
 - [ ] Test anonymous user flow
