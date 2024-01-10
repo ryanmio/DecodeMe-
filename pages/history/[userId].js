@@ -7,7 +7,7 @@ import GameHistory from '../../components/GameHistory';
 import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
-import { Pagination, Spinner } from '@nextui-org/react';
+import { Pagination, Spinner, Breadcrumbs, BreadcrumbItem } from '@nextui-org/react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const HistoryPage = () => {
@@ -117,10 +117,30 @@ const HistoryPage = () => {
             <div className="results-header mb-4">
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
-              <select value={sortOption} onChange={(e) => handleSortOptionChange(e.target.value)}>
-                <option value="score">Score</option>
-                <option value="date">Date</option>
-              </select>
+              <div className="flex justify-end items-center">
+                <Breadcrumbs
+                  size="sm"
+                  onAction={(key) => setSortOption(key)}
+                  classNames={{
+                    list: "gap-2",
+                  }}
+                  itemClasses={{
+                    item: [
+                      "px-2 py-0.5 border-small border-default-400 rounded-small",
+                      "data-[current=true]:border-foreground data-[current=true]:bg-foreground data-[current=true]:text-background transition-colors",
+                      "data-[disabled=true]:border-default-400 data-[disabled=true]:bg-default-100",
+                    ],
+                    separator: "hidden",
+                  }}
+                >
+                  <BreadcrumbItem key="score" isCurrent={sortOption === "score"}>
+                    Score ▾
+                  </BreadcrumbItem>
+                  <BreadcrumbItem key="date" isCurrent={sortOption === "date"}>
+                    Date ▾
+                  </BreadcrumbItem>
+                </Breadcrumbs>
+              </div>
             </div>
             {isLoading ? (
               <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
