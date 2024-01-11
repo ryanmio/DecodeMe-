@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { useSpring, animated } from '@react-spring/web';
 import Sparkle from '../components/Sparkle';
+import useSound from 'use-sound';
 
 export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled, correctAnswerIndex, setScore }) {
   const [selectedOption, setSelectedOption] = useState('');
@@ -10,6 +11,8 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
   const [correctDisplayIndex, setCorrectDisplayIndex] = useState(null);
   const [showSparkle, setShowSparkle] = useState(false);
   const [shake, setShake] = useState(false);
+  const [playCorrectAnswer] = useSound('/sounds/correctAnswer.wav');
+  const [playWrongAnswer] = useSound('/sounds/wrongAnswer.wav');
 
   useEffect(() => {
     if (!disabled) {
@@ -34,11 +37,13 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
     setSubmittedOption(selectedOption);
     const originalIndex = options.indexOf(selectedOption);
     if (originalIndex === correctAnswerIndex) {
+      playCorrectAnswer();
       setScore(prevScore => prevScore + 1);
       onAnswerSubmit(originalIndex, true);
       setShowSparkle(true);
       setShake(false);
     } else {
+      playWrongAnswer();
       onAnswerSubmit(originalIndex, false);
       setShake(true);
     }
