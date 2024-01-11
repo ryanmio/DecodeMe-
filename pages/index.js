@@ -46,6 +46,7 @@ export default function Home() {
   const [capExceeded, setCapExceeded] = useState(false);
   const [formMode, setFormMode] = useState('guest');
   const [playGameStart] = useSound('/sounds/gameStart.wav');
+  const [playGameOver] = useSound('/sounds/gameOver.wav');
 
   const strikeLimit = 2;
 
@@ -114,6 +115,7 @@ export default function Home() {
       setCurrentStreak(0);
       if (strikes + 1 >= strikeLimit) {
         gameOver = true;
+        playGameOver();
       }
     }
 
