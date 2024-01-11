@@ -8,6 +8,7 @@ import UserAnswerInput from '../components/UserAnswerInput';
 import Sparkle from '../components/Sparkle';
 import NavigationButtons from '../components/NavigationButtons';
 import { getFirebaseFirestore } from '../app/src/firebase';
+import useSound from 'use-sound';
 import { useAuth } from '../contexts/AuthContext';
 import { v4 as uuidv4 } from 'uuid';
 import { doc, setDoc, getDoc, updateDoc, onSnapshot } from 'firebase/firestore';
@@ -44,6 +45,8 @@ export default function Home() {
   const [customInstructions, setCustomInstructions] = useState({});
   const [capExceeded, setCapExceeded] = useState(false);
   const [formMode, setFormMode] = useState('guest');
+  const [playGameStart] = useSound('/sounds/gameStart.wav');
+  const [playGameOver] = useSound('/sounds/gameOver.wav');
 
   const strikeLimit = 2;
 
@@ -51,6 +54,7 @@ export default function Home() {
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
   const handleGameModeSelect = mode => {
+    playGameStart();
     setGameMode(mode);
     setGameId(uuidv4());
     handleCodeSnippetFetch([]);
@@ -111,6 +115,7 @@ export default function Home() {
       setCurrentStreak(0);
       if (strikes + 1 >= strikeLimit) {
         gameOver = true;
+        playGameOver();
       }
     }
 
