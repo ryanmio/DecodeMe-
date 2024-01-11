@@ -343,7 +343,6 @@ export default function Home() {
                     currentStreak={currentStreak}
                     handleChatWithTutor={handleChatWithTutor}
                     leaderboardName={leaderboardName}
-                    user={user}
                     learningLevel={learningLevel}
                   />
                 </> :

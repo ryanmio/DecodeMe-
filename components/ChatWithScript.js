@@ -9,8 +9,6 @@ import { useAuth } from '../contexts/AuthContext';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
-  const { user } = useAuth();
-
   const [userMessage, setUserMessage] = useState('');
   const [isMaximized, setIsMaximized] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);

@@ -12,7 +12,7 @@ import ShareGameLink from './ShareGameLink';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
-const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, selectedScript, leaderboardName, user, learningLevel }) => {
+const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, leaderboardName, learningLevel }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
