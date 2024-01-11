@@ -29,9 +29,10 @@ const PostGameMessage = ({ db, userId, score, incorrectAnswers, leaderboardName 
       incorrectAnswers: formattedIncorrectAnswers,
       userStats: JSON.stringify(userStats),
       leaderboardName,
+      userId, // Include the userId here
     };
     return data;
-  }, [score, incorrectAnswers, getUserStatsFromFirebase, leaderboardName]);
+  }, [score, incorrectAnswers, getUserStatsFromFirebase, leaderboardName, userId]); // Add userId to the dependency array
 
   const handleCloseMessage = () => {
     setIsMessageVisible(false);
