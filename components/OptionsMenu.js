@@ -2,11 +2,12 @@
 import React, { useState } from "react";
 import { useRouter } from 'next/router';
 import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure } from "@nextui-org/react";
-import { FiMenu } from "react-icons/fi"; // Import FiMenu instead of IoOptions
+import { FiMenu } from "react-icons/fi";
 import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
 import { useAuth } from '../contexts/AuthContext';
+import useSound from 'use-sound';
 
 const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -14,8 +15,10 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
   const { user, loading, auth } = useAuth();
+  const [play] = useSound('/sounds/buttonClick.wav');
 
   const handleLogout = () => {
+    play();
     onOpen();
   };
 
@@ -30,6 +33,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleHistory = () => {
+    play();
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -38,10 +42,12 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleLeaderboard = () => {
+    play();
     router.push('/leaderboard');
   };
 
   const handleScorecard = () => {
+    play();
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -50,6 +56,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleAssistantSettings = () => {
+    play();
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -82,7 +89,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
         className="custom-button"
         style={{ background: 'transparent' }}
       >
-        <FiMenu size={24} color="#22D3EE" /> {/* Use FiMenu instead of IoOptions */}
+        <FiMenu size={24} color="#22D3EE" />
       </Button>
     );
   }
@@ -96,8 +103,9 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
             auto
             className="custom-button"
             style={{ background: 'transparent' }}
+            onClick={play}
           >
-            <FiMenu size={24} color="#22D3EE" /> {/* Use FiMenu instead of IoOptions */}
+            <FiMenu size={24} color="#22D3EE" />
           </Button>
         </DropdownTrigger>
         <DropdownMenu variant="shadow" aria-label="Options menu">
