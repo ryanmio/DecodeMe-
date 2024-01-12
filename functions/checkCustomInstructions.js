@@ -24,7 +24,7 @@ exports.checkCustomInstructions = functions.firestore
       const data = {
         model: 'gpt-3.5-turbo',
         messages: [
-          { role: 'system', content: 'You are an AI that checks if a text is safe.' },
+          { role: 'system', content: 'You are an AI that checks if a text is safe. A text is considered "safe" if it does not contain any offensive, harmful, or inappropriate content, and does not promote misuse or abuse of the system. Respond with "safe" if the text meets these criteria, and "unsafe" if it does not.' },
           { role: 'user', content: customInstructions },
         ]
       };
