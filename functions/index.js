@@ -15,6 +15,7 @@ exports.updateDailyStreaks = require('./updateDailyStreaks').updateDailyStreaks;
 exports.checkUsageData = require('./checkUsageData').checkUsageData;
 exports.resetUsageData = require('./resetUsageData').resetUsageData;
 exports.initializeUserCaps = require('./initializeUserCaps').initializeUserCaps;
+exports.checkCustomInstructions = require('./checkCustomInstructions').checkCustomInstructions;
 
 /*
  * Instructions for adding new functions:
