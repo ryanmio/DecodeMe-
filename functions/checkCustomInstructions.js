@@ -10,8 +10,16 @@ exports.checkCustomInstructions = functions.firestore
     const oldValue = change.before.data();
 
     // Check if customInstructions field has been updated
-    if (newValue.customInstructions !== oldValue.customInstructions) {
-      const customInstructions = newValue.customInstructions;
+    let instructionKey = null;
+    for (const key in newValue.customInstructions) {
+      if (newValue.customInstructions[key] !== oldValue.customInstructions[key]) {
+        instructionKey = key;
+        break;
+      }
+    }
+
+    if (instructionKey) {
+      const customInstructions = newValue.customInstructions[instructionKey];
 
       // OpenAI API call
       const openaiKey = functions.config().openai?.key;
@@ -46,17 +54,17 @@ exports.checkCustomInstructions = functions.firestore
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
         const responseText = openaiResponse.data.choices[0].message.content.trim();
 
-        // If the response is "unsafe", clear the custom instructions
+        // If the response is "unsafe", clear the specific custom instruction
         if (responseText.toLowerCase() === 'unsafe') {
           // Write to the logs before clearing the custom instructions
           const logRef = admin.firestore().collection('warnings').doc();
           await logRef.set({
             userId: context.params.userId,
             timestamp: admin.firestore.FieldValue.serverTimestamp(),
-            customInstructions: customInstructions,
+            customInstructions: { [instructionKey]: customInstructions },
           });
 
-          await change.after.ref.update({ customInstructions: '' });
+          await change.after.ref.update({ [`customInstructions.${instructionKey}`]: '' });
         }
 
       } catch (error) {
