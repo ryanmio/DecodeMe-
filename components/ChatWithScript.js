@@ -161,6 +161,12 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
             <Textarea
               value={userMessage}
               onChange={e => setUserMessage(e.target.value)}
+              onKeyDown={e => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault();
+                  handleChatSubmit(e);
+                }
+              }}
               placeholder={capExceeded ? "OpenAI Limit Exceeded" : "Your message..."}
               className="message-input"
               minRows={1}
