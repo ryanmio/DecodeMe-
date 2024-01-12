@@ -100,28 +100,6 @@ const AssistantSettingsPage = ({ userData }) => {
                   helperColor={customInstructions.chatbot.length > MAX_CHAR_LIMIT ? "error" : "default"}
                 />
               </div>
-              {/* 
-              <div className="input-group" style={{ marginBottom: '20px' }}>
-                <Textarea
-                  id="endGame"
-                  label="End Game Message Instructions:"
-                  variant="bordered"
-                  placeholder="Example: "
-                  value={customInstructions.endGame}
-                  onValueChange={(value) => handleInputChange('endGame', { target: { value } })}
-                  disableAnimation
-                  disableAutosize
-                  fullWidth
-                  classNames={{
-                    base: "w-full",
-                    input: "resize-y min-h-[40px]",
-                  }}
-                  maxLength={MAX_CHAR_LIMIT}
-                  helperText={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "Maximum character limit of " + MAX_CHAR_LIMIT + " exceeded." : ""}
-                  helperColor={customInstructions.endGame.length > MAX_CHAR_LIMIT ? "error" : "default"}
-                  disabled
-                />
-              </div> */}
               <div style={{ textAlign: 'right', marginTop: '20px' }}>
                 <Button color="primary" auto ghost variant="ghost" type="submit">
                   Save

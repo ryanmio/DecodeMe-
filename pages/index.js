@@ -99,17 +99,16 @@ export default function Home() {
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
     setIsFirebaseUpdated(false);
+
     const answer = question.options[answerIndex];
     const correctAnswer = question.options[correctAnswerIndex];
-
     let gameOver = false;
 
+    // Update streaks and strikes based on whether the answer is correct
     if (isCorrect) {
       setCurrentStreak(prev => prev + 1);
     } else {
-      if (currentStreak > longestStreak) {
-        setLongestStreak(currentStreak);
-      }
+      if (currentStreak > longestStreak) setLongestStreak(currentStreak);
       setStrikes(prev => prev + 1);
       setIncorrectAnswers(prev => [...prev, { question: question.codeSnippet, answer, correctAnswer }]);
       setCurrentStreak(0);
@@ -119,29 +118,20 @@ export default function Home() {
       }
     }
 
+    // Update conversation history and fetch the next question if the game is not over
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
+    if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
 
-    // Only fetch the next question if the game has not ended
-    if (!gameOver) {
-      await handleCodeSnippetFetch(newConversationHistory);
-    }
-
+    // Update game stats
     setQuestionsAnswered(prev => prev + 1);
     setIsGameOver(gameOver);
 
     // Log the answered question in Firestore
     const questionId = uuidv4();
-
-    // Create a reference to the 'game' document
     const gameDoc = doc(db, 'users', user.uid, 'games', gameId);
-
-    // When creating a new game, initialize the score and longest streak to 0
     await setDoc(gameDoc, { timestamp: new Date(), score: 0, longestStreak: 0 }, { merge: true });
-
-    // Create a reference to the 'history' document
     const questionDoc = doc(gameDoc, 'history', questionId);
-
     await setDoc(questionDoc, {
       question: question.codeSnippet,
       answer,
@@ -150,9 +140,7 @@ export default function Home() {
       timestamp: new Date(),
       strikes,
       strikeLimit,
-    }).catch(() => {
-      alert('Failed to log answer. Please try again.');
-    });
+    }).catch(() => alert('Failed to log answer. Please try again.'));
 
     setIsFirebaseUpdated(true);
   };
@@ -355,7 +343,6 @@ export default function Home() {
                     currentStreak={currentStreak}
                     handleChatWithTutor={handleChatWithTutor}
                     leaderboardName={leaderboardName}
-                    user={user}
                     learningLevel={learningLevel}
                   />
                 </> :
