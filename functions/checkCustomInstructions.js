@@ -48,6 +48,14 @@ exports.checkCustomInstructions = functions.firestore
 
         // If the response is "unsafe", clear the custom instructions
         if (responseText.toLowerCase() === 'unsafe') {
+          // Write to the logs before clearing the custom instructions
+          const logRef = admin.firestore().collection('warnings').doc();
+          await logRef.set({
+            userId: context.params.userId,
+            timestamp: admin.firestore.FieldValue.serverTimestamp(),
+            customInstructions: customInstructions,
+          });
+
           await change.after.ref.update({ customInstructions: '' });
         }
 
