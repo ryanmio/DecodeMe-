@@ -33,8 +33,10 @@ exports.checkCustomInstructions = functions.firestore
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
         const responseText = openaiResponse.data.choices[0].message.content.trim();
 
-        // Here you can process the responseText to determine if the custom instructions are safe
-        // For example, you can check if the responseText contains any unsafe words or phrases
+        // If the response is "unsafe", clear the custom instructions
+        if (responseText.toLowerCase() === 'unsafe') {
+          await change.after.ref.update({ customInstructions: '' });
+        }
 
       } catch (error) {
         console.error('An error occurred while communicating with OpenAI:', error);
