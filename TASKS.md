@@ -126,12 +126,13 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Improve New user flow
 - [x] add forgot password link
 - [x] Game History should have sort by score feature
+- [x] Enter should send chat message
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
 - [ ] Implement account upgrade option
 - [ ] Needs mobile styles
-- [ ] Enter should send chat message
+- [ ] Update background
  
 ### Testing
 - [ ] Test anonymous user flow
