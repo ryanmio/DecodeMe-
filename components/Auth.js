@@ -161,7 +161,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
             className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
             placeholder="Leaderboard Name"
           />
-          <PiMagicWandDuotone className="absolute top-2 right-2 text-gray-400 hover:text-blue-500" size={20} onClick={generateLeaderboardName} />
+          <PiMagicWandDuotone className="absolute top-3 right-2 text-gray-400 hover:text-blue-500" size={20} onClick={generateLeaderboardName} />
         </div>
       )}
       {formMode !== 'guest' && (
