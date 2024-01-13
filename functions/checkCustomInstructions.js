@@ -55,6 +55,8 @@ exports.checkCustomInstructions = functions.firestore
       };
 
       console.log('Making OpenAI API call'); // Log before making the OpenAI API call
+      console.log('System message:', data.messages[0].content); // Log the system message
+      console.log('User message:', data.messages[1].content); // Log the user message
 
       try {
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
