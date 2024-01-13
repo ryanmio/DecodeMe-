@@ -37,7 +37,9 @@ const AssistantSettingsPage = ({ userData }) => {
 
   useEffect(() => {
     if (customInstructions.feedback) {
-      toast.info(customInstructions.feedback);
+      toast(customInstructions.feedback, {
+        icon: <span style={{ fontSize: '2em' }}>🦺</span>,
+      });
     }
   }, [customInstructions.feedback]);
 
