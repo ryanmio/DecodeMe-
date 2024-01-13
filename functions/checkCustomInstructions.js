@@ -20,10 +20,10 @@ exports.checkCustomInstructions = functions.firestore
       }
     }
 
-    if (instructionKey) {
-      console.log('customInstructions field updated'); // Log when the customInstructions field is updated
+    const customInstructions = newValue.customInstructions[instructionKey];
 
-      const customInstructions = newValue.customInstructions[instructionKey];
+    if (instructionKey && customInstructions) {
+      console.log('customInstructions field updated'); // Log when the customInstructions field is updated
 
       // OpenAI API call
       const openaiKey = functions.config().openai?.key;
@@ -78,7 +78,10 @@ exports.checkCustomInstructions = functions.firestore
             customInstructions: { [instructionKey]: customInstructions },
           });
 
-          await change.after.ref.update({ [`customInstructions.${instructionKey}`]: '' });
+          await change.after.ref.update({ 
+            [`customInstructions.${instructionKey}`]: '',
+            'customInstructions.feedback': `Your custom instruction for ${instructionKey} was deemed unsafe and has been cleared.`
+          });
         }
 
       } catch (error) {

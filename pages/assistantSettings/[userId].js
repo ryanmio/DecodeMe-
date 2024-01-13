@@ -1,5 +1,5 @@
 // pages/assistantSettings/[userId].js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getFirebaseFirestore } from '../../app/src/firebase';
 import RootLayout from '../../components/layout';
@@ -25,7 +25,21 @@ const AssistantSettingsPage = ({ userData }) => {
     codeGen: userData?.customInstructions?.codeGen || '',
     chatbot: userData?.customInstructions?.chatbot || '',
     endGame: userData?.customInstructions?.endGame || '',
+    feedback: userData?.customInstructions?.feedback || '',
   });
+
+  useEffect(() => {
+    setCustomInstructions(prevInstructions => ({
+      ...prevInstructions,
+      feedback: userData?.customInstructions?.feedback || '',
+    }));
+  }, [userData?.customInstructions?.feedback]);
+
+  useEffect(() => {
+    if (customInstructions.feedback) {
+      toast.info(customInstructions.feedback);
+    }
+  }, [customInstructions.feedback]);
 
   const handleInputChange = (aspect, event) => {
     const value = event.target.value;
