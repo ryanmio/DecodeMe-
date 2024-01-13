@@ -22,6 +22,13 @@ exports.checkCustomInstructions = functions.firestore
 
     const customInstructions = newValue.customInstructions[instructionKey];
 
+    // Create a mapping of instruction keys to display names
+    const instructionKeyDisplayNames = {
+      codeGen: 'Gameplay',
+      chatbot: 'Assistant Behavior',
+      // Add other keys as needed
+    };
+
     if (instructionKey && customInstructions) {
       console.log('customInstructions field updated'); // Log when the customInstructions field is updated
 
@@ -78,9 +85,11 @@ exports.checkCustomInstructions = functions.firestore
             customInstructions: { [instructionKey]: customInstructions },
           });
 
+          // Use the display name in the feedback message
+          const displayName = instructionKeyDisplayNames[instructionKey] || instructionKey;
           await change.after.ref.update({ 
             [`customInstructions.${instructionKey}`]: '',
-            'customInstructions.feedback': `Your custom instruction for ${instructionKey} was deemed unsafe and has been cleared.`
+            'customInstructions.feedback': `Your custom instruction for ${displayName} was deemed unsafe and has been cleared.`
           });
         }
 
