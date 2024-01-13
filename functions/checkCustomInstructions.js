@@ -35,6 +35,7 @@ exports.checkCustomInstructions = functions.firestore
 
       const data = {
         model: 'gpt-3.5-turbo',
+        temperature: 0, // Lower the temperature to 0
         messages: [
           { 
             role: 'system', 
