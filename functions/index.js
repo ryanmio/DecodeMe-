@@ -16,6 +16,7 @@ exports.checkUsageData = require('./checkUsageData').checkUsageData;
 exports.resetUsageData = require('./resetUsageData').resetUsageData;
 exports.initializeUserCaps = require('./initializeUserCaps').initializeUserCaps;
 exports.checkCustomInstructions = require('./checkCustomInstructions').checkCustomInstructions;
+exports.generateLeaderboardName = require('./generateLeaderboardName').generateLeaderboardName;
 
 /*
  * Instructions for adding new functions:
