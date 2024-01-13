@@ -6,6 +6,8 @@ const axios = require('axios');
 exports.checkCustomInstructions = functions.firestore
   .document('users/{userId}')
   .onUpdate(async (change, context) => {
+    console.log('checkCustomInstructions triggered'); // Log when the function is triggered
+
     const newValue = change.after.data();
     const oldValue = change.before.data();
 
@@ -19,6 +21,8 @@ exports.checkCustomInstructions = functions.firestore
     }
 
     if (instructionKey) {
+      console.log('customInstructions field updated'); // Log when the customInstructions field is updated
+
       const customInstructions = newValue.customInstructions[instructionKey];
 
       // OpenAI API call
@@ -49,6 +53,8 @@ exports.checkCustomInstructions = functions.firestore
           { role: 'user', content: customInstructions },
         ]
       };
+
+      console.log('Making OpenAI API call'); // Log before making the OpenAI API call
 
       try {
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
