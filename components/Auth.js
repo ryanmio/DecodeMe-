@@ -5,7 +5,7 @@ import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWit
 import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { toast } from 'react-hot-toast';
-import { AiOutlineSearch } from 'react-icons/ai';
+import { PiMagicWandDuotone } from "react-icons/pi";
 
 const firebaseAuthErrorCodes = {
   'auth/email-already-in-use': 'The email address is already in use.',
@@ -158,10 +158,10 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
             type="text"
             value={leaderboardName}
             onChange={(e) => setLeaderboardName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded mb-4 pl-10"
+            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
             placeholder="Leaderboard Name"
           />
-          <AiOutlineSearch className="absolute top-2 left-2 text-gray-400" size={20} onClick={generateLeaderboardName} />
+          <PiMagicWandDuotone className="absolute top-2 right-2 text-gray-400 hover:text-blue-500" size={20} onClick={generateLeaderboardName} />
         </div>
       )}
       {formMode !== 'guest' && (
