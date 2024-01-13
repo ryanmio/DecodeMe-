@@ -40,6 +40,22 @@ const AssistantSettingsPage = ({ userData }) => {
       toast(customInstructions.feedback, {
         icon: <span style={{ fontSize: '2em' }}>🦺</span>,
       });
+
+      // Clear the feedback after the toast duration
+      const toastDuration = 4000; // Default duration for 'blank' toast type
+      setTimeout(async () => {
+        setCustomInstructions(prevInstructions => ({
+          ...prevInstructions,
+          feedback: '',
+        }));
+
+        // Clear the feedback field in Firestore
+        if (user) {
+          const dbClient = getFirebaseFirestore();
+          const userDocRef = doc(dbClient, 'users', userData.id);
+          await updateDoc(userDocRef, { 'customInstructions.feedback': '' });
+        }
+      }, toastDuration);
     }
   }, [customInstructions.feedback]);
 
