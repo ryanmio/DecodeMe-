@@ -1,5 +1,5 @@
 // pages/assistantSettings/[userId].js
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { getFirebaseFirestore } from '../../app/src/firebase';
 import RootLayout from '../../components/layout';
@@ -25,7 +25,39 @@ const AssistantSettingsPage = ({ userData }) => {
     codeGen: userData?.customInstructions?.codeGen || '',
     chatbot: userData?.customInstructions?.chatbot || '',
     endGame: userData?.customInstructions?.endGame || '',
+    feedback: userData?.customInstructions?.feedback || '',
   });
+
+  useEffect(() => {
+    setCustomInstructions(prevInstructions => ({
+      ...prevInstructions,
+      feedback: userData?.customInstructions?.feedback || '',
+    }));
+  }, [userData?.customInstructions?.feedback]);
+
+  useEffect(() => {
+    if (customInstructions.feedback) {
+      toast(customInstructions.feedback, {
+        icon: <span style={{ fontSize: '2em' }}>🦺</span>,
+      });
+
+      // Clear the feedback after the toast duration
+      const toastDuration = 4000; // Default duration for 'blank' toast type
+      setTimeout(async () => {
+        setCustomInstructions(prevInstructions => ({
+          ...prevInstructions,
+          feedback: '',
+        }));
+
+        // Clear the feedback field in Firestore
+        if (user) {
+          const dbClient = getFirebaseFirestore();
+          const userDocRef = doc(dbClient, 'users', userData.id);
+          await updateDoc(userDocRef, { 'customInstructions.feedback': '' });
+        }
+      }, toastDuration);
+    }
+  }, [customInstructions.feedback]);
 
   const handleInputChange = (aspect, event) => {
     const value = event.target.value;
