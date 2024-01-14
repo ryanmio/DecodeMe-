@@ -16,5 +16,8 @@ exports.updateLeaderboard = functions.firestore
       language: 'python', // Hardcoded for now, you can modify this as per your application's needs
     };
 
+    console.log("updateLeaderboard leaderboardName:", leaderboardData.leaderboardName); // Added log
+
     await admin.firestore().collection('leaderboard').add(leaderboardData);
   });
+
