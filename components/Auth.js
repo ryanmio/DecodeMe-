@@ -206,7 +206,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
           <div className="text-center mt-2">
             <button
               onClick={handlePasswordReset}
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              className="text-gray-500 hover:text-gray-800 text-sm"
               type="button"
             >
               Forgot Password?
