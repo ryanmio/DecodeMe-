@@ -103,7 +103,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
             auto
             className="custom-button"
             style={{ background: 'transparent' }}
-            // onClick={play}
+            aria-label="Toggle ptions menu"
           >
             <FiMenu size={24} color="#22D3EE" />
           </Button>
