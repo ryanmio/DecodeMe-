@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import PropTypes from 'prop-types';
 import { signInAnonymously, linkWithCredential, EmailAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendPasswordResetEmail } from 'firebase/auth';
-import { doc, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, getDoc } from 'firebase/firestore';
 import { getFirebaseFirestore, getFirebaseAuth } from '../app/src/firebase';
 import { toast } from 'react-hot-toast';
 import { PiMagicWandDuotone } from "react-icons/pi";
@@ -48,6 +48,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
       const response = await fetch('https://us-central1-decodeme-1f38e.cloudfunctions.net/generateLeaderboardName', { method: 'POST' });
       const data = await response.json();
       setLeaderboardName(data.leaderboardName);
+      console.log("Auth leaderboardName state:", leaderboardName); // Added log
     } catch (error) {
       console.error('Failed to generate leaderboard name:', error);
     }
@@ -67,7 +68,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
 
         try {
           const { user } = await signInAnonymously(auth);
-          await setDoc(doc(db, 'users', user.uid), { isAnonymous: true, leaderboardName });
+          const userDocRef = doc(db, 'users', user.uid);
+          await setDoc(userDocRef, { isAnonymous: true, leaderboardName }, { merge: true });
           onUserAuth(user);
           onLeaderboardNameSet(leaderboardName);
           setError(null); // clear the error state
@@ -132,7 +134,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
     setLoading(true);
     try {
       const { user } = await handleAuthentication(() => createUserWithEmailAndPassword(auth, email, password));
-      await setDoc(doc(db, 'users', user.uid), { email });
+      const userDocRef = doc(db, 'users', user.uid);
+      await setDoc(userDocRef, { email, leaderboardName }, { merge: true });
     } catch (error) {
       console.error(error);
       const message = firebaseAuthErrorCodes[error.code] || 'An unknown error occurred.';
@@ -142,7 +145,13 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
 
   const signIn = async () => {
     try {
-      await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+      const { user } = await handleAuthentication(() => signInWithEmailAndPassword(auth, email, password));
+      const userDocRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setLeaderboardName(userData.leaderboardName);
+      }
     } catch (error) {
       console.error(error);
       const message = firebaseAuthErrorCodes[error.code] || 'An unknown error occurred.';

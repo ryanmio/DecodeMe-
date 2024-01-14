@@ -228,7 +228,7 @@ export default function Home() {
   const handleUserUpdate = async (user) => {
     setUser(user);
     setUserId(user?.uid || null);
-  
+
     // Fetch leaderboardName and capExceeded from Firestore for all users
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
@@ -236,10 +236,15 @@ export default function Home() {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
+        console.log("index.js leaderboardName state:", userData.leaderboardName); // Added log
         setCapExceeded(userData.capExceeded || false);
       }
     }
   };
+
+  useEffect(() => {
+    handleUserUpdate(user);
+  }, [user]);
 
   useEffect(() => {
     if (score > 0) {
@@ -344,6 +349,7 @@ export default function Home() {
                     currentStreak={currentStreak}
                     handleChatWithTutor={handleChatWithTutor}
                     leaderboardName={leaderboardName}
+                    user={user}
                     learningLevel={learningLevel}
                   />
                 </> :
