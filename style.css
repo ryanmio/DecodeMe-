@@ -19,22 +19,12 @@
     animation: shake 0.2s ease-in-out;
   }
   
-  @keyframes pulse {
-    0%, 100% { color: #4A5568; } /* text-gray-400 */
-    50% { color: #4299E1; } /* text-blue-500 */
-  }
-  
-  .loading {
-    animation: pulse 1s infinite;
-  }
-
   .custom-button {
     min-width: auto !important;
     padding-left: 8px;
     padding-right: 8px;
   }
   
-
   .fixed-width {
     width: 500px;
   }
@@ -43,9 +33,7 @@
     min-height: 300px;
   }
 
-
   /* Chat window styles */
-  
 .chat-window {
   position: fixed;
   bottom: 0;
@@ -304,9 +292,6 @@
   }
 }
 
-
-
-
 /* Base Listbox styling */
 .listbox {
   border: 1px solid #ccc;
@@ -333,7 +318,6 @@
 
 
  /* AI After-Actions */
-
 .review-menu {
   width: 100%;
   margin: 0;
@@ -357,8 +341,6 @@
   cursor: not-allowed !important;
   background-color: #f0f0f0 !important;
 }
-
-
 
 /* Post Game Message */
 .speech-bubble {
@@ -390,4 +372,14 @@
   padding: 0 5px;
   margin: -5px 0 -5px auto;
   display: block;
+}
+
+/* magic wand pulse */
+@keyframes pulse {
+  0%, 100% { color: #4A5568; }
+  50% { color: #4299E1; } 
+}
+
+.loading {
+  animation: pulse 1s infinite;
 }
