@@ -34,7 +34,6 @@
     min-height: 300px;
   }
 
-
 /* Base Listbox styling */
 .listbox {
   border: 1px solid #ccc;
@@ -58,7 +57,6 @@
 .listbox-item.selected {
   background-color: #ddd;
 }
-
 
  /* AI After-Actions */
 .review-menu {
