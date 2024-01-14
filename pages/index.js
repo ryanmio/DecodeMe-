@@ -19,7 +19,8 @@ import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 
 export default function Home() {
-  const { user, loading: isAuthLoading } = useAuth();
+  const { user, loading: isAuthLoading, setUser } = useAuth();
+  const [userId, setUserId] = useState(null);
   const [gameMode, setGameMode] = useState(null);
   const [question, setQuestion] = useState({ codeSnippet: null, options: [] });
   const [score, setScore] = useState(0);
