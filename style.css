@@ -31,6 +31,11 @@
 
   .auth-container {
     min-height: 300px;
+    max-width: 13rem;
+  }
+
+  .auth-input {
+    width: 100%;
   }
 
   /* Chat window styles */
