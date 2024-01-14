@@ -135,6 +135,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Update background
 - [ ] Add mute option
 - [ ] Default sound should be quieter
+- [ ] accessibility
  
 ### Testing
 - [ ] Test anonymous user flow

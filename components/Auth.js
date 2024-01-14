@@ -23,6 +23,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [waitingOnOpenAI, setWaitingOnOpenAI] = useState(false);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
@@ -44,6 +45,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   const generateLeaderboardName = async () => {
+    setWaitingOnOpenAI(true);
     try {
       const response = await fetch('https://us-central1-decodeme-1f38e.cloudfunctions.net/generateLeaderboardName', { method: 'POST' });
       const data = await response.json();
@@ -51,6 +53,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
       console.log("Auth leaderboardName state:", leaderboardName); // Added log
     } catch (error) {
       console.error('Failed to generate leaderboard name:', error);
+    } finally {
+      setWaitingOnOpenAI(false);
     }
   };
 
@@ -160,51 +164,56 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   return (
-    <div className="flex flex-col items-center w-full max-w-md mx-auto mt-4">
-      {formMode !== 'signIn' && (
-        <div className="relative w-full">
-          <input
-            type="text"
-            value={leaderboardName}
-            onChange={(e) => setLeaderboardName(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-            placeholder="Leaderboard Name"
-          />
-          <PiMagicWandDuotone className="absolute top-3 right-2 text-gray-400 hover:text-blue-500" size={20} onClick={generateLeaderboardName} />
-        </div>
-      )}
-      {formMode !== 'guest' && (
-        <>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-            placeholder="Email"
-          />
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
-            placeholder="Password"
-          />
-        </>
-      )}
-      <button onClick={handleSubmit} disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
-        {getPlayButtonText()}
-      </button>
-      {formMode === 'signIn' && (
-        <div className="text-center mt-2">
-          <button
-            onClick={handlePasswordReset}
-            className="text-blue-600 hover:text-blue-800 text-sm"
-            type="button"
-          >
-            Forgot Password?
-          </button>
-        </div>
-      )}
+    <div className="flex flex-col items-center w-full mx-auto mt-4" style={{width: '13rem'}}>
+      <form onSubmit={(e) => {
+        e.preventDefault();
+        handleSubmit();
+      }} className="w-full">
+        {formMode !== 'signIn' && (
+          <div className="relative w-full">
+            <input
+              type="text"
+              value={leaderboardName}
+              onChange={(e) => setLeaderboardName(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+              placeholder="Leaderboard Name"
+            />
+            <PiMagicWandDuotone className={`absolute top-3 right-2 ${waitingOnOpenAI ? 'loading' : 'text-gray-400 hover:text-blue-500'}`} size={20} onClick={generateLeaderboardName} />
+          </div>
+        )}
+        {formMode !== 'guest' && (
+          <>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+              placeholder="Email"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
+              placeholder="Password"
+            />
+          </>
+        )}
+        <button type="submit" disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
+          {getPlayButtonText()}
+        </button>
+        {formMode === 'signIn' && (
+          <div className="text-center mt-2">
+            <button
+              onClick={handlePasswordReset}
+              className="text-blue-600 hover:text-blue-800 text-sm"
+              type="button"
+            >
+              Forgot Password?
+            </button>
+          </div>
+        )}
+      </form>
       {formMode === 'guest' && (
         <>
           <div className="w-full border-b border-gray-300 my-4"></div>

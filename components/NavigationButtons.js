@@ -23,7 +23,7 @@ const NavigationButtons = ({ resetGame, resetAuthFormMode, question, onSkipSubmi
   };
   return (
     <div className="absolute top-4 left-4 flex space-x-2 items-center">
-      <button onClick={handleHomeClick} className="text-cyan-400"><FiHome size={24} /></button>
+      <button onClick={handleHomeClick} className="text-cyan-400" aria-label="Go to home"><FiHome size={24} /></button>
       <OptionsMenu onSkipSubmit={onSkipSubmit} isCodeSnippetDisplayed={!!question.codeSnippet} gameMode={gameMode} isGameOver={isGameOver} disabled={loading} />
     </div>
   );

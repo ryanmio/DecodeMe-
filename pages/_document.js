@@ -9,7 +9,7 @@ class MyDocument extends Document {
 
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <meta name="description" content="DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way." />
           <meta name="keywords" content="coding,game,learning,interactive,fun" />
