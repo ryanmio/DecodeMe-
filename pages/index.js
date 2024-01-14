@@ -295,7 +295,7 @@ export default function Home() {
   }, [user, db]);
 
   return (
-    <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+    <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12 bg-custom-gradient">
       <Head>
         <title key="title">Play DecodeMe!</title>
         <meta key="description" name="description" content="Play DecodeMe! and improve your coding skills!" />
@@ -305,7 +305,7 @@ export default function Home() {
         <meta key="og:url" property="og:url" content="https://decodeme.app" />
       </Head>
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-cyan-200 to-white shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <NavigationButtons resetGame={resetGame} resetAuthFormMode={resetAuthFormMode} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
           {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
