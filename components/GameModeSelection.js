@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
 function GameModeSelection({ onGameModeSelect }) {
-  const gameModes = ['Multiple Choice', 'Short Answer', 'Daily Challenge'];
+  const gameModes = ['Multiple Choice', 'Conversational', 'Daily Challenge'];
   const [selectedMode, setSelectedMode] = useState(null);
 
   const handleGameModeSelect = (mode) => {
