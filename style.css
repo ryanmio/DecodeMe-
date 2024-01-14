@@ -19,6 +19,14 @@
     animation: shake 0.2s ease-in-out;
   }
   
+  @keyframes pulse {
+    0%, 100% { color: #4A5568; } /* text-gray-400 */
+    50% { color: #4299E1; } /* text-blue-500 */
+  }
+  
+  .loading {
+    animation: pulse 1s infinite;
+  }
 
   .custom-button {
     min-width: auto !important;

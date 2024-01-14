@@ -23,6 +23,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [waitingOnOpenAI, setWaitingOnOpenAI] = useState(false);
   const db = getFirebaseFirestore();
   const auth = getFirebaseAuth();
 
@@ -44,6 +45,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   const generateLeaderboardName = async () => {
+    setWaitingOnOpenAI(true);
     try {
       const response = await fetch('https://us-central1-decodeme-1f38e.cloudfunctions.net/generateLeaderboardName', { method: 'POST' });
       const data = await response.json();
@@ -51,6 +53,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
       console.log("Auth leaderboardName state:", leaderboardName); // Added log
     } catch (error) {
       console.error('Failed to generate leaderboard name:', error);
+    } finally {
+      setWaitingOnOpenAI(false);
     }
   };
 
@@ -170,7 +174,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
             className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
             placeholder="Leaderboard Name"
           />
-          <PiMagicWandDuotone className="absolute top-3 right-2 text-gray-400 hover:text-blue-500" size={20} onClick={generateLeaderboardName} />
+          <PiMagicWandDuotone className={`absolute top-3 right-2 ${waitingOnOpenAI ? 'loading' : 'text-gray-400 hover:text-blue-500'}`} size={20} onClick={generateLeaderboardName} />
         </div>
       )}
       {formMode !== 'guest' && (
