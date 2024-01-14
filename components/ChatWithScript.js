@@ -5,7 +5,7 @@ import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
 import TypingAnimation from './TypingAnimation';
-import { useAuth } from '../contexts/AuthContext';
+import '../chat.css';
 
 export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedScript, db, handleMessageSubmit, conversationStarters, learningLevel, onLearningLevelChange, chatHistory, setChatHistory, onNewChat, capExceeded }) {
 
