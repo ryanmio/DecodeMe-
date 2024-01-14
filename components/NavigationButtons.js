@@ -4,15 +4,15 @@ import { useRouter } from 'next/router';
 import { FiHome } from 'react-icons/fi';
 import OptionsMenu from '../components/OptionsMenu';
 import { useAuth } from '../contexts/AuthContext';
-import useSound from 'use-sound';
+// import useSound from 'use-sound';
 
 const NavigationButtons = ({ resetGame, resetAuthFormMode, question, onSkipSubmit, gameMode, isGameOver }) => {
   const router = useRouter();
   const { loading } = useAuth();
-  const [play] = useSound('/sounds/buttonClick.wav');
+  // const [play] = useSound('/sounds/buttonClick.wav');
 
   const handleHomeClick = () => {
-    play();
+    // play();
     resetGame();
     if (typeof resetAuthFormMode === 'function') {
       resetAuthFormMode();
