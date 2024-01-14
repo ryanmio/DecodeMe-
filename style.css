@@ -30,13 +30,8 @@
   }
 
   /* auth styles */
-
   .auth-container {
     min-height: 300px;
-  }
-
-  .auth-input {
-    width: 100%;
   }
 
   /* Chat window styles */
