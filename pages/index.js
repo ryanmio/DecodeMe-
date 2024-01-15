@@ -327,6 +327,7 @@ export default function Home() {
                   aria-label="Learning Level"
                   selectedKey={learningLevel}
                   onSelectionChange={updateLearningLevelInFirebase}
+                  className="flex justify-center"
                 >
                   <Tab key="beginner" title="Beginner" />
                   <Tab key="intermediate" title="Regular" />
@@ -379,8 +380,8 @@ export default function Home() {
         </div>
       </div>
       {!gameMode && (
-        <footer className="text-center p-4 mt-8 absolute bottom-0 w-full text-center text-gray-500 text-sm">
-          Made by <a href="https://github.com/ryanmio" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 hover:underline">Ryan</a>
+        <footer className="text-center p-4 mt-8 absolute bottom-0 w-full text-center text-gray-400 text-sm">
+          Made by <a href="https://github.com/ryanmio" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-700 hover:underline">Ryan</a>
         </footer>
       )}
     </div>
