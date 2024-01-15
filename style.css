@@ -26,7 +26,13 @@
   }
   
   .fixed-width {
-    width: 500px;
+    width: 100%;
+  }
+  
+  @media (min-width: 640px) { /* Adjust the min-width as needed for your design */
+    .fixed-width {
+      width: 500px; /* This will only apply for screens wider than 640px */
+    }
   }
 
   /* auth styles */
