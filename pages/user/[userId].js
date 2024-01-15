@@ -52,7 +52,7 @@ const UserStatsPage = ({ userData }) => {
           <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 to-light-blue-500 shadow-lg transform skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
             <NavigationButtons resetGame={resetGame} question={{}} />
-            <div class="flex justify-center items-center mt-4 sm:mt-0">
+            <div className="flex justify-center items-center mt-4 sm:mt-0">
             <h1 className="text-2xl font-bold text-gray-900 text-center">{capitalize(userData?.leaderboardName)} Score</h1>
               <span className="text-lg font-semibold text-gray-700">{userData?.initials}</span>
             </div>
