@@ -164,7 +164,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   return (
-    <div className="flex flex-col items-center w-full mx-auto mt-4" style={{width: '13rem'}}>
+    <div className="flex flex-col items-center w-full mx-auto mt-4 mb-8" style={{width: '13rem'}}>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSubmit();
@@ -206,7 +206,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
           <div className="text-center mt-2">
             <button
               onClick={handlePasswordReset}
-              className="text-blue-600 hover:text-blue-800 text-sm"
+              className="text-gray-500 hover:text-gray-800 text-sm"
               type="button"
             >
               Forgot Password?

@@ -73,3 +73,6 @@ To interact with Firebase, initialize your Firebase project and replace the Fire
 
 
 ## Commands (future build)
+
+## PageSpeed Insights 
+https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=desktop

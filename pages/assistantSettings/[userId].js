@@ -85,11 +85,11 @@ const AssistantSettingsPage = ({ userData }) => {
 
   return (
     <RootLayout>
-      <div className="min-h-screen bg-gray-100 py-6 flex flex-col justify-center sm:py-12">
+      <div className="min-h-screen bg-custom-gradient py-6 flex flex-col justify-center sm:py-12">
         <div className="relative py-3 sm:max-w-xl sm:mx-auto">
           <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
             <NavigationButtons resetGame={resetGame} question={{}} />
-            <h1 className="text-2xl font-bold text-gray-900">Assistant Settings</h1>
+            <h1 className="text-2xl font-bold text-gray-900 mt-6 sm:mt-0">Assistant Settings</h1>
             <p className="mt-2 text-gray-600">Customize the instructions for each aspect of the assistant</p>
             <form onSubmit={handleFormSubmit} style={{ maxWidth: '500px', margin: '0 auto', marginTop: '30px' }}>
               <div className="input-group" style={{ marginBottom: '15px' }}>
