@@ -164,7 +164,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
   };
 
   return (
-    <div className="flex flex-col items-center w-full mx-auto mt-4" style={{width: '13rem'}}>
+    <div className="flex flex-col items-center w-full mx-auto mt-4 mb-8" style={{width: '13rem'}}>
       <form onSubmit={(e) => {
         e.preventDefault();
         handleSubmit();
