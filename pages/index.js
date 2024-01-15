@@ -309,7 +309,7 @@ export default function Home() {
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <NavigationButtons resetGame={resetGame} resetAuthFormMode={resetAuthFormMode} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
           {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
-          <h1 className="text-2xl font-medium mb-5 text-center text-gray-900">
+          <h1 className="text-2xl font-medium mb-3 pt-3 text-center text-gray-900">
             DecodeMe! Score:{" "}
             <div style={{ position: 'relative', display: 'inline-block' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
@@ -378,9 +378,11 @@ export default function Home() {
           )}
         </div>
       </div>
-      <footer className="text-center p-4 absolute bottom-0 w-full text-center text-gray-500 text-sm">
-        Made by <a href="https://github.com/ryanmio" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 hover:underline">Ryan</a>
-      </footer>
+      {!gameMode && (
+        <footer className="text-center p-4 mt-8 absolute bottom-0 w-full text-center text-gray-500 text-sm">
+          Made by <a href="https://github.com/ryanmio" target="_blank" rel="noopener noreferrer" className="text-gray-500 hover:text-gray-700 hover:underline">Ryan</a>
+        </footer>
+      )}
     </div>
   );
 }
