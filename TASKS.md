@@ -66,7 +66,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Add strikes to UI
 - [x] Implement daily streaks
 - [x] Implement high scores
-- [ ] Finalize post game review system and user messages
 
 ### Core Tasks
 - [x] Add "Log out" button in options menu
@@ -127,15 +126,17 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] add forgot password link
 - [x] Game History should have sort by score feature
 - [x] Enter should send chat message
+- [x] Needs mobile styles
+- [x] Update background
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
 - [ ] Implement account upgrade option
-- [ ] Needs mobile styles
-- [ ] Update background
 - [ ] Add mute option
 - [ ] Default sound should be quieter
-- [ ] accessibility
+- [ ] accessibility audit
+- [ ] Fix results page
+- [ ] Finalize post game review system and user messages
  
 ### Testing
 - [ ] Test anonymous user flow
