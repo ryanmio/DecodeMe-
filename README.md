@@ -42,9 +42,11 @@ https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=des
 
 ## Learning Levels
 
-## User Data Augmented Learning
+## Adaptive Learning based on User Performance
 
 ## Minimalism
+
+## Gamification
 
 ## License
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for more details.

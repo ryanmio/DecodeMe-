@@ -87,6 +87,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Sound effects
 - [x] Custom instruction guardrails
 - [x] Leadeboard name generator
+- [ ] Play more like this functionality
 - [ ] Implement AI commands
   - [ ] /Instruct
   - [ ] /Help
@@ -128,6 +129,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Enter should send chat message
 - [x] Needs mobile styles
 - [x] Update background
+- [x] Fix results page
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
@@ -135,7 +137,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Add mute option
 - [ ] Default sound should be quieter
 - [ ] accessibility audit
-- [ ] Fix results page
 - [ ] Finalize post game review system and user messages
  
 ### Testing
