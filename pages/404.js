@@ -1,11 +1,21 @@
 // pages/404.js
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NextUIProvider, Button } from "@nextui-org/react";
 import { useRouter } from 'next/router';
 import Head from 'next/head';
+import { event } from "nextjs-google-analytics";
 
 export default function Custom404() {
   const router = useRouter();
+
+  useEffect(() => {
+    // Track the 404 event with Google Analytics
+    event("404_error", {
+      category: "Error",
+      label: "404 Page Not Found",
+      value: 1,
+    });
+  }, []);
 
   const handleHomeClick = () => {
     router.push('/');
