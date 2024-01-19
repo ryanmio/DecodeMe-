@@ -9,6 +9,7 @@ import { Button, Spinner } from "@nextui-org/react";
 import IncorrectReview from './IncorrectReview';
 import PostGameMessage from './PostGameMessage';
 import ShareGameLink from './ShareGameLink';
+import { event } from 'nextjs-google-analytics';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -157,6 +158,15 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    // Log the event when the GameOver component renders
+    event('game_over', {
+      category: 'Game',
+      label: 'GameOver Render',
+      value: score, // You can send the score or any other relevant value
+    });
+  }, []);
 
   return (
     <div className="text-center w-[400px] mx-auto">
