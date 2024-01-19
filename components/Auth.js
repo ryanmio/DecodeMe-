@@ -174,6 +174,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
             <input
               type="text"
               value={leaderboardName}
+              maxLength={30}
               onChange={(e) => setLeaderboardName(e.target.value)}
               className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
               placeholder="Leaderboard Name"
