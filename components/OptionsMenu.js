@@ -7,7 +7,7 @@ import { signOut } from 'firebase/auth';
 import { useHotkeys } from 'react-hotkeys-hook';
 import Auth from '../components/Auth';
 import { useAuth } from '../contexts/AuthContext';
-// import useSound from 'use-sound';
+import { useSoundContext } from '../contexts/SoundContext';
 
 const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
@@ -15,10 +15,17 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   const [isAuthLoading, setIsAuthLoading] = useState(false);
   const router = useRouter();
   const { user, loading, auth } = useAuth();
-  // const [play] = useSound('/sounds/buttonClick.wav');
+  const { isMuted, setIsMuted } = useSoundContext();
+
+  // Toggle mute function
+  const toggleMute = () => {
+    setIsMuted(!isMuted);
+  };
+
+  // Keyboard shortcut for mute toggle
+  useHotkeys('shift+m', toggleMute);
 
   const handleLogout = () => {
-    // play();
     onOpen();
   };
 
@@ -33,7 +40,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleHistory = () => {
-    // play();
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -42,12 +48,10 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleLeaderboard = () => {
-    // play();
     router.push('/leaderboard');
   };
 
   const handleScorecard = () => {
-    // play();
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -56,7 +60,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleAssistantSettings = () => {
-    // play();
     if (!user) {
       setShowAuthModal(true);
     } else {
@@ -115,6 +118,9 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
           {isLoggedIn && <DropdownItem key="assistantSettings" shortcut="⇧A" onClick={handleAssistantSettings}>Assistant Settings</DropdownItem>}
           {gameMode && !isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
           {isLoggedIn && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
+          <DropdownItem key="mute" onClick={toggleMute} shortcut="⇧M">
+            {isMuted ? 'Unmute' : 'Mute'}
+          </DropdownItem>
         </DropdownMenu>
       </Dropdown>
       <Modal 
@@ -175,3 +181,4 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
 };
 
 export default OptionsMenu;
+

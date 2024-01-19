@@ -18,6 +18,7 @@ import StrikeIndicator from '../components/StrikeIndicator';
 import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 import { event } from 'nextjs-google-analytics';
+import { useSoundContext } from '../contexts/SoundContext';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -47,8 +48,9 @@ export default function Home() {
   const [customInstructions, setCustomInstructions] = useState({});
   const [capExceeded, setCapExceeded] = useState(false);
   const [formMode, setFormMode] = useState('guest');
-  const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5 });
-  const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5 });
+  const { isMuted } = useSoundContext();
+  const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5, soundEnabled: !isMuted });
+  const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5, soundEnabled: !isMuted });
 
   const strikeLimit = 2;
 
@@ -56,7 +58,7 @@ export default function Home() {
   const conversationStarters = ["Give me a hint", "Decode this snippet", "Explain it like I'm 5"];
 
   const handleGameModeSelect = mode => {
-    playGameStart();
+    if (!isMuted) playGameStart();
     setGameMode(mode);
     setGameId(uuidv4());
     handleCodeSnippetFetch([]);
@@ -117,7 +119,7 @@ export default function Home() {
       setCurrentStreak(0);
       if (strikes + 1 >= strikeLimit) {
         gameOver = true;
-        playGameOver();
+        if (!isMuted) playGameOver();
       }
     }
 
