@@ -132,11 +132,11 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Update background
 - [x] Fix results page
 - [x] Default sound should be quieter
+- [x] Add mute option
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Button colors should be consistent throughout app
 - [ ] Prevent layout shift in leaderboard when using filters
 - [ ] Implement account upgrade option
-- [ ] Add mute option
 - [ ] accessibility audit
 - [ ] Finalize post game review system and user messages
  
