@@ -11,8 +11,8 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
   const [correctDisplayIndex, setCorrectDisplayIndex] = useState(null);
   const [showSparkle, setShowSparkle] = useState(false);
   const [shake, setShake] = useState(false);
-  const [playCorrectAnswer] = useSound('/sounds/correctAnswer.wav');
-  const [playWrongAnswer] = useSound('/sounds/wrongAnswer.wav');
+  const [playCorrectAnswer] = useSound('/sounds/correctAnswer.wav', { volume: 0.5 });
+  const [playWrongAnswer] = useSound('/sounds/wrongAnswer.wav', { volume: 0.5 });
 
   useEffect(() => {
     if (!disabled) {

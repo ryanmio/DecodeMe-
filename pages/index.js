@@ -47,8 +47,8 @@ export default function Home() {
   const [customInstructions, setCustomInstructions] = useState({});
   const [capExceeded, setCapExceeded] = useState(false);
   const [formMode, setFormMode] = useState('guest');
-  const [playGameStart] = useSound('/sounds/gameStart.wav');
-  const [playGameOver] = useSound('/sounds/gameOver.wav');
+  const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5 });
+  const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5 });
 
   const strikeLimit = 2;
 
@@ -389,4 +389,3 @@ export default function Home() {
     </div>
   );
 }
-
