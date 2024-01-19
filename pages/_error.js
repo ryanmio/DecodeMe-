@@ -1,7 +1,7 @@
 // pages/_error.js
 import React, { useEffect } from 'react';
 import { event } from "nextjs-google-analytics";
-import Error from 'next/error';
+import CustomError from '../components/CustomError';
 
 function MyError({ statusCode, err }) {
   useEffect(() => {
@@ -14,21 +14,23 @@ function MyError({ statusCode, err }) {
     }
   }, [err, statusCode]);
 
-  return <Error statusCode={statusCode} />;
+  // Use the CustomError component instead of the default Error component
+  return <CustomError statusCode={statusCode} />;
 }
 
 MyError.getInitialProps = async ({ res, err }) => {
   const statusCode = res ? res.statusCode : err ? err.statusCode || 500 : 404;
 
   // Log the error to Google Analytics on the server side
-  if (err) {
+  // Note: Ensure that the event function is suitable for server-side usage or use an alternative method
+  if (err && res) {
     event("exception", {
       description: `${err.message} (status: ${statusCode})`,
       fatal: true,
     });
   }
 
-  return { statusCode };
+  return { statusCode, err };
 };
 
 export default MyError;
