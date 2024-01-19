@@ -178,7 +178,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
               className="w-full px-4 py-2 border border-gray-300 rounded mb-4"
               placeholder="Leaderboard Name"
             />
-            <PiMagicWandDuotone className={`absolute top-3 right-2 ${waitingOnOpenAI ? 'loading' : 'text-gray-400 hover:text-blue-500'}`} size={20} onClick={generateLeaderboardName} />
+            <PiMagicWandDuotone className={`absolute top-3 right-2 ${waitingOnOpenAI ? 'loading' : 'text-gray-400 hover:text-cyan-500'}`} size={20} onClick={generateLeaderboardName} />
           </div>
         )}
         {formMode !== 'guest' && (
@@ -199,7 +199,7 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
             />
           </>
         )}
-        <button type="submit" disabled={loading} className="w-full px-4 py-2 bg-blue-500 text-white rounded mb-2">
+        <button type="submit" disabled={loading} className="w-full px-4 py-2 bg-cyan-400 hover:bg-cyan-500 text-white rounded mb-2">
           {getPlayButtonText()}
         </button>
         {formMode === 'signIn' && (
@@ -219,8 +219,8 @@ export default function Auth({ onUserAuth, onLeaderboardNameSet, formMode, setFo
           <div className="w-full border-b border-gray-300 my-4"></div>
           <p className="text-gray-500 mb-2 text-sm">To save your progress:</p>
           <div className="flex flex-row space-x-2">
-            <button onClick={() => handleFormModeChange('signIn')} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">Sign In</button>
-            <button onClick={() => handleFormModeChange('createAccount')} className="px-3 py-2 bg-blue-500 text-white rounded text-sm">Create Account</button>
+            <button onClick={() => handleFormModeChange('signIn')} className="px-3 py-2 bg-cyan-400 hover:bg-cyan-500 text-white rounded text-sm">Sign In</button>
+            <button onClick={() => handleFormModeChange('createAccount')} className="px-3 py-2 bg-cyan-500 hover:bg-cyan-600 text-white rounded text-sm">Create Account</button>
           </div>
         </>
       )}

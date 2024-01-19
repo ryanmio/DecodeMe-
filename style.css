@@ -124,7 +124,7 @@
 /* magic wand pulse */
 @keyframes pulse {
   0%, 100% { color: #4A5568; }
-  50% { color: #4299E1; } 
+  50% { color: #22ACBF; } 
 }
 
 .loading {

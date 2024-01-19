@@ -14,6 +14,13 @@ module.exports = {
       fontFamily: {
         'sans': ['Poppins', 'sans-serif'],
       },
+      colors: {
+        cyan: {
+          400: '#26C6DA',
+          500: '#25BCD0',
+          600: '#22ACBF',
+        },
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-conic':
@@ -23,5 +30,25 @@ module.exports = {
     },
   },
   darkMode: "class",
-  plugins: [nextui()],
+  plugins: [
+    nextui({
+      themes: {
+        // Assuming you want to apply this to a default theme, which could be 'light' or 'dark'
+        light: { // or 'dark' if you want to apply it to the dark theme
+          colors: {
+            primary: {
+              DEFAULT: '#26C6DA', // Cyan 400 as primary color
+              // Add other shades if necessary
+            },
+            // Define a custom gradient property for the theme if needed
+            gradient: {
+              from: 'rgba(6, 182, 212, 0.1)', // Start of your custom gradient
+              via: 'rgba(6, 182, 212, 0.25)', // Mid of your custom gradient
+              to: 'transparent', // End of your custom gradient
+            },
+          },
+        },
+      },
+    }),
+  ],
 };

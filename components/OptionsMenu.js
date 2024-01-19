@@ -117,10 +117,10 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
           {isLoggedIn && <DropdownItem key="history" shortcut="⇧H" onClick={handleHistory}>Game History</DropdownItem>}
           {isLoggedIn && <DropdownItem key="assistantSettings" shortcut="⇧A" onClick={handleAssistantSettings}>Assistant Settings</DropdownItem>}
           {gameMode && !isGameOver && <DropdownItem key="skip" shortcut="⇧S" onClick={onSkipSubmit}>Skip</DropdownItem>}
-          {isLoggedIn && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
           <DropdownItem key="mute" onClick={toggleMute} shortcut="⇧M">
             {isMuted ? 'Unmute' : 'Mute'}
           </DropdownItem>
+          {isLoggedIn && <DropdownItem key="logout" shortcut="⇧L" onClick={handleLogout}>Logout</DropdownItem>}
         </DropdownMenu>
       </Dropdown>
       <Modal 
