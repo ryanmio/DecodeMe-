@@ -10,7 +10,7 @@ import Head from 'next/head';
 
 const fetchLeaderboardData = async (filter) => {
   let startDate;
-  switch(filter) {
+  switch (filter) {
     case 'weekly':
       startDate = new Date();
       startDate.setDate(startDate.getDate() - 7);
@@ -62,7 +62,7 @@ export const getStaticProps = async () => {
     const props = {
       leaderboardData: JSON.parse(JSON.stringify(leaderboardData)),
     };
-    return { 
+    return {
       props,
       revalidate: 7200, // Regenerate the page every 2 hours
     };
@@ -72,7 +72,7 @@ export const getStaticProps = async () => {
       leaderboardData: [],
       error: error.message,
     };
-    return { 
+    return {
       props,
       revalidate: 7200, // Regenerate the page every 2 hours
     };
@@ -138,8 +138,8 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
             <NavigationButtons resetGame={resetGame} question={{}} />
             <h1 className="text-2xl font-bold text-center text-gray-900 mb-4">Leaderboard</h1>
             <div className="flex justify-center mb-4">
-              <Tabs 
-                aria-label="Leaderboard Filter"         
+              <Tabs
+                aria-label="Leaderboard Filter"
                 selectedKey={filter}
                 onSelectionChange={handleFilterChange}
               >
@@ -154,12 +154,12 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
               <h2 className="text-lg sm:text-xl font-bold text-gray-900">Score</h2>
             </div>
             {currentItems.map((game, index) => (
-                <div key={game.id} className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
-                  <span className="text-lg text-gray-700">{getOrdinalSuffix(indexOfFirstItem + index + 1)}</span>
-                  <span className="text-lg text-gray-700">{game.leaderboardName || 'Unknown'}</span>
-                  <span className="text-lg text-gray-700">{game.score}</span>
-                </div>
-              ))}
+              <div key={game.id} className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
+                <span className="text-lg text-gray-700">{getOrdinalSuffix(indexOfFirstItem + index + 1)}</span>
+                <span className="text-lg text-gray-700 leaderboard-name">{game.leaderboardName || 'Unknown'}</span>
+                <span className="text-lg text-gray-700">{game.score}</span>
+              </div>
+            ))}
             <Pagination
               total={Math.ceil(data.length / itemsPerPage)}
               page={currentPage}
