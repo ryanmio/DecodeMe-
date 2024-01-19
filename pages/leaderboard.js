@@ -143,9 +143,9 @@ const LeaderboardPage = ({ leaderboardData, error }) => {
                 selectedKey={filter}
                 onSelectionChange={handleFilterChange}
               >
-                <Tab key="lifetime" title="Lifetime" />
-                <Tab key="monthly" title="Monthly" />
-                <Tab key="weekly" title="Weekly" />
+                <Tab key="lifetime" title="Lifetime" role="tab" />
+                <Tab key="monthly" title="Monthly" role="tab" />
+                <Tab key="weekly" title="Weekly" role="tab" />
               </Tabs>
             </div>
             <div className="grid grid-cols-3 gap-4 mb-4 text-center px-4">
