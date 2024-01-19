@@ -26,7 +26,11 @@
   }
   
   .fixed-width {
-    width: 100%;
+    min-width: 300px; /* Minimum width */
+    max-width: 600px; /* Maximum width */
+    width: 100%; /* Flexible width */
+    margin-left: auto; /* Center the leaderboard card */
+    margin-right: auto; /* Center the leaderboard card */
   }
   
   @media (min-width: 640px) { /* Adjust the min-width as needed for your design */
