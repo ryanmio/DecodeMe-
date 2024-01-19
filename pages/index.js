@@ -17,6 +17,7 @@ import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button, Tabs,
 import StrikeIndicator from '../components/StrikeIndicator';
 import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
+import { event } from 'nextjs-google-analytics';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -59,6 +60,7 @@ export default function Home() {
     setGameMode(mode);
     setGameId(uuidv4());
     handleCodeSnippetFetch([]);
+    event('game_start', { category: 'Game', label: mode, value: 1 });
   };
 
   const handleChatWithTutor = (script) => {
@@ -387,3 +389,4 @@ export default function Home() {
     </div>
   );
 }
+
