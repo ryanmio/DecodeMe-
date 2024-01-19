@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { useSpring, animated } from '@react-spring/web';
 import Sparkle from '../components/Sparkle';
 import useSound from 'use-sound';
+import { useSoundContext } from '../contexts/SoundContext'; // Import useSoundContext
 
 export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled, correctAnswerIndex, setScore }) {
   const [selectedOption, setSelectedOption] = useState('');
@@ -11,8 +12,9 @@ export default function UserAnswerInput({ options = [], onAnswerSubmit, disabled
   const [correctDisplayIndex, setCorrectDisplayIndex] = useState(null);
   const [showSparkle, setShowSparkle] = useState(false);
   const [shake, setShake] = useState(false);
-  const [playCorrectAnswer] = useSound('/sounds/correctAnswer.wav');
-  const [playWrongAnswer] = useSound('/sounds/wrongAnswer.wav');
+  const { isMuted } = useSoundContext(); // Use the useSoundContext hook
+  const [playCorrectAnswer] = useSound('/sounds/correctAnswer.wav', { volume: 0.5, soundEnabled: !isMuted });
+  const [playWrongAnswer] = useSound('/sounds/wrongAnswer.wav', { volume: 0.5, soundEnabled: !isMuted });
 
   useEffect(() => {
     if (!disabled) {

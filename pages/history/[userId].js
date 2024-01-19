@@ -146,32 +146,39 @@ const HistoryPage = () => {
               <div className="auth-container" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
                 <Spinner label="Loading history..." color="primary" />
               </div>
+            ) : userHistory.length === 0 ? (
+              <div className="auth-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
+                <span className="icon-placeholder" style={{ fontSize: '3em' }}>🎮</span>
+                <p style={{ color: 'darkgray' }}>You haven't played any games yet.</p>
+              </div>
             ) : (
-              currentGames.map((gameHistory, index) => {
-                return gameHistory?.gameStats && (
-                  <div key={gameHistory.gameId || index} className="bg-white p-6 rounded-lg shadow-md mb-4">
-                    <div className="flex justify-between items-center mb-4">
-                      <h2 className="text-lg sm:text-xl font-bold text-gray-900">
-                        Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
-                      </h2>
-                      <span className="text-sm text-gray-500">
-                        {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
-                      </span>
-                    </div>
-                    <div className="border-t pt-4">
-                      <div className="flex justify-between items-center">
-                        <div className="text-lg text-gray-700">
-                          Score: {gameHistory.gameStats.score !== null && gameHistory.gameStats.score !== undefined ? gameHistory.gameStats.score : 'N/A'}
-                        </div>
-                        <div className="text-lg text-gray-700">
-                          Longest Streak: {gameHistory.gameStats.longestStreak !== null && gameHistory.gameStats.longestStreak !== undefined ? gameHistory.gameStats.longestStreak : 'N/A'}
+              <div style={{ minHeight: '680px' }}>
+                {currentGames.map((gameHistory, index) => {
+                  return gameHistory?.gameStats && (
+                    <div key={gameHistory.gameId || index} className="bg-white p-6 rounded-lg shadow-md mb-4">
+                      <div className="flex justify-between items-center mb-4">
+                        <h2 className="text-lg sm:text-xl font-bold text-gray-900">
+                          Game {String(gameHistory.gameStats.gameNumber || '').padStart(3, '0')}
+                        </h2>
+                        <span className="text-sm text-gray-500">
+                          {gameHistory.timestamp && format(new Date(gameHistory.timestamp.seconds * 1000), 'PPPp')}
+                        </span>
+                      </div>
+                      <div className="border-t pt-4">
+                        <div className="flex justify-between items-center">
+                          <div className="text-lg text-gray-700">
+                            Score: {gameHistory.gameStats.score !== null && gameHistory.gameStats.score !== undefined ? gameHistory.gameStats.score : 'N/A'}
+                          </div>
+                          <div className="text-lg text-gray-700">
+                            Longest Streak: {gameHistory.gameStats.longestStreak !== null && gameHistory.gameStats.longestStreak !== undefined ? gameHistory.gameStats.longestStreak : 'N/A'}
+                          </div>
                         </div>
                       </div>
+                      {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
                     </div>
-                    {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
-                  </div>
-                )
-              })
+                  )
+                })}
+              </div>
             )}
             <Pagination
               total={Math.ceil(userHistory.length / gamesPerPage)}

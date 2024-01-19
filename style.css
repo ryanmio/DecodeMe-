@@ -26,13 +26,24 @@
   }
   
   .fixed-width {
-    width: 100%;
+    min-width: 300px; /* Minimum width */
+    max-width: 600px; /* Maximum width */
+    width: 100%; /* Flexible width */
+    margin-left: auto; /* Center the leaderboard card */
+    margin-right: auto; /* Center the leaderboard card */
   }
   
   @media (min-width: 640px) { /* Adjust the min-width as needed for your design */
     .fixed-width {
       width: 500px; /* This will only apply for screens wider than 640px */
     }
+  }
+
+  .leaderboard-name {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 100%;
   }
 
   /* auth styles */
@@ -124,7 +135,7 @@
 /* magic wand pulse */
 @keyframes pulse {
   0%, 100% { color: #4A5568; }
-  50% { color: #4299E1; } 
+  50% { color: #22ACBF; } 
 }
 
 .loading {

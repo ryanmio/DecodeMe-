@@ -24,10 +24,13 @@ MyError.getInitialProps = async ({ res, err }) => {
   // Log the error to Google Analytics on the server side
   // Note: Ensure that the event function is suitable for server-side usage or use an alternative method
   if (err && res) {
-    event("exception", {
-      description: `${err.message} (status: ${statusCode})`,
-      fatal: true,
-    });
+    // Check if we are in the browser environment
+    if (typeof window !== 'undefined') {
+      event("exception", {
+        description: `${err.message} (status: ${statusCode})`,
+        fatal: true,
+      });
+    }
   }
 
   return { statusCode, err };
