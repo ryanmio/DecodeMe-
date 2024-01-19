@@ -1,9 +1,11 @@
+// pages/_app.js
 import '/style.css';
 import '/tailwind.css';
 import Script from 'next/script';
 import { NextUIProvider } from "@nextui-org/react";
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '../contexts/AuthContext';
+import ErrorBoundary from '../components/ErrorBoundary';
 
 const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
@@ -28,7 +30,9 @@ export default function MyApp({ Component, pageProps }) {
         </Script>
         {/* End Google Analytics */}
         <Toaster position="top-right" />
-        <Component {...pageProps} />
+        <ErrorBoundary>
+          <Component {...pageProps} />
+        </ErrorBoundary>
       </NextUIProvider>
     </AuthProvider>
   );
