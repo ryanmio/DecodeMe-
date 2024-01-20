@@ -87,8 +87,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Sound effects
 - [x] Custom instruction guardrails
 - [x] Leadeboard name generator
+- [x] Integrate Google Analytics
 - [ ] "Play more like this" functionality
-- [ ] Integrate Google Analytics
 - [ ] Implement AI commands
   - [ ] /Instruct
   - [ ] /Help
@@ -138,6 +138,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] accessibility audit
 - [ ] Game History should have chat with tutor button and enable chat window
 - [ ] Finalize post game review system and user messages
+- [ ] Add Play Again button to gameover
  
 ### Testing
 - [ ] Test anonymous user flow
