@@ -70,15 +70,15 @@ const UserStatsPage = ({ userData }) => {
               <h2 className="text-lg font-semibold text-gray-900">Game Count</h2>
               <div className="space-y-2">
                 <div className="relative bg-gray-200 h-5 rounded-full shadow-inner">
-                  <div className="bg-blue-500 h-5 rounded-full" style={{ width: `${beginnerWidth}%` }}></div>
+                  <div className="bg-cyan-400 h-5 rounded-full" style={{ width: `${beginnerWidth}%` }}></div>
                   <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-900">Beginner: {beginner}</span>
                 </div>
                 <div className="relative bg-gray-200 h-5 rounded-full shadow-inner">
-                  <div className="bg-blue-500 h-5 rounded-full" style={{ width: `${intermediateWidth}%` }}></div>
+                  <div className="bg-cyan-400 h-5 rounded-full" style={{ width: `${intermediateWidth}%` }}></div>
                   <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-900">Intermediate: {intermediate}</span>
                 </div>
                 <div className="relative bg-gray-200 h-5 rounded-full shadow-inner">
-                  <div className="bg-blue-500 h-5 rounded-full" style={{ width: `${expertWidth}%` }}></div>
+                  <div className="bg-cyan-400 h-5 rounded-full" style={{ width: `${expertWidth}%` }}></div>
                   <span className="absolute inset-y-0 left-0 flex items-center ml-2 text-xs font-medium text-gray-900">Expert: {expert}</span>
                 </div>
               </div>
