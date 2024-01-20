@@ -2,10 +2,11 @@
 import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
+import ReviewMenu from './ReviewMenu'; // Import ReviewMenu
 
 const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
-const GameHistory = ({ gameHistory }) => {
+const GameHistory = ({ gameHistory, enableReview, onChatWithTutor }) => { // Add enableReview and onChatWithTutor props
   return (
     <div className="game-history text-left">
       <Accordion motionProps={{
@@ -50,6 +51,7 @@ const GameHistory = ({ gameHistory }) => {
                       </span>
                     </Tooltip>
                     My Answer: {entry.answer}
+                    {enableReview && <ReviewMenu selectedScript={entry} onChatWithTutor={onChatWithTutor} />} {/* Conditionally render ReviewMenu */}
                   </div>
                 </div>
               );

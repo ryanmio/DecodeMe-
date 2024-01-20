@@ -179,7 +179,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
         <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
         <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={leaderboardName} />
         <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} />
-        <GameHistory gameHistory={gameHistory} />
+        <GameHistory gameHistory={gameHistory} enableReview={true} onChatWithTutor={handleChatWithTutor} /> {/* Pass enableReview as true */}
         <Button 
           onClick={handleShareResults} 
           radius="full" 
