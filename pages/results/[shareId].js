@@ -33,7 +33,7 @@ const ResultsPage = ({ gameData, gameHistory }) => {
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {gameData?.leaderboardName}</p>
             </div>
             <FinalScore score={gameData?.score} questionsAnswered={gameData?.questionsAnswered} sharedAt={gameData?.sharedAt} strikes={gameData?.strikes} strikeLimit={gameData?.strikeLimit} />
-            <GameHistory gameHistory={gameHistory} />
+            <GameHistory gameHistory={gameHistory} enableReview={false} />
           </div>
         </div>
         <div className="pt-5">
