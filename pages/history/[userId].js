@@ -149,7 +149,7 @@ const HistoryPage = () => {
             ) : userHistory.length === 0 ? (
               <div className="auth-container" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', height: '680px' }}>
                 <span className="icon-placeholder" style={{ fontSize: '3em' }}>🎮</span>
-                <p style={{ color: 'darkgray' }}>You haven't played any games yet.</p>
+                <p style={{ color: 'darkgray' }}>You haven&apos;t played any games yet.</p>
               </div>
             ) : (
               <div style={{ minHeight: '680px' }}>
