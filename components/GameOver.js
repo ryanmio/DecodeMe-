@@ -14,7 +14,6 @@ import { event } from 'nextjs-google-analytics';
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
 const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, leaderboardName, learningLevel }) => {
-  console.log("GameOver leaderboardName prop:", leaderboardName); // Added log
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -75,7 +74,6 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   
     // Use the leaderboardName prop instead of fetching it again
     const leaderboardNameToUse = leaderboardName;
-    console.log("GameOver leaderboardNameToUse:", leaderboardNameToUse); // Added log
   
     // Check if the current streak is greater than the longest streak
     if (currentStreak > longestStreak) {

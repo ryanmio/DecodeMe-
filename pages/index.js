@@ -145,7 +145,7 @@ export default function Home() {
       timestamp: new Date(),
       strikes,
       strikeLimit,
-    }).catch(() => alert('Failed to log answer. Please try again.'));
+    }).catch(() => alert('Failed to save answer. Please try again.'));
 
     setIsFirebaseUpdated(true);
   };
@@ -240,7 +240,6 @@ export default function Home() {
       if (userDoc.exists()) {
         const userData = userDoc.data();
         setLeaderboardName(userData.leaderboardName);
-        console.log("index.js leaderboardName state:", userData.leaderboardName); // Added log
         setCapExceeded(userData.capExceeded || false);
       }
     }

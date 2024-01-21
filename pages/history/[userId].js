@@ -40,8 +40,6 @@ const HistoryPage = () => {
     handleNewChat,
   } = useChat(getFirebaseFirestore(), user?.uid, [], 'intermediate');
 
-  console.log('HistoryPage - chatHistory after useChat initialization:', chatHistory);
-
   const handleSortOptionChange = (newSortOption) => {
     setSortOption(newSortOption);
   };
@@ -52,19 +50,17 @@ const HistoryPage = () => {
   const handleChatWithTutor = (script) => {
     setSelectedScript(script);
     setShowChatWindow(true); // This will open the chat window
-    console.log('HistoryPage - chatHistory inside handleChatWithTutor:', chatHistory); // Log inside handleChatWithTutor function
   };
 
   // Function to handle the start of a new chat
-  const onNewChat = () => {
+  const onNewChat = () => 
     handleNewChat(); // This will reset the chat history
-    console.log('HistoryPage - chatHistory inside onNewChat:', chatHistory); // Log inside onNewChat function
     // Additional logic for starting a new chat can be added here
-  };
+  ;
 
   // Function to toggle the chat window
   const toggleChatWindow = () => {
-    setShowChatWindow(prevState => !prevState); // Toggle the visibility of the chat window
+    setShowChatWindow(prevState => !prevState); 
   };
 
   // End of section to refactor
@@ -270,7 +266,6 @@ const HistoryPage = () => {
         onNewChat={onNewChat}
         capExceeded={capExceeded}
       />
-      {console.log('HistoryPage - chatHistory before rendering ChatWithScript:', chatHistory)} {/* Log before rendering ChatWithScript component */}
     </RootLayout>
   );
 };

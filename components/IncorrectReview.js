@@ -53,7 +53,7 @@ const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => {
                   <div className="correct-answer text-gray-800 p-2">
                     Correct Answer: {item.correctAnswer}
                   </div>
-                  <ReviewMenu selectedScript={item} onChatWithTutor={onChatWithTutor} /> {/* Pass the item as the selectedScript prop */}
+                  <ReviewMenu selectedScript={item} onChatWithTutor={onChatWithTutor} />
                 </div>
               );
             })}

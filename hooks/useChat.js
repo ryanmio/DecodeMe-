@@ -10,7 +10,6 @@ const useChat = (db, userId) => {
   }
   
   const [chatHistory, setChatHistory] = useState(chatHistoryRef.current);
-  console.log('useChat - chatHistory initialized:', chatHistory); // Log at Hook Initialization
   const [learningLevel, setLearningLevel] = useState('intermediate');
   const [isAssistantTyping, setIsAssistantTyping] = useState(false);
 
@@ -35,8 +34,6 @@ const useChat = (db, userId) => {
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
   
       const data = await response.json();
-  
-      console.log('handleMessageSubmit - fetch response data:', data);
   
       if (data && data.response) {
         const newMessage = { role: 'assistant', content: data.response };
@@ -72,7 +69,6 @@ const useChat = (db, userId) => {
     }
   };
 
-  console.log('useChat - chatHistory before return:', chatHistory); // Log at Hook Return
   return {
     chatHistory,
     setChatHistory,
