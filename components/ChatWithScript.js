@@ -137,11 +137,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
             </div>
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
-            <div className="system-message">
-              <ReactMarkdown className="message">
-                {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : (selectedScript || codeSnippet || ''))}
-              </ReactMarkdown>
-            </div>
+            {(selectedScript || codeSnippet) && (
+              <div className="system-message">
+                <ReactMarkdown className="message">
+                  {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : '')}
+                </ReactMarkdown>
+              </div>
+            )}
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
                 <ReactMarkdown>
