@@ -136,7 +136,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Button colors should be consistent throughout app
 - [x] Prevent layout shift in leaderboard when using filters
 - [x] accessibility audit
-- [ ] Game History should have chat with tutor button and enable chat window
+- [x] Game History should have chat with tutor button and enable chat window
 - [ ] Finalize post game review system and user messages
 - [ ] Add Play Again button to gameover
 - [ ] Leaderboard should have tooltip or something for truncated long names

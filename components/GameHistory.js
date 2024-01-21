@@ -2,11 +2,11 @@
 import React from 'react';
 import { CodeBlock, dracula } from 'react-code-blocks';
 import { Accordion, AccordionItem, Tooltip } from "@nextui-org/react";
-import ReviewMenu from './ReviewMenu'; // Import ReviewMenu
+import ReviewMenu from './ReviewMenu';
 
 const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
-const GameHistory = ({ gameHistory, enableReview, onChatWithTutor }) => { // Add enableReview and onChatWithTutor props
+const GameHistory = ({ gameHistory, enableReview, onChatWithTutor }) => { 
   return (
     <div className="game-history text-left">
       <Accordion motionProps={{

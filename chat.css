@@ -73,7 +73,6 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background: transparent;
     border: none;
     white-space: nowrap;
   }
@@ -88,7 +87,7 @@
   }
   
   .user-message {
-    background-color: #007BFF;
+    background-color: #25BCD0;
     color: white;
     align-self: flex-end;
     float: right;
