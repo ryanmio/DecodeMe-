@@ -29,25 +29,32 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const handleChatSubmit = async (event, messageToSend = userMessage) => { 
     event.preventDefault();
-    console.log('ChatWithScript - chatHistory prop:', chatHistory);
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
     setUserMessage('');
-    setIsAssistantTyping(true);
+
+    let typingTimeoutId;
+    const typingDelay = 500; // Delay in milliseconds
+
+    // Start a timer to show the typing animation after a delay
+    typingTimeoutId = setTimeout(() => setIsAssistantTyping(true), typingDelay);
+
     try {
       const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
+      // Clear the typing animation timer if the response comes back before the delay
+      clearTimeout(typingTimeoutId);
       setChatHistory(newChatHistory);
-      console.log('useChat - newChatHistory before setChatHistory:', newChatHistory);
     } catch (error) {
       handleError(error);
     } finally {
+      // Ensure the typing animation is not shown if the response was quick
+      clearTimeout(typingTimeoutId);
       setIsAssistantTyping(false);
     }
   };
   
   const handleNewChat = () => {
-    console.log('useChat - chatHistory before handleNewChat:', chatHistory);
     setChatHistory([]);
     onNewChat();
   };
@@ -137,13 +144,13 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
             </div>
           )}
           <ScrollShadow className="chat-history" ref={chatHistoryRef}>
-            {(selectedScript || codeSnippet) && (
+            {(selectedScript || codeSnippet) ? (
               <div className="system-message">
                 <ReactMarkdown className="message">
                   {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : '')}
                 </ReactMarkdown>
               </div>
-            )}
+            ) : null}
             {chatHistory.map((message, index) => (
               <div key={index} className={`message ${message.role === 'user' ? 'user-message' : 'assistant-message'}`}>
                 <ReactMarkdown>
