@@ -46,6 +46,8 @@ const HistoryPage = () => {
     setSortOption(newSortOption);
   };
 
+  // TODO: Refactor the following section into a new component or hook
+
   // Implement the handleChatWithTutor function
   const handleChatWithTutor = (script) => {
     setSelectedScript(script);
@@ -60,16 +62,12 @@ const HistoryPage = () => {
     // Additional logic for starting a new chat can be added here
   };
 
-  // Function to handle cap exceeded state
-  const onCapExceeded = (exceeded) => {
-    setCapExceeded(exceeded); // This will update the capExceeded state
-    // Additional logic for when cap is exceeded can be added here
-  };
-
   // Function to toggle the chat window
   const toggleChatWindow = () => {
     setShowChatWindow(prevState => !prevState); // Toggle the visibility of the chat window
   };
+
+  // End of section to refactor
 
   useEffect(() => {
     if (user) {
@@ -134,6 +132,23 @@ const HistoryPage = () => {
       fetchUserDataAndHistory();
     }
   }, [user, sortOption]);
+
+  useEffect(() => {
+    const db = getFirebaseFirestore(); // Get the Firestore instance
+
+    const fetchUserCaps = async () => {
+      if (user) {
+        const userDocRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setCapExceeded(userData.capExceeded || false);
+        }
+      }
+    };
+
+    fetchUserCaps();
+  }, [user]); // Dependency array includes user to refetch when user changes
 
   const indexOfLastGame = currentPage * gamesPerPage;
   const indexOfFirstGame = indexOfLastGame - gamesPerPage;
@@ -241,7 +256,6 @@ const HistoryPage = () => {
           </div>
         </div>
       </div>
-      {/* Render ChatWithScript without conditional rendering based on showChatWindow */}
       <ChatWithScript
         isOpen={showChatWindow}
         onClose={toggleChatWindow}
