@@ -4,11 +4,16 @@ import { useRouter } from 'next/router';
 import { doc, getDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../../app/src/firebase';
 import GameHistory from '../../components/GameHistory';
+import ChatWithScript from '../../components/ChatWithScript'; // Import the ChatWithScript component
 import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
 import { Pagination, Spinner, Breadcrumbs, BreadcrumbItem } from '@nextui-org/react';
 import { useAuth } from '../../contexts/AuthContext';
+import useChat from '../../hooks/useChat'; // Import the useChat hook
+
+// Conversation starters
+const conversationStarters = ["Decode this snippet", "Explain it like I'm 5", "Quickly explain"];
 
 const HistoryPage = () => {
   const [userData, setUserData] = useState(null);
@@ -20,8 +25,50 @@ const HistoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState('date');
 
+  // Initialize showChatWindow to false to start with the chat window collapsed
+  const [showChatWindow, setShowChatWindow] = useState(false);
+  const [selectedScript, setSelectedScript] = useState(null);
+  const [capExceeded, setCapExceeded] = useState(false); // Add state for capExceeded
+
+  // Call the useChat hook and pass the necessary parameters
+  const {
+    chatHistory,
+    setChatHistory,
+    learningLevel,
+    handleLearningLevelChange,
+    handleMessageSubmit,
+    handleNewChat,
+  } = useChat(getFirebaseFirestore(), user?.uid, [], 'intermediate');
+
+  console.log('HistoryPage - chatHistory after useChat initialization:', chatHistory);
+
   const handleSortOptionChange = (newSortOption) => {
     setSortOption(newSortOption);
+  };
+
+  // Implement the handleChatWithTutor function
+  const handleChatWithTutor = (script) => {
+    setSelectedScript(script);
+    setShowChatWindow(true); // This will open the chat window
+    console.log('HistoryPage - chatHistory inside handleChatWithTutor:', chatHistory); // Log inside handleChatWithTutor function
+  };
+
+  // Function to handle the start of a new chat
+  const onNewChat = () => {
+    handleNewChat(); // This will reset the chat history
+    console.log('HistoryPage - chatHistory inside onNewChat:', chatHistory); // Log inside onNewChat function
+    // Additional logic for starting a new chat can be added here
+  };
+
+  // Function to handle cap exceeded state
+  const onCapExceeded = (exceeded) => {
+    setCapExceeded(exceeded); // This will update the capExceeded state
+    // Additional logic for when cap is exceeded can be added here
+  };
+
+  // Function to toggle the chat window
+  const toggleChatWindow = () => {
+    setShowChatWindow(prevState => !prevState); // Toggle the visibility of the chat window
   };
 
   useEffect(() => {
@@ -174,7 +221,13 @@ const HistoryPage = () => {
                           </div>
                         </div>
                       </div>
-                      {gameHistory.history && <GameHistory gameHistory={gameHistory.history} />}
+                      {gameHistory.history && (
+                        <GameHistory
+                          gameHistory={gameHistory.history}
+                          onChatWithTutor={handleChatWithTutor}
+                          enableReview={true}
+                        />
+                      )}
                     </div>
                   )
                 })}
@@ -188,6 +241,22 @@ const HistoryPage = () => {
           </div>
         </div>
       </div>
+      {/* Render ChatWithScript without conditional rendering based on showChatWindow */}
+      <ChatWithScript
+        isOpen={showChatWindow}
+        onClose={toggleChatWindow}
+        codeSnippet={selectedScript}
+        db={getFirebaseFirestore()}
+        learningLevel={learningLevel}
+        onLearningLevelChange={handleLearningLevelChange}
+        chatHistory={chatHistory}
+        setChatHistory={setChatHistory}
+        handleMessageSubmit={handleMessageSubmit}
+        conversationStarters={conversationStarters}
+        onNewChat={onNewChat}
+        capExceeded={capExceeded}
+      />
+      {console.log('HistoryPage - chatHistory before rendering ChatWithScript:', chatHistory)} {/* Log before rendering ChatWithScript component */}
     </RootLayout>
   );
 };

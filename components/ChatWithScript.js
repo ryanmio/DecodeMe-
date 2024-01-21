@@ -29,6 +29,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
 
   const handleChatSubmit = async (event, messageToSend = userMessage) => { 
     event.preventDefault();
+    console.log('ChatWithScript - chatHistory prop:', chatHistory);
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
     setUserMessage('');
@@ -37,6 +38,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
       const scriptToUse = selectedScript || codeSnippet; // Use selectedScript if available, otherwise use codeSnippet
       const newChatHistory = await handleMessageSubmit(messageToSend, updatedChatHistory, scriptToUse);
       setChatHistory(newChatHistory);
+      console.log('useChat - newChatHistory before setChatHistory:', newChatHistory);
     } catch (error) {
       handleError(error);
     } finally {
@@ -45,6 +47,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   };
   
   const handleNewChat = () => {
+    console.log('useChat - chatHistory before handleNewChat:', chatHistory);
     setChatHistory([]);
     onNewChat();
   };
@@ -110,7 +113,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
   return (
     <div className={`chat-window ${isOpen ? 'expanded' : 'collapsed'} ${isMaximized ? 'maximized' : ''}`}>
       <div className="chat-header flex justify-between items-center" onClick={handleHeaderClick}>
-        <div className="flex-grow cursor-pointer">Virtual Coach</div>
+        <div className="flex-grow cursor-pointer">Study Buddy</div>
         {isOpen && (
           <>
             <Tooltip content={isMaximized ? "Minimize" : "Maximize"} placement="top">
