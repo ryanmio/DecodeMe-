@@ -13,7 +13,7 @@ import { event } from 'nextjs-google-analytics';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
-const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, leaderboardName, learningLevel }) => {
+const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak, incorrectAnswers, currentStreak, handleChatWithTutor, leaderboardName, learningLevel, resetGame }) => {
   const [gameHistory, setGameHistory] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -178,6 +178,14 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
         <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={leaderboardName} />
         <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} />
         <GameHistory gameHistory={gameHistory} enableReview={true} onChatWithTutor={handleChatWithTutor} /> {/* Pass enableReview as true */}
+        <div className="flex justify-center space-x-4 mt-4">
+          <Button 
+          onClick={resetGame}
+          radius="full" 
+          className="bg-cyan-400 text-white"
+        >
+          Play Again
+        </Button>
         <Button 
           onClick={handleShareResults} 
           radius="full" 
@@ -194,6 +202,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
             'Share Results'
           )}
         </Button>
+        </div>
         {shareUrl && <ShareGameLink url={shareUrl} />}
         {error && <p className="text-red-500">{error}</p>}
       </motion.div>

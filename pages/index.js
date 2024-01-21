@@ -355,6 +355,7 @@ export default function Home() {
                     leaderboardName={leaderboardName}
                     user={user}
                     learningLevel={learningLevel}
+                    resetGame={resetGame}
                   />
                 </> :
                 <>

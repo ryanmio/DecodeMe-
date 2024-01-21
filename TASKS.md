@@ -139,9 +139,9 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] accessibility audit
 - [x] Game History should have chat with tutor button and enable chat window
 - [x] Add slight delay to typing animation in chatwithscript
+- [x] Leaderboard should have tooltip or something for truncated long names
+- [x] Add Play Again button to gameover
 - [ ] Finalize post game review system and user messages
-- [ ] Add Play Again button to gameover
-- [ ] Leaderboard should have tooltip or something for truncated long names
  
 ### Testing
 - [ ] Test anonymous user flow
