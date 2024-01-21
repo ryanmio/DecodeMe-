@@ -107,6 +107,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Dark Mode
 - [ ] Whisper api
 - [ ] Implement modular context blocks
+  - [ ] clear selected snippet
   - [ ] @convo-[conversationTitle]-[conversationDate]
   - [ ] @question-[questionId]
   - [ ] @memory-[memoryName]
@@ -137,11 +138,10 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Prevent layout shift in leaderboard when using filters
 - [x] accessibility audit
 - [x] Game History should have chat with tutor button and enable chat window
+- [x] Add slight delay to typing animation in chatwithscript
 - [ ] Finalize post game review system and user messages
 - [ ] Add Play Again button to gameover
 - [ ] Leaderboard should have tooltip or something for truncated long names
-- [ ] Add little X to clear selected script in chatwithscript
-- [ ] Add slight delay to typing animation in chatwithscript
  
 ### Testing
 - [ ] Test anonymous user flow
