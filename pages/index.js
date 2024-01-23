@@ -257,7 +257,7 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
-    let unsubscribe = () => {};
+    let unsubscribe = () => { };
 
     if (user && db) {
       const userDocRef = doc(db, 'users', user.uid);
@@ -308,7 +308,7 @@ export default function Home() {
         <meta key="og:url" property="og:url" content="https://decodeme.app" />
       </Head>
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-cyan-200 to-white shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-cyan-200 to-white shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <NavigationButtons resetGame={resetGame} resetAuthFormMode={resetAuthFormMode} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
           {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
@@ -323,51 +323,51 @@ export default function Home() {
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
-            {isAuthLoading ? <Spinner label="Initializing..." color="Default" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} formMode={formMode} setFormMode={setFormMode} /> : 
-            !gameMode ? (
-              <>
-                <Tabs
-                  aria-label="Learning Level"
-                  selectedKey={learningLevel}
-                  onSelectionChange={updateLearningLevelInFirebase}
-                  className="flex justify-center"
-                >
-                  <Tab key="beginner" title="Beginner" />
-                  <Tab key="intermediate" title="Regular" />
-                  <Tab key="expert" title="Expert" />
-                </Tabs>
-                <GameModeSelection onGameModeSelect={handleGameModeSelect} />
-              </>
-            ) :
-              isGameOver && user && gameId && isFirebaseUpdated ?
+            {isAuthLoading ? <Spinner label="Initializing..." color="Default" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} formMode={formMode} setFormMode={setFormMode} /> :
+              !gameMode ? (
                 <>
-                  <GameOver
-                    score={score}
-                    questionsAnswered={questionsAnswered}
-                    conversationHistory={conversationHistory}
-                    gameId={gameId}
-                    userId={user.uid}
-                    db={db}
-                    longestStreak={longestStreak}
-                    incorrectAnswers={incorrectAnswers}
-                    currentStreak={currentStreak}
-                    handleChatWithTutor={handleChatWithTutor}
-                    leaderboardName={leaderboardName}
-                    user={user}
-                    learningLevel={learningLevel}
-                    resetGame={resetGame}
-                  />
-                </> :
-                <>
-                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isQuestionsLoading} />
-                  <UserAnswerInput
-                    options={question.options}
-                    onAnswerSubmit={handleAnswerSubmit}
-                    disabled={isQuestionsLoading}
-                    correctAnswerIndex={correctAnswerIndex}
-                    setScore={setScore}
-                  />
-                </>)}
+                  <Tabs
+                    aria-label="Learning Level"
+                    selectedKey={learningLevel}
+                    onSelectionChange={updateLearningLevelInFirebase}
+                    className="flex justify-center"
+                  >
+                    <Tab key="beginner" title="Beginner" />
+                    <Tab key="intermediate" title="Regular" />
+                    <Tab key="expert" title="Expert" />
+                  </Tabs>
+                  <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+                </>
+              ) :
+                isGameOver && user && gameId && isFirebaseUpdated ?
+                  <>
+                    <GameOver
+                      score={score}
+                      questionsAnswered={questionsAnswered}
+                      conversationHistory={conversationHistory}
+                      gameId={gameId}
+                      userId={user.uid}
+                      db={db}
+                      longestStreak={longestStreak}
+                      incorrectAnswers={incorrectAnswers}
+                      currentStreak={currentStreak}
+                      handleChatWithTutor={handleChatWithTutor}
+                      leaderboardName={leaderboardName}
+                      user={user}
+                      learningLevel={learningLevel}
+                      resetGame={resetGame}
+                    />
+                  </> :
+                  <>
+                    <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isQuestionsLoading} />
+                    <UserAnswerInput
+                      options={question.options}
+                      onAnswerSubmit={handleAnswerSubmit}
+                      disabled={isQuestionsLoading}
+                      correctAnswerIndex={correctAnswerIndex}
+                      setScore={setScore}
+                    />
+                  </>)}
           </div>
           {showEndGameModal && (
             <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
