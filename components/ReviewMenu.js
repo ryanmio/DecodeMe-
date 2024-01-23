@@ -2,8 +2,10 @@
 import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import ChevronDownIcon from '../app/src/icons/ChevronDownIcon';
+import { useGame } from '../contexts/GameContext'; // Import useGame hook
 
 const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
+  const { handlePlaySimilarScript } = useGame(); // Access the function from context
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
   const descriptionsMap = {
@@ -22,7 +24,7 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
   const actionsMap = {
     chat: onChatWithTutor,
     annotate: () => {}, // No-op function
-    play: () => {}, // No-op function
+    play: handlePlaySimilarScript, // Use the context function
   };
 
   const selectedOptionValue = Array.from(selectedOption)[0];
@@ -63,4 +65,3 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
 };
 
 export default ReviewMenu;
-
