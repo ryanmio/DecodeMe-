@@ -7,18 +7,21 @@ import { AuthProvider } from '../contexts/AuthContext';
 import { SoundProvider } from '../contexts/SoundContext';
 import ErrorBoundary from '../components/ErrorBoundary';
 import { GoogleAnalytics } from "nextjs-google-analytics";
+import { GameProvider } from '../contexts/GameContext'; // Import GameProvider
 
 export default function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
       <SoundProvider>
-        <NextUIProvider>
-          <GoogleAnalytics trackPageViews />
-          <Toaster position="top-right" />
-          <ErrorBoundary>
-            <Component {...pageProps} />
-          </ErrorBoundary>
-        </NextUIProvider>
+        <GameProvider> 
+          <NextUIProvider>
+            <GoogleAnalytics trackPageViews />
+            <Toaster position="top-right" />
+            <ErrorBoundary>
+              <Component {...pageProps} />
+            </ErrorBoundary>
+          </NextUIProvider>
+        </GameProvider>
       </SoundProvider>
     </AuthProvider>
   );
