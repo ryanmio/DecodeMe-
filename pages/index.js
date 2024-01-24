@@ -1,6 +1,6 @@
 // pages/index.js
 // This is the home page of the application. It contains the game logic, state management and UI components for the game.
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
 import CodeSnippetDisplay from '../components/CodeSnippetDisplay';
@@ -229,10 +229,10 @@ export default function Home() {
     }
   };
 
-  const handleUserUpdate = async (user) => {
+  const handleUserUpdate = useCallback(async (user) => {
     setUser(user);
     setUserId(user?.uid || null);
-
+  
     // Fetch leaderboardName and capExceeded from Firestore for all users
     if (user) {
       const userDocRef = doc(db, 'users', user.uid);
@@ -243,11 +243,13 @@ export default function Home() {
         setCapExceeded(userData.capExceeded || false);
       }
     }
-  };
-
+  }, [setUser, db]); // Include all dependencies that handleUserUpdate relies on
+  
   useEffect(() => {
-    handleUserUpdate(user);
-  }, [user]);
+    if (user) {
+      handleUserUpdate(user);
+    }
+  }, [user, handleUserUpdate]);
 
   useEffect(() => {
     if (score > 0) {

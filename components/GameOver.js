@@ -99,7 +99,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     await recalculateUserStats({ userId });
 
     return gameStats;
-  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, learningLevel]);
+  }, [currentStreak, gameId, score, questionsAnswered, longestStreak, db, userId, leaderboardName, learningLevel, functions, getAndIncrementGameNumber]); // Added 'functions' and 'getAndIncrementGameNumber'
 
   useEffect(() => {
     saveGameStatsToHistory();
@@ -164,7 +164,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
       label: 'GameOver Render',
       value: score, // You can send the score or any other relevant value
     });
-  }, []);
+  }, [score]); // Added 'score'
 
   return (
     <div className="text-center w-[400px] mx-auto">
