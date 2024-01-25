@@ -5,10 +5,14 @@ const cors = require('cors')({ origin: true });
 exports.getCodeSnippet = functions.https.onRequest((request, response) => {
   cors(request, response, async () => {
     const gameMode = request.query.gameMode;
+    console.log('Game mode received:', gameMode); // Log the game mode
+
     let conversationHistory = request.body.conversationHistory || [];
     const userMessage = request.body.userMessage;
-    const learningLevel = request.body.learningLevel || 'intermediate'; // Extract learning level from request body, default to 'intermediate'
-    const customInstructions = request.body.customInstructions || {}; // Extract custom instructions from request body, default to an empty object
+    const learningLevel = request.body.learningLevel || 'intermediate';
+    const customInstructions = request.body.customInstructions || {};
+
+    console.log('Custom Instructions received:', customInstructions); // Log the custom instructions
 
     if (!gameMode) {
       return response.status(400).send('Please provide a game mode.');
@@ -46,7 +50,16 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
     // Extract the codeGen custom instruction if it exists
     const customInstructionsCodeGen = customInstructions.codeGen ? customInstructions.codeGen : '';
 
-    const systemMessage = `You are a coding challenge generator. Generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Ensure both options reasonable so the game is challenging. Adjust the difficulty based on the user's previous answer: make it noticeably harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment} ${customInstructionsCodeGen}`;
+    // Extract the playSimilar custom instruction if it exists
+    const playSimilarScript = customInstructions.playSimilar;
+    console.log('Play Similar Script received:', playSimilarScript); // Log the play similar script
+
+    let systemMessage = `You are a coding challenge generator. Generate a short Python script in a code block and two multiple choice options for what the code does. The first option should be the correct answer and the second option should be incorrect. Format the options like "A) [correct answer]\nB) [incorrect answer]". Ensure both options reasonable so the game is challenging. Adjust the difficulty based on the user's previous answer: make it noticeably harder if correct, and maintain the same level if incorrect. It is very important to incorporate fun elements like emojis, humor, and creative puzzles in your code scripts to keep the user engaged, and avoid math or boring code. Continue generating new questions regardless of the user's answer. Your responses should only include the script and answer choices, without any additional narration, commentary, or code comments. ${difficultyAdjustment} ${customInstructionsCodeGen}`;
+
+    // If playSimilarScript is provided, adjust the systemMessage to ask for a similar script
+    if (playSimilarScript) {
+      systemMessage += ` The user specifially asked for scripts similar to the following example: ${playSimilarScript}.`;
+    }
 
     const data = {
       model: 'gpt-4-1106-preview',
@@ -62,8 +75,10 @@ exports.getCodeSnippet = functions.https.onRequest((request, response) => {
       const responseText = openaiResponse.data.choices[0].message.content.trim();
       const codeSnippetMatch = responseText.match(/```(.|\n)*?```/);
       const codeSnippet = codeSnippetMatch ? codeSnippetMatch[0] : '';
+      console.log('Code snippet generated:', codeSnippet); // Log the generated code snippet
       response.send({ codeSnippet, conversationHistory: [...conversationHistory, { role: 'assistant', content: responseText }] });
     } catch (error) {
+      console.error('Error:', error); // Log any errors
       if (error.response) {
         response.status(500).send('An error occurred while communicating with OpenAI.');
       }
