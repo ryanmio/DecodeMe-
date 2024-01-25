@@ -6,7 +6,7 @@ import ReviewMenu from './ReviewMenu';
 
 const LANGUAGE = "python";
 
-const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => {
+const IncorrectReview = ({ incorrectAnswers, onChatWithTutor, onPlaySimilar }) => {
   const formatCodeSnippet = (code) => code.replace(new RegExp(`\`\`\`${LANGUAGE}\n|\`\`\`${LANGUAGE}|\`\`\``, 'g'), '').trim();
 
   return (
@@ -53,7 +53,7 @@ const IncorrectReview = ({ incorrectAnswers, onChatWithTutor }) => {
                   <div className="correct-answer text-gray-800 p-2">
                     Correct Answer: {item.correctAnswer}
                   </div>
-                  <ReviewMenu selectedScript={item} onChatWithTutor={onChatWithTutor} />
+                  <ReviewMenu selectedScript={item} onChatWithTutor={onChatWithTutor} onPlaySimilar={onPlaySimilar} />
                 </div>
               );
             })}

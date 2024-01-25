@@ -19,6 +19,9 @@ import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 import { event } from 'nextjs-google-analytics';
 import { useSoundContext } from '../contexts/SoundContext';
+import { useGame } from '../contexts/GameContext';
+import usePlaySimilar from '../hooks/usePlaySimilar';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -51,6 +54,10 @@ export default function Home() {
   const { isMuted } = useSoundContext();
   const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5, soundEnabled: !isMuted });
   const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5, soundEnabled: !isMuted });
+  const { selectedScriptForSimilarGame, setSelectedScriptForSimilarGame } = useGame();
+  const handlePlaySimilar = usePlaySimilar(setSelectedScriptForSimilarGame);
+  const { isPlaySimilarMode, setIsPlaySimilarMode } = useGame();
+  const router = useRouter();
 
   const strikeLimit = 2;
 
@@ -59,9 +66,22 @@ export default function Home() {
 
   const handleGameModeSelect = mode => {
     if (!isMuted) playGameStart();
-    setGameMode(mode);
     setGameId(uuidv4());
-    handleCodeSnippetFetch([]);
+    setGameMode(mode);
+    // Check if we should start a similar game
+    const playSimilar = localStorage.getItem('playSimilar');
+    if (playSimilar === 'true') {
+      const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
+      if (storedScript) {
+        const script = JSON.parse(storedScript);
+        handleCodeSnippetFetch([], true, script.question);
+      } else {
+        console.error('No question found for similar play mode.');
+      }
+    } else {
+      // Start a new game normally
+      handleCodeSnippetFetch([]);
+    }
     event('game_start', { category: 'Game', label: mode, value: 1 });
   };
 
@@ -160,8 +180,11 @@ export default function Home() {
     }
   };
 
-  const handleCodeSnippetFetch = async (conversationHistory) => {
+  const handleCodeSnippetFetch = async (conversationHistory, fetchSimilar = false, questionToUseForSimilar) => {
+    console.log('index.js - handleCodeSnippetFetch called, fetchSimilar:', fetchSimilar, 'question:', questionToUseForSimilar);
     setIsQuestionsLoading(true); // Set isQuestionsLoading to true before fetching a new question
+    // If fetchSimilar is true, use the selectedScriptForSimilarGame for custom instructions
+    const customInstructions = fetchSimilar ? { playSimilar: questionToUseForSimilar } : {};
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -202,7 +225,11 @@ export default function Home() {
     setIsGameOver(false);
     setChatHistory([]);
     setSelectedScript(null);
-  };
+   
+    // Clear the local storage related to playing a similar game
+   localStorage.removeItem('selectedScriptForSimilarGame');
+   localStorage.removeItem('playSimilar');
+ };
 
   const confirmEndGame = () => {
     resetGame();
@@ -297,6 +324,23 @@ export default function Home() {
     }
   }, [user, db]);
 
+// Check the flag in local storage on the home page to determine the game mode
+useEffect(() => {
+  const playSimilar = localStorage.getItem('playSimilar');
+  if (playSimilar === 'true') {
+    const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
+    if (storedScript) {
+      const script = JSON.parse(storedScript);
+      setSelectedScriptForSimilarGame(script); // Set the script in the context
+      setIsPlaySimilarMode(true); // Set the play similar mode
+      // Do not call handleCodeSnippetFetch here
+    } else {
+      console.error('No question found for similar play mode.');
+      setIsPlaySimilarMode(false); // Ensure we reset this if there's no script
+    }
+  }
+}, []); // Empty dependency array to run only once on component mount
+
   return (
     <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12 bg-custom-gradient">
       <Head>
@@ -336,7 +380,7 @@ export default function Home() {
                     <Tab key="intermediate" title="Regular" />
                     <Tab key="expert" title="Expert" />
                   </Tabs>
-                  <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+                  <GameModeSelection onGameModeSelect={handleGameModeSelect} isPlaySimilar={isPlaySimilarMode} />
                 </>
               ) :
                 isGameOver && user && gameId && isFirebaseUpdated ?
@@ -356,6 +400,7 @@ export default function Home() {
                       user={user}
                       learningLevel={learningLevel}
                       resetGame={resetGame}
+                      onPlaySimilar={handlePlaySimilar}
                     />
                   </> :
                   <>

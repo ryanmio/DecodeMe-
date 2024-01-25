@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { Pagination, Spinner, Breadcrumbs, BreadcrumbItem } from '@nextui-org/react';
 import { useAuth } from '../../contexts/AuthContext';
 import useChat from '../../hooks/useChat'; // Import the useChat hook
+import usePlaySimilar from '../../hooks/usePlaySimilar'; // Import the usePlaySimilar hook
 
 // Conversation starters
 const conversationStarters = ["Decode this snippet", "Explain it like I'm 5", "Quickly explain"];
@@ -40,11 +41,12 @@ const HistoryPage = () => {
     handleNewChat,
   } = useChat(getFirebaseFirestore(), user?.uid, [], 'intermediate');
 
+  // Call the usePlaySimilar hook
+  const handlePlaySimilar = usePlaySimilar();
+
   const handleSortOptionChange = (newSortOption) => {
     setSortOption(newSortOption);
   };
-
-  // TODO: Refactor the following section into a new component or hook
 
   // Implement the handleChatWithTutor function
   const handleChatWithTutor = (script) => {
@@ -62,8 +64,6 @@ const HistoryPage = () => {
   const toggleChatWindow = () => {
     setShowChatWindow(prevState => !prevState); 
   };
-
-  // End of section to refactor
 
   useEffect(() => {
     if (user) {
@@ -237,6 +237,7 @@ const HistoryPage = () => {
                           gameHistory={gameHistory.history}
                           onChatWithTutor={handleChatWithTutor}
                           enableReview={true}
+                          onPlaySimilar={handlePlaySimilar} // Pass handlePlaySimilar to GameHistory
                         />
                       )}
                     </div>
