@@ -146,7 +146,8 @@ export default function Home() {
     // Update conversation history and fetch the next question if the game is not over
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
-    if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
+     // Fetch the next question without passing isPlaySimilarMode
+  if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
 
     // Update game stats
     setQuestionsAnswered(prev => prev + 1);
@@ -180,11 +181,15 @@ export default function Home() {
     }
   };
 
-  const handleCodeSnippetFetch = async (conversationHistory, fetchSimilar = false, questionToUseForSimilar) => {
-    console.log('index.js - handleCodeSnippetFetch called, fetchSimilar:', fetchSimilar, 'question:', questionToUseForSimilar);
-    setIsQuestionsLoading(true); // Set isQuestionsLoading to true before fetching a new question
-    // If fetchSimilar is true, use the selectedScriptForSimilarGame for custom instructions
-    const customInstructions = fetchSimilar ? { playSimilar: questionToUseForSimilar } : {};
+  const handleCodeSnippetFetch = async (conversationHistory) => {
+    // Directly check local storage for the playSimilar flag
+  const fetchSimilar = localStorage.getItem('playSimilar') === 'true';
+  console.log('index.js - handleCodeSnippetFetch called, fetchSimilar:', fetchSimilar);
+  setIsQuestionsLoading(true);
+  // Use the question from local storage for custom instructions if fetchSimilar is true
+  const storedScript = fetchSimilar ? localStorage.getItem('selectedScriptForSimilarGame') : null;
+  const script = storedScript ? JSON.parse(storedScript) : null;
+  const customInstructions = script ? { playSimilar: script.question } : {};
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -330,13 +335,9 @@ useEffect(() => {
   if (playSimilar === 'true') {
     const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
     if (storedScript) {
-      const script = JSON.parse(storedScript);
-      setSelectedScriptForSimilarGame(script); // Set the script in the context
-      setIsPlaySimilarMode(true); // Set the play similar mode
-      // Do not call handleCodeSnippetFetch here
+      console.log('useEffect - Play similar mode set to true');
     } else {
       console.error('No question found for similar play mode.');
-      setIsPlaySimilarMode(false); // Ensure we reset this if there's no script
     }
   }
 }, []); // Empty dependency array to run only once on component mount
