@@ -1,7 +1,6 @@
 // hooks/usePlaySimilar.js
-import { useContext } from 'react';
+
 import { useRouter } from 'next/router';
-import { GameContext } from '../contexts/GameContext';
 
 const usePlaySimilar = () => {
   const router = useRouter();
