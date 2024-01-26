@@ -41,9 +41,6 @@ const HistoryPage = () => {
     handleNewChat,
   } = useChat(getFirebaseFirestore(), user?.uid, [], 'intermediate');
 
-  // Call the usePlaySimilar hook
-  const handlePlaySimilar = usePlaySimilar();
-
   const handleSortOptionChange = (newSortOption) => {
     setSortOption(newSortOption);
   };
@@ -154,9 +151,12 @@ const HistoryPage = () => {
     setCurrentPage(newPage);
   };
 
-  const resetGame = () => {
+  const resetGame = (keepLocalStorage = false) => {
     router.push('/');
   };
+
+  // Now call usePlaySimilar with the locally defined resetGame function
+const handlePlaySimilar = usePlaySimilar(resetGame);
 
   const metadata = {
     title: `History for ${userData?.leaderboardName}`,

@@ -54,9 +54,6 @@ export default function Home() {
   const { isMuted } = useSoundContext();
   const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5, soundEnabled: !isMuted });
   const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5, soundEnabled: !isMuted });
-  const { selectedScriptForSimilarGame, setSelectedScriptForSimilarGame } = useGame();
-  const handlePlaySimilar = usePlaySimilar(setSelectedScriptForSimilarGame);
-  const { isPlaySimilarMode, setIsPlaySimilarMode } = useGame();
   const router = useRouter();
 
   const strikeLimit = 2;
@@ -216,7 +213,7 @@ export default function Home() {
     }
   };
 
-  const resetGame = () => {
+  const resetGame = (keepLocalStorage = false) => {
     setGameMode(null);
     setQuestion({ codeSnippet: null, options: [] });
     setScore(0);
@@ -231,10 +228,14 @@ export default function Home() {
     setChatHistory([]);
     setSelectedScript(null);
    
-    // Clear the local storage related to playing a similar game
-   localStorage.removeItem('selectedScriptForSimilarGame');
-   localStorage.removeItem('playSimilar');
- };
+      // Clear the local storage unless told to keep it
+      if (!keepLocalStorage) {
+        localStorage.removeItem('selectedScriptForSimilarGame');
+        localStorage.removeItem('playSimilar');
+      }
+    };
+  console.log('resetGame is a function:', typeof resetGame === 'function');
+  const handlePlaySimilar = usePlaySimilar();
 
   const confirmEndGame = () => {
     resetGame();
@@ -342,6 +343,16 @@ useEffect(() => {
   }
 }, []); // Empty dependency array to run only once on component mount
 
+// Check the flag in local storage to reset
+useEffect(() => {
+  // When the component mounts, check if the game should be reset
+  const shouldResetGame = localStorage.getItem('resetGameOnLoad');
+  if (shouldResetGame === 'true') {
+    resetGame(true); // Call your existing resetGame function
+    localStorage.removeItem('resetGameOnLoad'); // Clear the flag from local storage
+  }
+}, []); // The empty dependency array ensures this effect runs only once on mount
+
   return (
     <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12 bg-custom-gradient">
       <Head>
@@ -381,7 +392,7 @@ useEffect(() => {
                     <Tab key="intermediate" title="Regular" />
                     <Tab key="expert" title="Expert" />
                   </Tabs>
-                  <GameModeSelection onGameModeSelect={handleGameModeSelect} isPlaySimilar={isPlaySimilarMode} />
+                  <GameModeSelection onGameModeSelect={handleGameModeSelect} />
                 </>
               ) :
                 isGameOver && user && gameId && isFirebaseUpdated ?
@@ -437,3 +448,4 @@ useEffect(() => {
     </div>
   );
 }
+

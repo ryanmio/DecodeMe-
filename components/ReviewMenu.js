@@ -23,7 +23,10 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
   const actionsMap = {
     chat: onChatWithTutor,
     annotate: () => {}, // No-op function
-    play: onPlaySimilar, // Use the onPlaySimilar prop
+    play: () => { // Call onPlaySimilar
+      localStorage.setItem('resetGameOnLoad', 'true');
+      onPlaySimilar(selectedScript);
+    },
   };
 
   const selectedOptionValue = Array.from(selectedOption)[0];

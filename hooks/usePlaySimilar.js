@@ -8,8 +8,12 @@ const usePlaySimilar = () => {
   const handlePlaySimilar = (selectedScript) => {
     console.log('usePlaySimilar - handlePlaySimilar called with:', selectedScript);
     localStorage.setItem('selectedScriptForSimilarGame', JSON.stringify(selectedScript));
-    localStorage.setItem('playSimilar', 'true'); // Set a flag indicating the user wants to play a similar game
-    router.push('/'); // Navigate to the home page
+    localStorage.setItem('playSimilar', 'true');
+    
+    // Check if we're already on the home page to avoid unnecessary navigation
+    if (router.pathname !== '/') {
+      router.push('/');
+    }
   };
 
   return handlePlaySimilar;
