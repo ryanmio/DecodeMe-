@@ -19,6 +19,9 @@ import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 import { event } from 'nextjs-google-analytics';
 import { useSoundContext } from '../contexts/SoundContext';
+import { useGame } from '../contexts/GameContext';
+import usePlaySimilar from '../hooks/usePlaySimilar';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -51,6 +54,7 @@ export default function Home() {
   const { isMuted } = useSoundContext();
   const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5, soundEnabled: !isMuted });
   const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5, soundEnabled: !isMuted });
+  const router = useRouter();
 
   const strikeLimit = 2;
 
@@ -59,9 +63,22 @@ export default function Home() {
 
   const handleGameModeSelect = mode => {
     if (!isMuted) playGameStart();
-    setGameMode(mode);
     setGameId(uuidv4());
-    handleCodeSnippetFetch([]);
+    setGameMode(mode);
+    // Check if we should start a similar game
+    const playSimilar = localStorage.getItem('playSimilar');
+    if (playSimilar === 'true') {
+      const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
+      if (storedScript) {
+        const script = JSON.parse(storedScript);
+        handleCodeSnippetFetch([], true, script.question);
+      } else {
+        console.error('No question found for similar play mode.');
+      }
+    } else {
+      // Start a new game normally
+      handleCodeSnippetFetch([]);
+    }
     event('game_start', { category: 'Game', label: mode, value: 1 });
   };
 
@@ -126,7 +143,8 @@ export default function Home() {
     // Update conversation history and fetch the next question if the game is not over
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
-    if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
+     // Fetch the next question without passing isPlaySimilarMode
+  if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
 
     // Update game stats
     setQuestionsAnswered(prev => prev + 1);
@@ -161,7 +179,14 @@ export default function Home() {
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
-    setIsQuestionsLoading(true); // Set isQuestionsLoading to true before fetching a new question
+    // Directly check local storage for the playSimilar flag
+  const fetchSimilar = localStorage.getItem('playSimilar') === 'true';
+  console.log('index.js - handleCodeSnippetFetch called, fetchSimilar:', fetchSimilar);
+  setIsQuestionsLoading(true);
+  // Use the question from local storage for custom instructions if fetchSimilar is true
+  const storedScript = fetchSimilar ? localStorage.getItem('selectedScriptForSimilarGame') : null;
+  const script = storedScript ? JSON.parse(storedScript) : null;
+  const customInstructions = script ? { playSimilar: script.question } : {};
     try {
       const response = await fetch(`https://us-central1-decodeme-1f38e.cloudfunctions.net/getCodeSnippet?gameMode=${gameMode}`, {
         method: 'POST',
@@ -188,7 +213,7 @@ export default function Home() {
     }
   };
 
-  const resetGame = () => {
+  const resetGame = (keepLocalStorage = false) => {
     setGameMode(null);
     setQuestion({ codeSnippet: null, options: [] });
     setScore(0);
@@ -202,7 +227,15 @@ export default function Home() {
     setIsGameOver(false);
     setChatHistory([]);
     setSelectedScript(null);
-  };
+   
+      // Clear the local storage unless told to keep it
+      if (!keepLocalStorage) {
+        localStorage.removeItem('selectedScriptForSimilarGame');
+        localStorage.removeItem('playSimilar');
+      }
+    };
+  console.log('resetGame is a function:', typeof resetGame === 'function');
+  const handlePlaySimilar = usePlaySimilar();
 
   const confirmEndGame = () => {
     resetGame();
@@ -259,7 +292,7 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
-    let unsubscribe = () => {};
+    let unsubscribe = () => { };
 
     if (user && db) {
       const userDocRef = doc(db, 'users', user.uid);
@@ -299,6 +332,51 @@ export default function Home() {
     }
   }, [user, db]);
 
+// Check the flag in local storage on the home page to determine the game mode
+useEffect(() => {
+  const playSimilar = localStorage.getItem('playSimilar');
+  if (playSimilar === 'true') {
+    const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
+    if (storedScript) {
+      console.log('useEffect - Play similar mode set to true');
+    } else {
+      console.error('No question found for similar play mode.');
+    }
+  }
+}, []); // Empty dependency array to run only once on component mount
+
+// Check the flag in local storage to reset
+useEffect(() => {
+  // When the component mounts, check if the game should be reset
+  const shouldResetGame = localStorage.getItem('resetGameOnLoad');
+  if (shouldResetGame === 'true') {
+    resetGame(true); // Call your existing resetGame function
+    localStorage.removeItem('resetGameOnLoad'); // Clear the flag from local storage
+  }
+}, []); // The empty dependency array ensures this effect runs only once on mount
+
+useEffect(() => {
+  const handleResetGameRequest = () => {
+    // Check if the reset game request flag is set in local storage
+    const requestResetGame = localStorage.getItem('requestResetGame');
+    if (requestResetGame === 'true') {
+      resetGame(true); // Keep local storage related to 'Play Similar'
+      localStorage.removeItem('requestResetGame'); // Clear the flag from local storage
+    }
+  };
+
+  // Add event listener for storage changes
+  window.addEventListener('storage', handleResetGameRequest);
+
+  // Call the handler function immediately in case the event was missed
+  handleResetGameRequest();
+
+  // Clean up the event listener when the component unmounts
+  return () => {
+    window.removeEventListener('storage', handleResetGameRequest);
+  };
+}, []); // The empty dependency array ensures this effect runs only once on mount
+
   return (
     <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12 bg-custom-gradient">
       <Head>
@@ -310,7 +388,7 @@ export default function Home() {
         <meta key="og:url" property="og:url" content="https://decodeme.app" />
       </Head>
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-      <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-cyan-200 to-white shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-cyan-200 to-white shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
           <NavigationButtons resetGame={resetGame} resetAuthFormMode={resetAuthFormMode} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
           {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
@@ -325,51 +403,52 @@ export default function Home() {
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
-            {isAuthLoading ? <Spinner label="Initializing..." color="Default" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} formMode={formMode} setFormMode={setFormMode} /> : 
-            !gameMode ? (
-              <>
-                <Tabs
-                  aria-label="Learning Level"
-                  selectedKey={learningLevel}
-                  onSelectionChange={updateLearningLevelInFirebase}
-                  className="flex justify-center"
-                >
-                  <Tab key="beginner" title="Beginner" />
-                  <Tab key="intermediate" title="Regular" />
-                  <Tab key="expert" title="Expert" />
-                </Tabs>
-                <GameModeSelection onGameModeSelect={handleGameModeSelect} />
-              </>
-            ) :
-              isGameOver && user && gameId && isFirebaseUpdated ?
+            {isAuthLoading ? <Spinner label="Initializing..." color="Default" /> : (!user ? <Auth onUserAuth={handleUserUpdate} onLeaderboardNameSet={setLeaderboardName} formMode={formMode} setFormMode={setFormMode} /> :
+              !gameMode ? (
                 <>
-                  <GameOver
-                    score={score}
-                    questionsAnswered={questionsAnswered}
-                    conversationHistory={conversationHistory}
-                    gameId={gameId}
-                    userId={user.uid}
-                    db={db}
-                    longestStreak={longestStreak}
-                    incorrectAnswers={incorrectAnswers}
-                    currentStreak={currentStreak}
-                    handleChatWithTutor={handleChatWithTutor}
-                    leaderboardName={leaderboardName}
-                    user={user}
-                    learningLevel={learningLevel}
-                    resetGame={resetGame}
-                  />
-                </> :
-                <>
-                  <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isQuestionsLoading} />
-                  <UserAnswerInput
-                    options={question.options}
-                    onAnswerSubmit={handleAnswerSubmit}
-                    disabled={isQuestionsLoading}
-                    correctAnswerIndex={correctAnswerIndex}
-                    setScore={setScore}
-                  />
-                </>)}
+                  <Tabs
+                    aria-label="Learning Level"
+                    selectedKey={learningLevel}
+                    onSelectionChange={updateLearningLevelInFirebase}
+                    className="flex justify-center"
+                  >
+                    <Tab key="beginner" title="Beginner" />
+                    <Tab key="intermediate" title="Regular" />
+                    <Tab key="expert" title="Expert" />
+                  </Tabs>
+                  <GameModeSelection onGameModeSelect={handleGameModeSelect} />
+                </>
+              ) :
+                isGameOver && user && gameId && isFirebaseUpdated ?
+                  <>
+                    <GameOver
+                      score={score}
+                      questionsAnswered={questionsAnswered}
+                      conversationHistory={conversationHistory}
+                      gameId={gameId}
+                      userId={user.uid}
+                      db={db}
+                      longestStreak={longestStreak}
+                      incorrectAnswers={incorrectAnswers}
+                      currentStreak={currentStreak}
+                      handleChatWithTutor={handleChatWithTutor}
+                      leaderboardName={leaderboardName}
+                      user={user}
+                      learningLevel={learningLevel}
+                      resetGame={resetGame}
+                      onPlaySimilar={handlePlaySimilar}
+                    />
+                  </> :
+                  <>
+                    <CodeSnippetDisplay codeSnippet={question.codeSnippet} loading={isQuestionsLoading} />
+                    <UserAnswerInput
+                      options={question.options}
+                      onAnswerSubmit={handleAnswerSubmit}
+                      disabled={isQuestionsLoading}
+                      correctAnswerIndex={correctAnswerIndex}
+                      setScore={setScore}
+                    />
+                  </>)}
           </div>
           {showEndGameModal && (
             <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
@@ -393,3 +472,4 @@ export default function Home() {
     </div>
   );
 }
+

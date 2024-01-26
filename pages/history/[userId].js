@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import { Pagination, Spinner, Breadcrumbs, BreadcrumbItem } from '@nextui-org/react';
 import { useAuth } from '../../contexts/AuthContext';
 import useChat from '../../hooks/useChat'; // Import the useChat hook
+import usePlaySimilar from '../../hooks/usePlaySimilar'; // Import the usePlaySimilar hook
 
 // Conversation starters
 const conversationStarters = ["Decode this snippet", "Explain it like I'm 5", "Quickly explain"];
@@ -44,8 +45,6 @@ const HistoryPage = () => {
     setSortOption(newSortOption);
   };
 
-  // TODO: Refactor the following section into a new component or hook
-
   // Implement the handleChatWithTutor function
   const handleChatWithTutor = (script) => {
     setSelectedScript(script);
@@ -62,8 +61,6 @@ const HistoryPage = () => {
   const toggleChatWindow = () => {
     setShowChatWindow(prevState => !prevState); 
   };
-
-  // End of section to refactor
 
   useEffect(() => {
     if (user) {
@@ -154,9 +151,12 @@ const HistoryPage = () => {
     setCurrentPage(newPage);
   };
 
-  const resetGame = () => {
+  const resetGame = (keepLocalStorage = false) => {
     router.push('/');
   };
+
+  // Now call usePlaySimilar with the locally defined resetGame function
+const handlePlaySimilar = usePlaySimilar(resetGame);
 
   const metadata = {
     title: `History for ${userData?.leaderboardName}`,
@@ -237,6 +237,7 @@ const HistoryPage = () => {
                           gameHistory={gameHistory.history}
                           onChatWithTutor={handleChatWithTutor}
                           enableReview={true}
+                          onPlaySimilar={handlePlaySimilar} // Pass handlePlaySimilar to GameHistory
                         />
                       )}
                     </div>

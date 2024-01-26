@@ -6,7 +6,7 @@ import ReviewMenu from './ReviewMenu';
 
 const formatCodeSnippet = (code) => code.replace(/```python\n|```python|```/g, '').trim();
 
-const GameHistory = ({ gameHistory, enableReview, onChatWithTutor }) => { 
+const GameHistory = ({ gameHistory, enableReview, onChatWithTutor, onPlaySimilar, resetGame }) => { 
   return (
     <div className="game-history text-left">
       <Accordion motionProps={{
@@ -51,7 +51,7 @@ const GameHistory = ({ gameHistory, enableReview, onChatWithTutor }) => {
                       </span>
                     </Tooltip>
                     My Answer: {entry.answer}
-                    {enableReview && <ReviewMenu selectedScript={entry} onChatWithTutor={onChatWithTutor} />} {/* Conditionally render ReviewMenu */}
+                    {enableReview && <ReviewMenu selectedScript={entry} onChatWithTutor={onChatWithTutor} onPlaySimilar={onPlaySimilar} resetGame={resetGame} />} 
                   </div>
                 </div>
               );

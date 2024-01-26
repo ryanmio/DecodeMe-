@@ -10,6 +10,7 @@ import IncorrectReview from './IncorrectReview';
 import PostGameMessage from './PostGameMessage';
 import ShareGameLink from './ShareGameLink';
 import { event } from 'nextjs-google-analytics';
+import usePlaySimilar from '../hooks/usePlaySimilar';
 
 const APP_URL = process.env.NEXT_PUBLIC_APP_URL;
 
@@ -20,6 +21,7 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
   const [shareUrl, setShareUrl] = useState('');
 
   const functions = getFunctions();
+  const handlePlaySimilar = usePlaySimilar();
 
   const getHistoryCollectionRef = (db, userId, gameId) => {
     return collection(db, 'users', userId, 'games', gameId, 'history');
@@ -176,8 +178,8 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
         <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={leaderboardName} />
-        <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} />
-        <GameHistory gameHistory={gameHistory} enableReview={true} onChatWithTutor={handleChatWithTutor} /> {/* Pass enableReview as true */}
+        <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} onPlaySimilar={handlePlaySimilar} resetGame={resetGame}  />
+        <GameHistory gameHistory={gameHistory} enableReview={true} onChatWithTutor={handleChatWithTutor} onPlaySimilar={handlePlaySimilar} resetGame={resetGame} /> 
         <div className="flex justify-center space-x-4 mt-4">
           <Button 
           onClick={resetGame}

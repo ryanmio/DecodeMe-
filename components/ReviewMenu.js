@@ -3,7 +3,8 @@ import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import ChevronDownIcon from '../app/src/icons/ChevronDownIcon';
 
-const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
+// Add the onPlaySimilar prop
+const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
   const descriptionsMap = {
@@ -22,7 +23,10 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
   const actionsMap = {
     chat: onChatWithTutor,
     annotate: () => {}, // No-op function
-    play: () => {}, // No-op function
+    play: () => { // Call onPlaySimilar
+      localStorage.setItem('resetGameOnLoad', 'true');
+      onPlaySimilar(selectedScript);
+    },
   };
 
   const selectedOptionValue = Array.from(selectedOption)[0];
@@ -30,6 +34,7 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
   return (
     <ButtonGroup variant="flat" className="review-menu">
       <Button onClick={() => {
+        console.log('ReviewMenu - Play similar clicked for script:', selectedScript);
         actionsMap[selectedOptionValue](selectedScript);
       }}>{labelsMap[selectedOptionValue]}</Button>
       <Dropdown placement="bottom-end">
@@ -45,7 +50,8 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
           selectionMode="single"
           onSelectionChange={setSelectedOption}
           className="max-w-[300px]"
-          disabledKeys={['annotate', 'play']}
+          // Remove 'play' from disabledKeys to enable the option
+          disabledKeys={['annotate']}
         >
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>
             {labelsMap["chat"]}
@@ -53,7 +59,7 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
           <DropdownItem key="annotate" description={descriptionsMap["annotate"]} className="disabledDropdownItem">
             {labelsMap["annotate"]}
           </DropdownItem>
-          <DropdownItem key="play" description={descriptionsMap["play"]} className="disabledDropdownItem">
+          <DropdownItem key="play" description={descriptionsMap["play"]} >
             {labelsMap["play"]}
           </DropdownItem>
         </DropdownMenu>
@@ -63,4 +69,3 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor }) => {
 };
 
 export default ReviewMenu;
-

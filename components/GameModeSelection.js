@@ -2,13 +2,15 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 
-function GameModeSelection({ onGameModeSelect }) {
+function GameModeSelection({ onGameModeSelect, isPlaySimilar }) {
   const gameModes = ['Multiple Choice', 'Conversational', 'Daily Challenge'];
   const [selectedMode, setSelectedMode] = useState(null);
 
   const handleGameModeSelect = (mode) => {
     setSelectedMode(mode);
-    onGameModeSelect(mode);
+    if (!isPlaySimilar) {
+      onGameModeSelect(mode);
+    }
   };
 
   return (
@@ -36,6 +38,7 @@ function GameModeSelection({ onGameModeSelect }) {
 
 GameModeSelection.propTypes = {
   onGameModeSelect: PropTypes.func.isRequired,
+  isPlaySimilar: PropTypes.bool
 };
 
 export default GameModeSelection;
