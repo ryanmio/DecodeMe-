@@ -353,6 +353,28 @@ useEffect(() => {
   }
 }, []); // The empty dependency array ensures this effect runs only once on mount
 
+useEffect(() => {
+  const handleResetGameRequest = () => {
+    // Check if the reset game request flag is set in local storage
+    const requestResetGame = localStorage.getItem('requestResetGame');
+    if (requestResetGame === 'true') {
+      resetGame(true); // Keep local storage related to 'Play Similar'
+      localStorage.removeItem('requestResetGame'); // Clear the flag from local storage
+    }
+  };
+
+  // Add event listener for storage changes
+  window.addEventListener('storage', handleResetGameRequest);
+
+  // Call the handler function immediately in case the event was missed
+  handleResetGameRequest();
+
+  // Clean up the event listener when the component unmounts
+  return () => {
+    window.removeEventListener('storage', handleResetGameRequest);
+  };
+}, []); // The empty dependency array ensures this effect runs only once on mount
+
   return (
     <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12 bg-custom-gradient">
       <Head>

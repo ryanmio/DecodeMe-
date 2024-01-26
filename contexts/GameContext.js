@@ -35,3 +35,4 @@ export const GameProvider = ({ children }) => {
 
 // Custom hook to provide easy access to the context data
 export const useGame = () => useContext(GameContext);
+
