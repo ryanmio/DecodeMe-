@@ -130,7 +130,7 @@ export default function Home() {
     // Update conversation history and fetch the next question if the game is not over
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
-  if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
+    if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
 
     // Update game stats
     setQuestionsAnswered(prev => prev + 1);
@@ -313,41 +313,28 @@ export default function Home() {
   useEffect(() => {
     // Check the flag in local storage to determine the game mode
     const playSimilar = localStorage.getItem('playSimilar');
-    if (playSimilar === 'true') {
-      const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
-      if (storedScript) {
-        console.log('Play similar mode set to true');
-      } else {
-        console.error('No question found for similar play mode.');
-      }
+    if (playSimilar === 'true' && !localStorage.getItem('selectedScriptForSimilarGame')) {
+      resetGame(false);
     }
   
     // Check if the game should be reset on component mount
-    const shouldResetGame = localStorage.getItem('resetGameOnLoad');
-    if (shouldResetGame === 'true') {
+    if (localStorage.getItem('resetGameOnLoad') === 'true') {
       resetGame(true);
       localStorage.removeItem('resetGameOnLoad');
     }
   
-    // Define the handler for reset game request
+    // Define and immediately invoke the handler for reset game request
     const handleResetGameRequest = () => {
-      const requestResetGame = localStorage.getItem('requestResetGame');
-      if (requestResetGame === 'true') {
+      if (localStorage.getItem('requestResetGame') === 'true') {
         resetGame(true);
         localStorage.removeItem('requestResetGame');
       }
     };
-  
-    // Add event listener for storage changes
     window.addEventListener('storage', handleResetGameRequest);
-  
-    // Call the handler function immediately in case the event was missed
     handleResetGameRequest();
   
     // Clean up the event listener when the component unmounts
-    return () => {
-      window.removeEventListener('storage', handleResetGameRequest);
-    };
+    return () => window.removeEventListener('storage', handleResetGameRequest);
   }, []); // The empty dependency array ensures this effect runs only once on mount
 
   return (
