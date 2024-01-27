@@ -22,6 +22,7 @@ import { useSoundContext } from '../contexts/SoundContext';
 import { useGame } from '../contexts/GameContext';
 import usePlaySimilar from '../hooks/usePlaySimilar';
 import { useRouter } from 'next/router';
+import CustomInstructionsIndicator from '../components/CustomInstructionsIndicator';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -232,9 +233,10 @@ export default function Home() {
       if (!keepLocalStorage) {
         localStorage.removeItem('selectedScriptForSimilarGame');
         localStorage.removeItem('playSimilar');
+        window.dispatchEvent(new Event('storageCleared'));
       }
     };
-  console.log('resetGame is a function:', typeof resetGame === 'function');
+
   const handlePlaySimilar = usePlaySimilar();
 
   const confirmEndGame = () => {
@@ -400,6 +402,9 @@ useEffect(() => {
               </div>
               {score}
             </div>
+            <div className="absolute top-0 right-10 p-4">
+            <CustomInstructionsIndicator customInstructions={customInstructions} />
+        </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
@@ -411,6 +416,7 @@ useEffect(() => {
                     selectedKey={learningLevel}
                     onSelectionChange={updateLearningLevelInFirebase}
                     className="flex justify-center"
+                    color="primary"
                   >
                     <Tab key="beginner" title="Beginner" />
                     <Tab key="intermediate" title="Regular" />

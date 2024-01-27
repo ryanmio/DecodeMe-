@@ -88,7 +88,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Custom instruction guardrails
 - [x] Leadeboard name generator
 - [x] Integrate Google Analytics
-- [ ] "Play more like this" functionality
+- [x] "Play more like this" functionality
 - [ ] Implement AI commands
   - [ ] /Instruct
   - [ ] /Help
@@ -142,6 +142,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Leaderboard should have tooltip or something for truncated long names
 - [x] Add Play Again button to gameover
 - [x] Finalize post game review system and user messages
+- [ ] Add a routing loading icon in the bottom right for routes to SSR pages
  
 ### Testing
 - [ ] Test anonymous user flow
