@@ -22,6 +22,7 @@ import { useSoundContext } from '../contexts/SoundContext';
 import { useGame } from '../contexts/GameContext';
 import usePlaySimilar from '../hooks/usePlaySimilar';
 import { useRouter } from 'next/router';
+import CustomInstructionsIndicator from '../components/CustomInstructionsIndicator';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -398,6 +399,7 @@ useEffect(() => {
               </div>
               {score}
             </div>
+            <CustomInstructionsIndicator />
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
