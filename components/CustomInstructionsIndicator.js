@@ -1,7 +1,8 @@
 import { Popover, PopoverTrigger, PopoverContent, Chip } from '@nextui-org/react';
 import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
-const CustomInstructionsIndicator = () => {
+const CustomInstructionsIndicator = ({ customInstructions }) => {
   const [visible, setVisible] = useState(false);
   const [playSimilar, setPlaySimilar] = useState(false);
   const [selectedScript, setSelectedScript] = useState(null);
@@ -34,12 +35,32 @@ const CustomInstructionsIndicator = () => {
     return code?.replace(/```python\n|```python|```/g, '').trim() || '';
   };
 
-  if (!playSimilar || !selectedScript) {
+  // Determine if there are any custom instructions for codegen or chat
+  const hasCustomInstructions = customInstructions.codeGen || customInstructions.chatbot;
+
+  // Adjust the condition to render the chip if playSimilar is true or if there are custom instructions
+  if (!playSimilar && !hasCustomInstructions) {
     return null;
   }
 
-  // Use the formatCodeSnippet function to format the selectedScript.question
-  const formattedCode = formatCodeSnippet(selectedScript.question);
+  // Use the formatCodeSnippet function to format the selectedScript.question if selectedScript is not null
+  const formattedCode = selectedScript ? formatCodeSnippet(selectedScript.question) : '';
+
+  // Use the existing formatCodeSnippet function to format the custom instructions for codegen and chat
+  const formattedCodegenInstructions = formatCodeSnippet(customInstructions.codeGen);
+  const formattedChatInstructions = formatCodeSnippet(customInstructions.chatbot);
+
+  // Define a common style for both sections
+  const commonPreStyle = {
+    background: '#f6f8fa',
+    padding: '1rem',
+    borderRadius: '6px',
+    maxWidth: '250px', // Ensure the code block does not exceed this width
+    whiteSpace: 'pre-wrap',
+    wordBreak: 'break-word',
+    fontSize: '0.875rem',
+    margin: '0', // Ensure there's no default margin
+  };
 
   return (
     <Popover isOpen={visible} onOpenChange={setVisible} placement="right" showArrow={true}>
@@ -55,34 +76,56 @@ const CustomInstructionsIndicator = () => {
       </PopoverTrigger>
       <PopoverContent css={{ maxWidth: '300px' }}>
         <div style={{ padding: '1rem' }}>
-          <strong style={{ fontSize: '1rem' }}>Active Instructions</strong>
-          <h5 style={{
-            maxWidth: '250px', // Set a max-width for the header
-            wordBreak: 'break-word' // Break words at the end of the line
+          <strong style={{
+            fontSize: '1.25rem', // Increased font size
+            fontWeight: '600', // Increased font weight for emphasis
+            marginBottom: '0.5rem', // Added bottom margin for spacing
+            display: 'block' // Ensure it's on its own line
           }}>
-            The user has requested to use this code snippet as an example:
-          </h5>
-          {formattedCode ? (
-            <div style={{ maxHeight: '100px', overflowY: 'auto' }}>
-              <pre style={{
-                background: '#f6f8fa',
-                padding: '0.5rem',
-                borderRadius: '6px',
-                maxWidth: '250px', // Ensure the code block does not exceed this width
-                whiteSpace: 'pre-wrap',
-                wordBreak: 'break-word',
-                fontSize: '0.875rem'
+            Active Instructions
+          </strong>
+          {playSimilar && formattedCode && (
+            <>
+              <h5 style={{
+                maxWidth: '250px', // Set a max-width for the header
+                wordBreak: 'break-word' // Break words at the end of the line
               }}>
-                <code>{formattedCode}</code>
+                The user has requested to use this code snippet as an example:
+              </h5>
+              <div style={{ maxHeight: '100px', overflowY: 'auto', marginBottom: '1rem' }}>
+                <pre style={commonPreStyle}>
+                  <code>{formattedCode}</code>
+                </pre>
+              </div>
+            </>
+          )}
+          {formattedCodegenInstructions && (
+            <div style={{ marginBottom: '1rem' }}>
+              <strong style={{ fontSize: '1rem' }}>Gameplay Instructions</strong>
+              <pre style={commonPreStyle}>
+                <code>{formattedCodegenInstructions}</code>
               </pre>
             </div>
-          ) : (
-            <p>No custom instructions found.</p>
+          )}
+          {formattedChatInstructions && (
+            <div>
+              <strong style={{ fontSize: '1rem' }}>Assistant Instructions</strong>
+              <pre style={commonPreStyle}>
+                <code>{formattedChatInstructions}</code>
+              </pre>
+            </div>
           )}
         </div>
       </PopoverContent>
     </Popover>
   );
+};
+
+CustomInstructionsIndicator.propTypes = {
+  customInstructions: PropTypes.shape({
+    codeGen: PropTypes.string,
+    chatbot: PropTypes.string,
+  }),
 };
 
 export default CustomInstructionsIndicator;

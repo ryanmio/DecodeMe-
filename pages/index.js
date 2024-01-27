@@ -401,7 +401,7 @@ useEffect(() => {
               {score}
             </div>
             <div className="absolute top-0 right-10 p-4">
-          <CustomInstructionsIndicator />
+            <CustomInstructionsIndicator customInstructions={customInstructions} />
         </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
