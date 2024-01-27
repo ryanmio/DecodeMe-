@@ -399,7 +399,9 @@ useEffect(() => {
               </div>
               {score}
             </div>
-            <CustomInstructionsIndicator />
+            <div className="absolute top-0 right-10 p-4">
+          <CustomInstructionsIndicator />
+        </div>
             {gameMode && <div className="flex justify-center"><StrikeIndicator strikes={strikes} limit={strikeLimit} /></div>}
           </h1>
           <div className="auth-container" style={isAuthLoading || !user ? { display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' } : {}}>
