@@ -233,9 +233,10 @@ export default function Home() {
       if (!keepLocalStorage) {
         localStorage.removeItem('selectedScriptForSimilarGame');
         localStorage.removeItem('playSimilar');
+        window.dispatchEvent(new Event('storageCleared'));
       }
     };
-  console.log('resetGame is a function:', typeof resetGame === 'function');
+
   const handlePlaySimilar = usePlaySimilar();
 
   const confirmEndGame = () => {
@@ -413,6 +414,7 @@ useEffect(() => {
                     selectedKey={learningLevel}
                     onSelectionChange={updateLearningLevelInFirebase}
                     className="flex justify-center"
+                    color="primary"
                   >
                     <Tab key="beginner" title="Beginner" />
                     <Tab key="intermediate" title="Regular" />
