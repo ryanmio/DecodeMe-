@@ -55,11 +55,11 @@ const CustomInstructionsIndicator = ({ customInstructions }) => {
     background: '#f6f8fa',
     padding: '1rem',
     borderRadius: '6px',
-    maxWidth: '250px', // Ensure the code block does not exceed this width
+    maxWidth: '250px',
     whiteSpace: 'pre-wrap',
     wordBreak: 'break-word',
     fontSize: '0.875rem',
-    margin: '0', // Ensure there's no default margin
+    margin: '0',
   };
 
   return (
@@ -77,18 +77,18 @@ const CustomInstructionsIndicator = ({ customInstructions }) => {
       <PopoverContent css={{ maxWidth: '300px' }}>
         <div style={{ padding: '1rem' }}>
           <strong style={{
-            fontSize: '1.25rem', // Increased font size
-            fontWeight: '600', // Increased font weight for emphasis
-            marginBottom: '0.5rem', // Added bottom margin for spacing
-            display: 'block' // Ensure it's on its own line
+            fontSize: '1.25rem',
+            fontWeight: '600',
+            marginBottom: '0.5rem',
+            display: 'block'
           }}>
             Active Instructions
           </strong>
           {playSimilar && formattedCode && (
             <>
               <h5 style={{
-                maxWidth: '250px', // Set a max-width for the header
-                wordBreak: 'break-word' // Break words at the end of the line
+                maxWidth: '250px',
+                wordBreak: 'break-word'
               }}>
                 The user has requested to use this code snippet as an example:
               </h5>

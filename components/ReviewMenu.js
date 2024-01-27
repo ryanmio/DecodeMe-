@@ -3,7 +3,6 @@ import React from 'react';
 import { Button, ButtonGroup, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from '@nextui-org/react';
 import ChevronDownIcon from '../app/src/icons/ChevronDownIcon';
 
-// Add the onPlaySimilar prop
 const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
@@ -23,7 +22,7 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
   const actionsMap = {
     chat: onChatWithTutor,
     annotate: () => {}, // No-op function
-    play: () => { // Call onPlaySimilar
+    play: () => { 
       localStorage.setItem('resetGameOnLoad', 'true');
       onPlaySimilar(selectedScript);
     },
@@ -34,7 +33,6 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
   return (
     <ButtonGroup variant="flat" className="review-menu">
       <Button onClick={() => {
-        console.log('ReviewMenu - Play similar clicked for script:', selectedScript);
         actionsMap[selectedOptionValue](selectedScript);
       }}>{labelsMap[selectedOptionValue]}</Button>
       <Dropdown placement="bottom-end">
@@ -50,7 +48,6 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
           selectionMode="single"
           onSelectionChange={setSelectedOption}
           className="max-w-[300px]"
-          // Remove 'play' from disabledKeys to enable the option
           disabledKeys={['annotate']}
         >
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>

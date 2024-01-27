@@ -1,17 +1,17 @@
-// pages/history/[userId].js
+// pages/history/[userId].js aka "History Page"
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { doc, getDoc, collection, getDocs, query, orderBy } from 'firebase/firestore';
 import { getFirebaseFirestore } from '../../app/src/firebase';
 import GameHistory from '../../components/GameHistory';
-import ChatWithScript from '../../components/ChatWithScript'; // Import the ChatWithScript component
+import ChatWithScript from '../../components/ChatWithScript';
 import RootLayout from '../../components/layout';
 import NavigationButtons from '../../components/NavigationButtons';
 import { format } from 'date-fns';
 import { Pagination, Spinner, Breadcrumbs, BreadcrumbItem } from '@nextui-org/react';
 import { useAuth } from '../../contexts/AuthContext';
-import useChat from '../../hooks/useChat'; // Import the useChat hook
-import usePlaySimilar from '../../hooks/usePlaySimilar'; // Import the usePlaySimilar hook
+import useChat from '../../hooks/useChat';
+import usePlaySimilar from '../../hooks/usePlaySimilar';
 
 // Conversation starters
 const conversationStarters = ["Decode this snippet", "Explain it like I'm 5", "Quickly explain"];
@@ -26,10 +26,10 @@ const HistoryPage = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [sortOption, setSortOption] = useState('date');
 
-  // Initialize showChatWindow to false to start with the chat window collapsed
+  // Initialize chat state
   const [showChatWindow, setShowChatWindow] = useState(false);
   const [selectedScript, setSelectedScript] = useState(null);
-  const [capExceeded, setCapExceeded] = useState(false); // Add state for capExceeded
+  const [capExceeded, setCapExceeded] = useState(false);
 
   // Call the useChat hook and pass the necessary parameters
   const {
@@ -41,25 +41,20 @@ const HistoryPage = () => {
     handleNewChat,
   } = useChat(getFirebaseFirestore(), user?.uid, [], 'intermediate');
 
-  const handleSortOptionChange = (newSortOption) => {
-    setSortOption(newSortOption);
-  };
-
   // Implement the handleChatWithTutor function
   const handleChatWithTutor = (script) => {
     setSelectedScript(script);
-    setShowChatWindow(true); // This will open the chat window
+    setShowChatWindow(true);
   };
 
   // Function to handle the start of a new chat
-  const onNewChat = () => 
-    handleNewChat(); // This will reset the chat history
-    // Additional logic for starting a new chat can be added here
+  const onNewChat = () =>
+    handleNewChat();
   ;
 
   // Function to toggle the chat window
   const toggleChatWindow = () => {
-    setShowChatWindow(prevState => !prevState); 
+    setShowChatWindow(prevState => !prevState);
   };
 
   useEffect(() => {
@@ -127,7 +122,7 @@ const HistoryPage = () => {
   }, [user, sortOption]);
 
   useEffect(() => {
-    const db = getFirebaseFirestore(); // Get the Firestore instance
+    const db = getFirebaseFirestore();
 
     const fetchUserCaps = async () => {
       if (user) {
@@ -155,8 +150,7 @@ const HistoryPage = () => {
     router.push('/');
   };
 
-  // Now call usePlaySimilar with the locally defined resetGame function
-const handlePlaySimilar = usePlaySimilar(resetGame);
+  const handlePlaySimilar = usePlaySimilar(resetGame);
 
   const metadata = {
     title: `History for ${userData?.leaderboardName}`,
@@ -175,7 +169,7 @@ const handlePlaySimilar = usePlaySimilar(resetGame);
             <div className="results-header mb-4">
               <h1 className="text-2xl font-bold text-center text-gray-900">Game History</h1>
               <p className="text-lg text-center text-gray-700">Leaderboard Name: {userData?.leaderboardName}</p>
-              <div className="flex justify-end items-center">
+              <div className="flex justify-end items-center pt-2">
                 <Breadcrumbs
                   size="sm"
                   onAction={(key) => setSortOption(key)}
@@ -185,7 +179,7 @@ const handlePlaySimilar = usePlaySimilar(resetGame);
                   itemClasses={{
                     item: [
                       "px-2 py-0.5 border-small border-default-400 rounded-small",
-                      "data-[current=true]:border-foreground data-[current=true]:bg-foreground data-[current=true]:text-background transition-colors",
+                      "data-[current=true]:bg-primary data-[current=true]:text-white",
                       "data-[disabled=true]:border-default-400 data-[disabled=true]:bg-default-100",
                     ],
                     separator: "hidden",
@@ -237,7 +231,7 @@ const handlePlaySimilar = usePlaySimilar(resetGame);
                           gameHistory={gameHistory.history}
                           onChatWithTutor={handleChatWithTutor}
                           enableReview={true}
-                          onPlaySimilar={handlePlaySimilar} // Pass handlePlaySimilar to GameHistory
+                          onPlaySimilar={handlePlaySimilar}
                         />
                       )}
                     </div>
@@ -249,6 +243,7 @@ const handlePlaySimilar = usePlaySimilar(resetGame);
               total={Math.ceil(userHistory.length / gamesPerPage)}
               page={currentPage}
               onChange={handlePageChange}
+              color="primary"
             />
           </div>
         </div>
