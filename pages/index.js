@@ -1,5 +1,4 @@
-// pages/index.js
-// This is the home page of the application. It contains the game logic, state management and UI components for the game.
+// pages/index.js (This is the home page of the application.)
 import React, { useState, useEffect, useCallback } from 'react';
 import Auth from '../components/Auth';
 import GameModeSelection from '../components/GameModeSelection';
@@ -19,9 +18,7 @@ import ChatWithScript from '../components/ChatWithScript';
 import Head from 'next/head';
 import { event } from 'nextjs-google-analytics';
 import { useSoundContext } from '../contexts/SoundContext';
-import { useGame } from '../contexts/GameContext';
 import usePlaySimilar from '../hooks/usePlaySimilar';
-import { useRouter } from 'next/router';
 import CustomInstructionsIndicator from '../components/CustomInstructionsIndicator';
 
 export default function Home() {
@@ -55,7 +52,6 @@ export default function Home() {
   const { isMuted } = useSoundContext();
   const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5, soundEnabled: !isMuted });
   const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5, soundEnabled: !isMuted });
-  const router = useRouter();
 
   const strikeLimit = 2;
 
@@ -66,8 +62,7 @@ export default function Home() {
     if (!isMuted) playGameStart();
     setGameId(uuidv4());
     setGameMode(mode);
-    // Check if we should start a similar game
-    const playSimilar = localStorage.getItem('playSimilar');
+    const playSimilar = localStorage.getItem('playSimilar'); // First check if we should start a similar game
     if (playSimilar === 'true') {
       const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
       if (storedScript) {
@@ -77,8 +72,7 @@ export default function Home() {
         console.error('No question found for similar play mode.');
       }
     } else {
-      // Start a new game normally
-      handleCodeSnippetFetch([]);
+      handleCodeSnippetFetch([]); // Othersiwe start a new game normally
     }
     event('game_start', { category: 'Game', label: mode, value: 1 });
   };
@@ -88,13 +82,8 @@ export default function Home() {
     setShowChatWindow(true);
   };
 
-  const handleNewChat = () => {
-    setSelectedScript(null);
-  };
-
-  const resetAuthFormMode = () => {
-    setFormMode('guest');
-  };
+  const handleNewChat = () => setSelectedScript(null);
+  const resetAuthFormMode = () => setFormMode('guest');
 
   const handleMessageSubmit = async (messageToSend, updatedChatHistory, selectedScript) => {
     try {
@@ -122,13 +111,10 @@ export default function Home() {
 
   const handleAnswerSubmit = async (answerIndex, isCorrect) => {
     setIsFirebaseUpdated(false);
-
     const answer = question.options[answerIndex];
     const correctAnswer = question.options[correctAnswerIndex];
     let gameOver = false;
-
-    // Update streaks and strikes based on whether the answer is correct
-    if (isCorrect) {
+    if (isCorrect) { // Update streaks and strikes based on whether the answer is correct
       setCurrentStreak(prev => prev + 1);
     } else {
       if (currentStreak > longestStreak) setLongestStreak(currentStreak);
@@ -144,7 +130,6 @@ export default function Home() {
     // Update conversation history and fetch the next question if the game is not over
     const newConversationHistory = [...conversationHistory, { role: 'user', content: answer }];
     setConversationHistory(newConversationHistory);
-     // Fetch the next question without passing isPlaySimilarMode
   if (!gameOver) await handleCodeSnippetFetch(newConversationHistory);
 
     // Update game stats
@@ -172,20 +157,16 @@ export default function Home() {
   const handleSkipSubmit = async () => {
     const newConversationHistory = [...conversationHistory, { role: 'user', content: 'Skip' }];
     setConversationHistory(newConversationHistory);
-
-    // Only fetch the next question if the game has not ended
-    if (!isGameOver) {
+    if (!isGameOver) { // Only fetch the next question if the game has not ended
       await handleCodeSnippetFetch(newConversationHistory);
     }
   };
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
-    // Directly check local storage for the playSimilar flag
-  const fetchSimilar = localStorage.getItem('playSimilar') === 'true';
+  const fetchSimilar = localStorage.getItem('playSimilar') === 'true'; // Directly check local storage for the playSimilar flag
   console.log('index.js - handleCodeSnippetFetch called, fetchSimilar:', fetchSimilar);
   setIsQuestionsLoading(true);
-  // Use the question from local storage for custom instructions if fetchSimilar is true
-  const storedScript = fetchSimilar ? localStorage.getItem('selectedScriptForSimilarGame') : null;
+  const storedScript = fetchSimilar ? localStorage.getItem('selectedScriptForSimilarGame') : null; // Use the question from local storage for custom instructions if fetchSimilar is true
   const script = storedScript ? JSON.parse(storedScript) : null;
   const customInstructions = script ? { playSimilar: script.question } : {};
     try {
@@ -228,9 +209,7 @@ export default function Home() {
     setIsGameOver(false);
     setChatHistory([]);
     setSelectedScript(null);
-   
-      // Clear the local storage unless told to keep it
-      if (!keepLocalStorage) {
+      if (!keepLocalStorage) { // Clear the local storage unless told to keep it
         localStorage.removeItem('selectedScriptForSimilarGame');
         localStorage.removeItem('playSimilar');
         window.dispatchEvent(new Event('storageCleared'));
@@ -267,9 +246,7 @@ export default function Home() {
   const handleUserUpdate = useCallback(async (user) => {
     setUser(user);
     setUserId(user?.uid || null);
-  
-    // Fetch leaderboardName and capExceeded from Firestore for all users
-    if (user) {
+    if (user) {  // Fetch leaderboardName and capExceeded from Firestore for all users
       const userDocRef = doc(db, 'users', user.uid);
       const userDoc = await getDoc(userDocRef);
       if (userDoc.exists()) {
@@ -295,7 +272,6 @@ export default function Home() {
 
   useEffect(() => {
     let unsubscribe = () => { };
-
     if (user && db) {
       const userDocRef = doc(db, 'users', user.uid);
       unsubscribe = onSnapshot(userDocRef, (doc) => {
@@ -334,50 +310,45 @@ export default function Home() {
     }
   }, [user, db]);
 
-// Check the flag in local storage on the home page to determine the game mode
-useEffect(() => {
-  const playSimilar = localStorage.getItem('playSimilar');
-  if (playSimilar === 'true') {
-    const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
-    if (storedScript) {
-      console.log('useEffect - Play similar mode set to true');
-    } else {
-      console.error('No question found for similar play mode.');
+  useEffect(() => {
+    // Check the flag in local storage to determine the game mode
+    const playSimilar = localStorage.getItem('playSimilar');
+    if (playSimilar === 'true') {
+      const storedScript = localStorage.getItem('selectedScriptForSimilarGame');
+      if (storedScript) {
+        console.log('Play similar mode set to true');
+      } else {
+        console.error('No question found for similar play mode.');
+      }
     }
-  }
-}, []); // Empty dependency array to run only once on component mount
-
-// Check the flag in local storage to reset
-useEffect(() => {
-  // When the component mounts, check if the game should be reset
-  const shouldResetGame = localStorage.getItem('resetGameOnLoad');
-  if (shouldResetGame === 'true') {
-    resetGame(true); // Call your existing resetGame function
-    localStorage.removeItem('resetGameOnLoad'); // Clear the flag from local storage
-  }
-}, []); // The empty dependency array ensures this effect runs only once on mount
-
-useEffect(() => {
-  const handleResetGameRequest = () => {
-    // Check if the reset game request flag is set in local storage
-    const requestResetGame = localStorage.getItem('requestResetGame');
-    if (requestResetGame === 'true') {
-      resetGame(true); // Keep local storage related to 'Play Similar'
-      localStorage.removeItem('requestResetGame'); // Clear the flag from local storage
+  
+    // Check if the game should be reset on component mount
+    const shouldResetGame = localStorage.getItem('resetGameOnLoad');
+    if (shouldResetGame === 'true') {
+      resetGame(true);
+      localStorage.removeItem('resetGameOnLoad');
     }
-  };
-
-  // Add event listener for storage changes
-  window.addEventListener('storage', handleResetGameRequest);
-
-  // Call the handler function immediately in case the event was missed
-  handleResetGameRequest();
-
-  // Clean up the event listener when the component unmounts
-  return () => {
-    window.removeEventListener('storage', handleResetGameRequest);
-  };
-}, []); // The empty dependency array ensures this effect runs only once on mount
+  
+    // Define the handler for reset game request
+    const handleResetGameRequest = () => {
+      const requestResetGame = localStorage.getItem('requestResetGame');
+      if (requestResetGame === 'true') {
+        resetGame(true);
+        localStorage.removeItem('requestResetGame');
+      }
+    };
+  
+    // Add event listener for storage changes
+    window.addEventListener('storage', handleResetGameRequest);
+  
+    // Call the handler function immediately in case the event was missed
+    handleResetGameRequest();
+  
+    // Clean up the event listener when the component unmounts
+    return () => {
+      window.removeEventListener('storage', handleResetGameRequest);
+    };
+  }, []); // The empty dependency array ensures this effect runs only once on mount
 
   return (
     <div className="min-h-screen py-6 flex flex-col justify-center sm:py-12 bg-custom-gradient">
@@ -478,4 +449,3 @@ useEffect(() => {
     </div>
   );
 }
-
