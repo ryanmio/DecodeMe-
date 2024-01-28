@@ -20,8 +20,6 @@ const GameHistory = ({ gameHistory, enableReview, onChatWithTutor, onPlaySimilar
             {gameHistory.map((entry, index) => {
               const formattedQuestion = formatCodeSnippet(entry.question);
               const isCorrect = entry.isCorrect === true; // Explicitly check for true
-              const strikes = entry.strikes || 0; // Default to 0 if undefined
-              const strikeLimit = entry.strikeLimit || 0; // Default to 0 if undefined
               return (
                 <div key={entry.id} className="game-history-entry bg-gray-50 rounded-lg shadow mb-6 p-2">
                   <div className="game-question text-gray-800">
@@ -51,7 +49,14 @@ const GameHistory = ({ gameHistory, enableReview, onChatWithTutor, onPlaySimilar
                       </span>
                     </Tooltip>
                     My Answer: {entry.answer}
-                    {enableReview && <ReviewMenu selectedScript={entry} onChatWithTutor={onChatWithTutor} onPlaySimilar={onPlaySimilar} resetGame={resetGame} />} 
+                    {enableReview && (
+                      <ReviewMenu 
+                        selectedScript={entry} 
+                        onChatWithTutor={onChatWithTutor} 
+                        onPlaySimilar={onPlaySimilar} 
+                        resetGame={resetGame} 
+                      />
+                    )}
                   </div>
                 </div>
               );

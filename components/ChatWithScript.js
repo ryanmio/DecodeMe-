@@ -27,7 +27,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
     console.error(error);
   }
 
-  const handleChatSubmit = async (event, messageToSend = userMessage) => { 
+  const handleChatSubmit = async (event, messageToSend = userMessage) => {
     event.preventDefault();
     const updatedChatHistory = [...chatHistory, { role: 'user', content: messageToSend }];
     setChatHistory(updatedChatHistory);
@@ -53,7 +53,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
       setIsAssistantTyping(false);
     }
   };
-  
+
   const handleNewChat = () => {
     setChatHistory([]);
     onNewChat();
@@ -147,7 +147,7 @@ export default function ChatWithScript({ isOpen, onClose, codeSnippet, selectedS
             {(selectedScript || codeSnippet) ? (
               <div className="system-message">
                 <ReactMarkdown className="message">
-                  {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : (codeSnippet && typeof codeSnippet === 'object' ? codeSnippet.question : '')}
+                  {selectedScript && typeof selectedScript === 'object' ? selectedScript.question : codeSnippet}
                 </ReactMarkdown>
               </div>
             ) : null}

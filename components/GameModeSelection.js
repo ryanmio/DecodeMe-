@@ -1,4 +1,4 @@
-// app/src/components/GameModeSelection.js
+// components/GameModeSelection.js
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 

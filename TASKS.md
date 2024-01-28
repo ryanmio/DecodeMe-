@@ -143,6 +143,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Add Play Again button to gameover
 - [x] Finalize post game review system and user messages
 - [ ] Add a routing loading icon in the bottom right for routes to SSR pages
+- [ ] Add a multistep loading description to the code fetch (generating... validating... etc...)
  
 ### Testing
 - [ ] Test anonymous user flow

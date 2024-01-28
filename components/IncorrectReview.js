@@ -53,7 +53,12 @@ const IncorrectReview = ({ incorrectAnswers, onChatWithTutor, onPlaySimilar, res
                   <div className="correct-answer text-gray-800 p-2">
                     Correct Answer: {item.correctAnswer}
                   </div>
-                  <ReviewMenu selectedScript={item} onChatWithTutor={onChatWithTutor} onPlaySimilar={onPlaySimilar} resetGame={resetGame} />
+                  <ReviewMenu
+                    selectedScript={item}
+                    onChatWithTutor={onChatWithTutor}
+                    onPlaySimilar={onPlaySimilar}
+                    resetGame={resetGame}
+                  />
                 </div>
               );
             })}

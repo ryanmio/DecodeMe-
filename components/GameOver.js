@@ -59,13 +59,13 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     const userData = userSnapshot.data();
     const gameNumber = (userData?.gameCount || 0) + 1;
 
-  // Increment the game count in the user's document
-  await updateDoc(userRef, {
-    gameCount: gameNumber
-  });
+    // Increment the game count in the user's document
+    await updateDoc(userRef, {
+      gameCount: gameNumber
+    });
 
-  return gameNumber;
-}, [db, userId]);
+    return gameNumber;
+  }, [db, userId]);
 
   const saveGameStatsToHistory = useCallback(async () => {
     if (currentStreak === undefined) {
@@ -73,15 +73,15 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     }
 
     const gameNumber = await getAndIncrementGameNumber();
-  
+
     // Use the leaderboardName prop instead of fetching it again
     const leaderboardNameToUse = leaderboardName;
-  
+
     // Check if the current streak is greater than the longest streak
     if (currentStreak > longestStreak) {
       setLongestStreak(currentStreak);
     }
-  
+
     const gameStats = {
       gameId,
       leaderboardName: leaderboardNameToUse,
@@ -164,9 +164,9 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
     event('game_over', {
       category: 'Game',
       label: 'GameOver Render',
-      value: score, // You can send the score or any other relevant value
+      value: score,
     });
-  }, [score]); // Added 'score'
+  }, [score]);
 
   return (
     <div className="text-center w-[400px] mx-auto">
@@ -178,32 +178,32 @@ const GameOver = ({ score, questionsAnswered, db, gameId, userId, longestStreak,
         <h2 className="text-2xl font-bold mb-4">Round over!</h2>
         <FinalScore score={score} questionsAnswered={questionsAnswered} sharedAt={new Date()} />
         <PostGameMessage db={db} userId={userId} score={score} incorrectAnswers={incorrectAnswers} gameHistory={gameHistory} leaderboardName={leaderboardName} />
-        <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} onPlaySimilar={handlePlaySimilar} resetGame={resetGame}  />
-        <GameHistory gameHistory={gameHistory} enableReview={true} onChatWithTutor={handleChatWithTutor} onPlaySimilar={handlePlaySimilar} resetGame={resetGame} /> 
+        <IncorrectReview incorrectAnswers={incorrectAnswers} onChatWithTutor={handleChatWithTutor} onPlaySimilar={handlePlaySimilar} resetGame={resetGame} />
+        <GameHistory gameHistory={gameHistory} enableReview={true} onChatWithTutor={handleChatWithTutor} onPlaySimilar={handlePlaySimilar} resetGame={resetGame} />
         <div className="flex justify-center space-x-4 mt-4">
-          <Button 
-          onClick={resetGame}
-          radius="full" 
-          className="bg-cyan-400 text-white"
-        >
-          Play Again
-        </Button>
-        <Button 
-          onClick={handleShareResults} 
-          radius="full" 
-          className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
-          disabled={loading}
-          auto
-        >
-          {loading ? (
-            <>
-              Sharing...
-              <Spinner size="sm" color="white" />
-            </>
-          ) : (
-            'Share Results'
-          )}
-        </Button>
+          <Button
+            onClick={resetGame}
+            radius="full"
+            className="bg-cyan-400 text-white"
+          >
+            Play Again
+          </Button>
+          <Button
+            onClick={handleShareResults}
+            radius="full"
+            className="bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg"
+            disabled={loading}
+            auto
+          >
+            {loading ? (
+              <>
+                Sharing...
+                <Spinner size="sm" color="white" />
+              </>
+            ) : (
+              'Share Results'
+            )}
+          </Button>
         </div>
         {shareUrl && <ShareGameLink url={shareUrl} />}
         {error && <p className="text-red-500">{error}</p>}

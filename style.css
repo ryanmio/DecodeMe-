@@ -15,122 +15,123 @@
     100% { transform: translateX(5px); }
   }
   
-  .shake-animation {
-    animation: shake 0.2s ease-in-out;
-  }
-  
-  .custom-button {
-    min-width: auto !important;
-    padding-left: 8px;
-    padding-right: 8px;
-  }
-  
-  .fixed-width {
-    min-width: 300px; /* Minimum width */
-    max-width: 600px; /* Maximum width */
-    width: 100%; /* Flexible width */
-    margin-left: auto; /* Center the leaderboard card */
-    margin-right: auto; /* Center the leaderboard card */
-  }
-  
-  @media (min-width: 640px) { /* Adjust the min-width as needed for your design */
-    .fixed-width {
-      width: 500px; /* This will only apply for screens wider than 640px */
+    .shake-animation {
+      animation: shake 0.2s ease-in-out;
     }
-  }
-
-  .leaderboard-name {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 100%;
-  }
-
-  /* auth styles */
-  .auth-container {
-    min-height: 300px;
-  }
-
-/* Base Listbox styling */
-.listbox {
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 6px 0 rgba(0,0,0,0.1);
-  border-radius: 4px;
-  background-color: #fff;
-}
-
-.listbox-item {
-  font-family: 'Your font family', sans-serif;
-  font-size: 0.9rem;
-  color: #333;
-  padding: 8px 12px;
-}
-
-.listbox-item:hover, .listbox-item:active {
-  background-color: #f2f2f2;
-  color: #000;
-}
-
-.listbox-item.selected {
-  background-color: #ddd;
-}
-
- /* AI After-Actions */
-.review-menu {
-  width: 100%;
-  margin: 0;
-}
-
-.review-menu button {
-  border-radius: 0;
-  box-shadow: none;
-  border: none;
-}
-
-.dropdown-menu {
-  width: calc(100% - 2px);
-  margin-top: 0;
-  border-radius: 0 0 4px 4px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.disabledDropdownItem {
-  color: #ccc !important;
-  cursor: not-allowed !important;
-  background-color: #f0f0f0 !important;
-}
-
-/* Post Game Message */
-.speech-bubble {
-  background-color: #ffffff;
-  color: #5c5c5c;
-  padding: 16px 20px;
-  border-radius: 12px;
-  border: 1px solid #d1d1d1;
-  max-width: 300px;
-  box-sizing: border-box;
-  font-family: 'Helvetica Neue', Arial, sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10;
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.close-button {
-  font-size: 1rem;
-  color: #5c5c5c;
-  cursor: pointer;
-  background: transparent;
-  border: none;
-  padding: 0 5px;
-  margin: -5px 0 -5px auto;
-  display: block;
-}
+  
+    .custom-button {
+      min-width: auto !important;
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  
+    .fixed-width {
+      min-width: 300px;
+      max-width: 600px;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  
+    @media (min-width: 640px) {
+      .fixed-width {
+        width: 500px;
+      }
+    }
+  
+    .leaderboard-name {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
+  
+    /* auth styles */
+    .auth-container {
+      min-height: 300px;
+    }
+  
+    /* Base Listbox styling */
+    .listbox {
+      border: 1px solid #ccc;
+      box-shadow: 0 2px 6px 0 rgba(0, 0, 0, 0.1);
+      border-radius: 4px;
+      background-color: #fff;
+    }
+  
+    .listbox-item {
+      font-family: 'Your font family', sans-serif;
+      font-size: 0.9rem;
+      color: #333;
+      padding: 8px 12px;
+    }
+  
+    .listbox-item:hover,
+    .listbox-item:active {
+      background-color: #f2f2f2;
+      color: #000;
+    }
+  
+    .listbox-item.selected {
+      background-color: #ddd;
+    }
+  
+    /* AI After-Actions */
+    .review-menu {
+      width: 100%;
+      margin: 0;
+    }
+  
+    .review-menu button {
+      border-radius: 0;
+      box-shadow: none;
+      border: none;
+    }
+  
+    .dropdown-menu {
+      width: calc(100% - 2px);
+      margin-top: 0;
+      border-radius: 0 0 4px 4px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+  
+    .disabledDropdownItem {
+      color: #ccc !important;
+      cursor: not-allowed !important;
+      background-color: #f0f0f0 !important;
+    }
+  
+    /* Post Game Message */
+    .speech-bubble {
+      background-color: #ffffff;
+      color: #5c5c5c;
+      padding: 16px 20px;
+      border-radius: 12px;
+      border: 1px solid #d1d1d1;
+      max-width: 300px;
+      box-sizing: border-box;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 10;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  
+    .close-button {
+      font-size: 1rem;
+      color: #5c5c5c;
+      cursor: pointer;
+      background: transparent;
+      border: none;
+      padding: 0 5px;
+      margin: -5px 0 -5px auto;
+      display: block;
+    }
 
 /* magic wand pulse */
 @keyframes pulse {

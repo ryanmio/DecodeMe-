@@ -70,11 +70,11 @@ exports.checkCustomInstructions = functions.firestore
         const openaiResponse = await axios.post(apiUrl, data, { headers: headers });
         console.log('OpenAI response:', openaiResponse.data); // Log the OpenAI response
 
-        const responseText = openaiResponse.data.choices[0].message.content.trim();
+        const responseText = openaiResponse.data.choices[0].message.content.trim().toLowerCase();
         console.log('Response text:', responseText); // Log the response text
 
-        // If the response is "unsafe", clear the specific custom instruction
-        if (responseText.toLowerCase() === 'unsafe') {
+        // If the response contains "unsafe", clear the specific custom instruction
+        if (responseText.includes('unsafe')) {
           console.log('Unsafe instruction detected:', instructionKey); // Log the unsafe instruction key
 
           // Write to the logs before clearing the custom instructions
