@@ -7,9 +7,9 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
   const [selectedOption, setSelectedOption] = React.useState(new Set(["chat"]));
 
   const descriptionsMap = {
-    chat: "Chat with a virtual tutor about the scripts you got wrong.",
-    annotate: "Click to annotate the script with inline code comments that describe each line.", // Updated description
-    play: "Play similar scripts. (This feature will be available in a future release.)",
+    chat: "Chat with a virtual tutor about this code snippet.",
+    annotate: "Annotate the script with inline code comments that describe each line. (future release)",
+    play: "Start a new game with similar code snippets of increasing difficulty.",
   };
 
   const labelsMap = {
@@ -53,11 +53,11 @@ const ReviewMenu = ({ selectedScript, onChatWithTutor, onPlaySimilar }) => {
           <DropdownItem key="chat" description={descriptionsMap["chat"]}>
             {labelsMap["chat"]}
           </DropdownItem>
-          <DropdownItem key="annotate" description={descriptionsMap["annotate"]} className="disabledDropdownItem">
-            {labelsMap["annotate"]}
-          </DropdownItem>
           <DropdownItem key="play" description={descriptionsMap["play"]} >
             {labelsMap["play"]}
+          </DropdownItem>
+          <DropdownItem key="annotate" description={descriptionsMap["annotate"]} className="disabledDropdownItem">
+            {labelsMap["annotate"]}
           </DropdownItem>
         </DropdownMenu>
       </Dropdown>
