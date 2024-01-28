@@ -20,6 +20,8 @@ import { event } from 'nextjs-google-analytics';
 import { useSoundContext } from '../contexts/SoundContext';
 import usePlaySimilar from '../hooks/usePlaySimilar';
 import CustomInstructionsIndicator from '../components/CustomInstructionsIndicator';
+import Footer from '../components/Footer';
+import EndGameModal from '../components/EndGameModal';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -164,7 +166,6 @@ export default function Home() {
 
   const handleCodeSnippetFetch = async (conversationHistory) => {
   const fetchSimilar = localStorage.getItem('playSimilar') === 'true'; // Directly check local storage for the playSimilar flag
-  console.log('index.js - handleCodeSnippetFetch called, fetchSimilar:', fetchSimilar);
   setIsQuestionsLoading(true);
   const storedScript = fetchSimilar ? localStorage.getItem('selectedScriptForSimilarGame') : null; // Use the question from local storage for custom instructions if fetchSimilar is true
   const script = storedScript ? JSON.parse(storedScript) : null;
@@ -217,6 +218,10 @@ export default function Home() {
     };
 
   const handlePlaySimilar = usePlaySimilar();
+
+  const promptEndGame = () => {
+    setShowEndGameModal(true); // Show the modal
+  };
 
   const confirmEndGame = () => {
     resetGame();
@@ -350,7 +355,7 @@ export default function Home() {
       <div className="relative py-3 sm:max-w-xl sm:mx-auto">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400 via-cyan-200 to-white shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
         <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-          <NavigationButtons resetGame={resetGame} resetAuthFormMode={resetAuthFormMode} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} />
+          <NavigationButtons resetGame={resetGame} resetAuthFormMode={resetAuthFormMode} question={question} onSkipSubmit={handleSkipSubmit} gameMode={gameMode} isGameOver={isGameOver} promptEndGame={promptEndGame} />
           {question.codeSnippet && <ChatWithScript isOpen={showChatWindow} onClose={toggleChatWindow} codeSnippet={question.codeSnippet} selectedScript={selectedScript} db={db} learningLevel={learningLevel} onLearningLevelChange={updateLearningLevelInFirebase} chatHistory={chatHistory} setChatHistory={setChatHistory} handleMessageSubmit={handleMessageSubmit} conversationStarters={conversationStarters} onNewChat={handleNewChat} capExceeded={capExceeded || false} />}
           <h1 className="text-2xl font-medium mb-3 pt-3 text-center text-gray-900">
             DecodeMe! Score:{" "}
@@ -415,24 +420,15 @@ export default function Home() {
                   </>)}
           </div>
           {showEndGameModal && (
-            <Modal isOpen={showEndGameModal} onClose={cancelEndGame}>
-              <ModalContent>
-                <ModalHeader>End Game</ModalHeader>
-                <ModalBody>Are you sure you want to end the current game?</ModalBody>
-                <ModalFooter>
-                  <Button color="priåmary" onClick={cancelEndGame}>Cancel</Button>
-                  <Button color="danger" onClick={confirmEndGame}>End Game</Button>
-                </ModalFooter>
-              </ModalContent>
-            </Modal>
-          )}
+      <EndGameModal
+        isOpen={showEndGameModal}
+        onClose={cancelEndGame}
+        onConfirm={confirmEndGame}
+      />
+    )}
         </div>
       </div>
-      {!gameMode && (
-        <footer className="text-center p-4 mt-8 absolute bottom-0 w-full text-center text-gray-400 text-sm">
-          Made by <a href="https://github.com/ryanmio" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-gray-700 hover:underline">Ryan</a>
-        </footer>
-      )}
+      {!gameMode && <Footer />}
     </div>
   );
 }

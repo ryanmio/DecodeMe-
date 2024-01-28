@@ -9,7 +9,7 @@ import Auth from '../components/Auth';
 import { useAuth } from '../contexts/AuthContext';
 import { useSoundContext } from '../contexts/SoundContext';
 
-const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
+const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled, promptEndGame }) => {
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isAuthLoading, setIsAuthLoading] = useState(false);
@@ -21,9 +21,6 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   const toggleMute = () => {
     setIsMuted(!isMuted);
   };
-
-  // Keyboard shortcut for mute toggle
-  useHotkeys('shift+m', toggleMute);
 
   const handleLogout = () => {
     onOpen();
@@ -40,30 +37,40 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   };
 
   const handleHistory = () => {
-    if (!user) {
-      setShowAuthModal(true);
-    } else {
+    if (gameMode && !isGameOver) {
+      promptEndGame();
+    } else if (user) {
       router.push(`/history/${user.uid}`);
+    } else {
+      setShowAuthModal(true);
     }
   };
 
   const handleLeaderboard = () => {
-    router.push('/leaderboard');
+    if (gameMode && !isGameOver) {
+      promptEndGame();
+    } else {
+      router.push('/leaderboard');
+    }
   };
 
   const handleScorecard = () => {
-    if (!user) {
-      setShowAuthModal(true);
-    } else {
+    if (gameMode && !isGameOver) {
+      promptEndGame();
+    } else if (user) {
       router.push(`/user/${user.uid}`);
+    } else {
+      setShowAuthModal(true);
     }
   };
 
   const handleAssistantSettings = () => {
-    if (!user) {
-      setShowAuthModal(true);
-    } else {
+    if (gameMode && !isGameOver) {
+      promptEndGame();
+    } else if (user) {
       router.push(`/assistantSettings/${user.uid}`);
+    } else {
+      setShowAuthModal(true);
     }
   };
 
@@ -76,6 +83,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
   useHotkeys('shift+b', handleLeaderboard);
   useHotkeys('shift+c', handleScorecard);
   useHotkeys('shift+a', handleAssistantSettings);
+  useHotkeys('shift+m', toggleMute);
   useHotkeys('shift+s', () => {
     onSkipSubmit();
   });
@@ -181,4 +189,3 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled }) => {
 };
 
 export default OptionsMenu;
-
