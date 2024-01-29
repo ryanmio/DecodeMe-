@@ -142,11 +142,12 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Leaderboard should have tooltip or something for truncated long names
 - [x] Add Play Again button to gameover
 - [x] Finalize post game review system and user messages
-- [ ] Add a routing loading icon in the bottom right for routes to SSR pages
+- [x] Add a routing loading icon in the bottom right for routes to SSR pages
 - [ ] Add a multistep loading description to the code fetch (generating... validating... etc...)
 - [ ] Hide chat on history render, open when chat needed
 - [ ] game over modal seems to always go home?
- 
+- [ ] fix style of game mode selection arrows
+
 ### Testing
 - [ ] Test anonymous user flow
 - [ ] UI tests for frontend
