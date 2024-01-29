@@ -24,9 +24,9 @@ export default function CodeSnippetDisplay({ codeSnippet, loading }) {
             wrapLines 
             style={{minWidth: '300px', minHeight: '200px'}}
           />
-          <div style={{position: 'absolute', top: 5, right: 5}}>
+          {/* <div style={{position: 'absolute', top: 5, right: 5}}>
             <PythonChip />
-          </div>
+          </div> */}
           {loading && (
             <animated.div style={fadeLoading} className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
               <Ping size={45} speed={2} color="white" />
