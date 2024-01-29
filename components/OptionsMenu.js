@@ -38,7 +38,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled, promptEndGa
 
   const handleHistory = () => {
     if (gameMode && !isGameOver) {
-      promptEndGame();
+      promptEndGame(`/history/${user.uid}`);
     } else if (user) {
       router.push(`/history/${user.uid}`);
     } else {
@@ -48,7 +48,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled, promptEndGa
 
   const handleLeaderboard = () => {
     if (gameMode && !isGameOver) {
-      promptEndGame();
+      promptEndGame('/leaderboard');
     } else {
       router.push('/leaderboard');
     }
@@ -56,7 +56,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled, promptEndGa
 
   const handleScorecard = () => {
     if (gameMode && !isGameOver) {
-      promptEndGame();
+      promptEndGame(`/user/${user.uid}`);
     } else if (user) {
       router.push(`/user/${user.uid}`);
     } else {
@@ -66,7 +66,7 @@ const OptionsMenu = ({ onSkipSubmit, gameMode, isGameOver, disabled, promptEndGa
 
   const handleAssistantSettings = () => {
     if (gameMode && !isGameOver) {
-      promptEndGame();
+      promptEndGame(`/assistantSettings/${user.uid}`);
     } else if (user) {
       router.push(`/assistantSettings/${user.uid}`);
     } else {

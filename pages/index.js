@@ -22,6 +22,7 @@ import usePlaySimilar from '../hooks/usePlaySimilar';
 import CustomInstructionsIndicator from '../components/CustomInstructionsIndicator';
 import Footer from '../components/Footer';
 import EndGameModal from '../components/EndGameModal';
+import { useRouter } from 'next/router';
 
 export default function Home() {
   const { user, loading: isAuthLoading, setUser } = useAuth();
@@ -52,6 +53,8 @@ export default function Home() {
   const [capExceeded, setCapExceeded] = useState(false);
   const [formMode, setFormMode] = useState('guest');
   const { isMuted } = useSoundContext();
+  const [intendedRoute, setIntendedRoute] = useState('');
+  const router = useRouter();
   const [playGameStart] = useSound('/sounds/gameStart.wav', { volume: 0.5, soundEnabled: !isMuted });
   const [playGameOver] = useSound('/sounds/gameOver.wav', { volume: 0.5, soundEnabled: !isMuted });
 
@@ -219,16 +222,22 @@ export default function Home() {
 
   const handlePlaySimilar = usePlaySimilar();
 
-  const promptEndGame = () => {
+  const promptEndGame = (route) => {
+    setIntendedRoute(route); // Step 2: Store the intended route
     setShowEndGameModal(true); // Show the modal
   };
 
   const confirmEndGame = () => {
     resetGame();
     setShowEndGameModal(false);
+    if (intendedRoute) {
+      router.push(intendedRoute); // Navigate to the intended route
+      setIntendedRoute(''); // Clear the intended route
+    }
   };
 
   const cancelEndGame = () => {
+    setIntendedRoute(''); // Clear the intended route
     setShowEndGameModal(false);
   };
 
