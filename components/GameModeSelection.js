@@ -1,29 +1,61 @@
 // components/GameModeSelection.js
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import { RadioGroup, Radio, cn } from "@nextui-org/react";
+import { RadioGroup, useRadio, VisuallyHidden, cn } from "@nextui-org/react";
+import { IoIosArrowDroprightCircle } from "react-icons/io";
 
-const CustomRadio = (props) => {
+export const CustomRadio = (props) => {
   const {
+    Component,
     children,
-    description,
     isDisabled,
-    ...restProps
-  } = props;
+    description,
+    getBaseProps,
+    getWrapperProps,
+    getInputProps,
+    getLabelProps,
+    getLabelWrapperProps,
+    getControlProps,
+  } = useRadio(props);
+
+  // Directly use the cyan-400 class for the hover state
+  const hoverClass = !isDisabled ? 'hover:text-cyan-400 hover:border-cyan-400' : '';
+  const disabledClass = isDisabled ? 'text-gray-300 cursor-not-allowed opacity-50' : '';
 
   return (
-    <Radio {...restProps} isDisabled={isDisabled} className={cn(
-      "group inline-flex items-center hover:opacity-70 active:opacity-50 justify-between flex-row-reverse tap-highlight-transparent",
-      "max-w-[270px] cursor-pointer border-2 border-default rounded-lg gap-4 p-4 mb-2",
-      "data-[selected=true]:border-primary",
-    )}>
-      <div className="flex-grow">
-        <span className="font-medium text-content block">{children}</span>
+    <Component
+      {...getBaseProps()}
+      className={cn(
+        "group inline-flex items-center justify-between flex-row-reverse",
+        "max-w-[270px] cursor-pointer border-2 border-gray-300 rounded-lg gap-4 p-4",
+        hoverClass,
+        disabledClass
+      )}
+    >
+      <VisuallyHidden>
+        <input {...getInputProps({ disabled: isDisabled })} />
+      </VisuallyHidden>
+      <span {...getWrapperProps()}>
+        <span {...getControlProps()} className="radio-control">
+          <IoIosArrowDroprightCircle
+            className={cn("text-gray-400", !isDisabled && "group-hover:text-cyan-400", disabledClass)}
+            size={24}
+          />
+        </span>
+      </span>
+      <div {...getLabelWrapperProps()}>
+        {children && (
+          <span {...getLabelProps()} className={cn("text-gray-700", !isDisabled && "group-hover:text-cyan-400", disabledClass)}>
+            {children}
+          </span>
+        )}
         {description && (
-          <span className="text-small text-foreground opacity-70 block">{description}</span> 
+          <span className={cn("text-small text-foreground opacity-70", !isDisabled && "group-hover:text-cyan-400", disabledClass)}>
+            {description}
+          </span>
         )}
       </div>
-    </Radio>
+    </Component>
   );
 };
 
@@ -62,3 +94,6 @@ GameModeSelection.propTypes = {
 };
 
 export default GameModeSelection;
+
+
+
