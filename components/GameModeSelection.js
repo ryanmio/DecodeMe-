@@ -38,7 +38,7 @@ export const CustomRadio = (props) => {
       <span {...getWrapperProps()}>
         <span {...getControlProps()} className="radio-control">
           <IoIosArrowDroprightCircle
-            className={cn("text-gray-400", !isDisabled && "group-hover:text-cyan-400", disabledClass)}
+            className={cn("text-gray-200", !isDisabled && "group-hover:text-cyan-300", disabledClass)}
             size={24}
           />
         </span>
@@ -94,6 +94,3 @@ GameModeSelection.propTypes = {
 };
 
 export default GameModeSelection;
-
-
-
