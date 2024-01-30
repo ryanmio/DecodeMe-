@@ -89,10 +89,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Leadeboard name generator
 - [x] Integrate Google Analytics
 - [x] "Play more like this" functionality
-- [ ] Implement AI commands
-  - [ ] /Instruct
-  - [ ] /Help
-  - [ ] /Remember
 
 ### Future Release Features
 - [ ] Sidebar Mode for Chat
@@ -106,6 +102,10 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] Notification for events like new high score
 - [ ] Dark Mode
 - [ ] Whisper api
+- [ ] Implement AI commands
+  - [ ] /Instruct
+  - [ ] /Help
+  - [ ] /Remember
 - [ ] Implement modular context blocks
   - [ ] clear selected snippet
   - [ ] @convo-[conversationTitle]-[conversationDate]
@@ -143,9 +143,9 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Add Play Again button to gameover
 - [x] Finalize post game review system and user messages
 - [x] Add a routing loading icon in the bottom right for routes to SSR pages
+- [x] game over modal seems to always go home?
 - [ ] Add a multistep loading description to the code fetch (generating... validating... etc...)
 - [ ] Hide chat on history render, open when chat needed
-- [ ] game over modal seems to always go home?
 - [ ] fix style of game mode selection arrows
 
 ### Testing
