@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 import { useSpring, animated } from '@react-spring/web';
 import { Ping } from '@uiball/loaders';
 import Prism from 'prismjs';
-// Import the language syntax you need, for example, JavaScript
-import 'prismjs/components/prism-python';
-// Import additional languages as needed
+
+// A map to keep track of which languages have been imported
+const loadedLanguages = {};
 
 export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'python' }) {
   const [formattedCodeSnippet, setFormattedCodeSnippet] = useState('');
@@ -39,9 +39,28 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
   }, [codeSnippet]);
 
   useEffect(() => {
-    // Highlight the syntax using Prism
-    if (codeRef.current) {
+    // Function to dynamically load a language only once
+    const loadPrismLanguage = async (language) => {
+      if (!loadedLanguages[language]) {
+        try {
+          await import(`prismjs/components/prism-${language}`);
+          loadedLanguages[language] = true;
+          // Ensure the code is highlighted after the language is loaded
+          if (codeRef.current) {
+            Prism.highlightElement(codeRef.current);
+          }
+        } catch (e) {
+          console.error(`Error loading Prism language: ${language}`, e);
+        }
+      }
+    };
+
+    if (language && Prism.languages[language]) {
+      // If the language is already loaded by Prism, no need to import
       Prism.highlightElement(codeRef.current);
+    } else {
+      // Load the Prism language dynamically
+      loadPrismLanguage(language);
     }
   }, [formattedCodeSnippet, language]);
 
@@ -53,8 +72,8 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
           minWidth: '300px',
           minHeight: '250px',
           whiteSpace: 'pre-wrap',
-          wordBreak: 'normal', // Changed from 'break-all' to 'normal'
-          overflowWrap: 'break-word', // Ensures that words are only broken at appropriate points
+          wordBreak: 'normal',
+          overflowWrap: 'break-word',
           background: '#f6f8fa',
           padding: '1em',
           borderRadius: '5px',
@@ -63,7 +82,7 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
         }}>
           <code ref={codeRef} className={`language-${language}`} style={{
             whiteSpace: 'pre-wrap',
-            overflowWrap: 'break-word' // Ensures that words are only broken at appropriate points
+            overflowWrap: 'break-word'
           }}>{formattedCodeSnippet}</code>
         </pre>
         {loading && (
