@@ -1,6 +1,8 @@
 // pages/_app.js
-import '/style.css';
+import 'prismjs/themes/prism.css';
+import '../prism-one-light.css';
 import '/tailwind.css';
+import '/style.css';
 import { NextUIProvider } from "@nextui-org/react";
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from '../contexts/AuthContext';

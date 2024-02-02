@@ -142,3 +142,10 @@
 .loading {
   animation: pulse 1s infinite;
 }
+
+#codeSnippetDisplay pre,
+#codeSnippetDisplay code {
+  white-space: pre-wrap !important;
+  word-break: break-word !important;
+  overflow-wrap: break-word !important;
+}
