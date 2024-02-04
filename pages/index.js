@@ -223,8 +223,8 @@ export default function Home() {
   const handlePlaySimilar = usePlaySimilar();
 
   const promptEndGame = (route) => {
-    setIntendedRoute(route); // Step 2: Store the intended route
-    setShowEndGameModal(true); // Show the modal
+    setIntendedRoute(route);
+    setShowEndGameModal(true);
   };
 
   const confirmEndGame = () => {
@@ -285,20 +285,16 @@ export default function Home() {
   }, [score]);
 
   useEffect(() => {
-    let unsubscribe = () => { };
-    if (user && db) {
-      const userDocRef = doc(db, 'users', user.uid);
-      unsubscribe = onSnapshot(userDocRef, (doc) => {
-        const userData = doc.data();
-        if (userData) {
-          setCapExceeded(userData.capExceeded || false);
-        }
-      });
-    }
-
-    // Clean up the listener when the component unmounts or userId/db changes
-    return () => unsubscribe();
-  }, [user, db]); // Use user from useAuth hook
+    if (!user || !db) return;
+  
+    const userDocRef = doc(db, 'users', user.uid);
+    const unsubscribe = onSnapshot(userDocRef, (docSnapshot) => {
+      const userData = docSnapshot.data();
+      setCapExceeded(userData?.capExceeded || false);
+    });
+  
+    return unsubscribe; // Cleanup on unmount or when dependencies change
+  }, [user, db]);
 
   useEffect(() => {
     if (user && db) {
@@ -311,8 +307,7 @@ export default function Home() {
             if (userData.learningLevel) {
               setLearningLevel(userData.learningLevel);
             }
-            // Fetch customInstructions and pass it to the state or a variable
-            const customInstructions = userData.customInstructions || {};
+            const customInstructions = userData.customInstructions || {}; // Fetch customInstructions and pass it to the state or a variable
             setCustomInstructions(customInstructions);
           }
         } catch (error) {
