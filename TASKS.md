@@ -144,7 +144,8 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Finalize post game review system and user messages
 - [x] Add a routing loading icon in the bottom right for routes to SSR pages
 - [x] game over modal seems to always go home?
-- [ ] Add a multistep loading description to the code fetch (generating... validating... etc...)
+- [x] Add a multistep loading description to the code fetch (generating... validating... etc...)
+- [x] wrap long lines in codesnippetdisplay
 - [ ] Hide chat on history render, open when chat needed
 - [ ] fix style of game mode selection arrows
 - [ ] play similar instructions are not being set correctly from the gameover component
