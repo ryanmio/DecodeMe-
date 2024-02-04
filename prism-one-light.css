@@ -52,14 +52,14 @@ pre[class*="language-"] {
 code[class*="language-"]::-moz-selection,
 code[class*="language-"] *::-moz-selection,
 pre[class*="language-"] *::-moz-selection {
-	background: hsl(230, 1%, 90%);
+	background: rgb(55, 200, 220, 0.5);
 	color: inherit;
 }
 
 code[class*="language-"]::selection,
 code[class*="language-"] *::selection,
 pre[class*="language-"] *::selection {
-	background: hsl(230, 1%, 90%);
+	background: rgb(55, 200, 220, 0.5);
 	color: inherit;
 }
 
@@ -284,7 +284,7 @@ div.code-toolbar > .toolbar.toolbar > .toolbar-item > span:focus {
 /* Default line numbers in Line Highlight plugin */
 .line-highlight.line-highlight:before,
 .line-highlight.line-highlight[data-end]:after {
-	background: hsl(230, 1%, 90%);
+	background: none;
 	color: hsl(230, 8%, 24%);
 	padding: 0.1em 0.6em;
 	border-radius: 0.3em;
@@ -404,7 +404,7 @@ pre > code.diff-highlight .token.token.inserted:not(.prefix) *::selection {
 .prism-previewer-angle.prism-previewer-angle:before,
 .prism-previewer-time.prism-previewer-time:before,
 .prism-previewer-easing.prism-previewer-easing {
-	background: hsl(0, 0%, 100%);
+	background: none;
 }
 
 /* For angle, this is the positive area (eg. 90deg will display one quadrant in this colour) */

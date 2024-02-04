@@ -149,3 +149,22 @@
   word-break: break-word !important;
   overflow-wrap: break-word !important;
 }
+
+
+
+
+.code-snippet-container {
+  position: relative;
+}
+
+.checkbox-group-overlay {
+  position: absolute;
+  top: -40px;
+  right: 10px;
+  display: none; /* Hide by default */
+  opacity: 90%;
+}
+
+.code-snippet-container:hover .checkbox-group-overlay:not(.loading) {
+  display: block; /* Show on hover if not loading */
+}

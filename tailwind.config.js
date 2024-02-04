@@ -20,6 +20,11 @@ module.exports = {
           500: '#25BCD0',
           600: '#22ACBF',
         },
+        smoke: {
+          100: '#F5F5F5',
+          200: '#EBEBEB',
+          800: '#474A48',
+        },
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

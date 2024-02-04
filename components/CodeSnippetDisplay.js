@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import { useSpring, animated } from '@react-spring/web';
 import { Ping } from '@uiball/loaders';
 import Prism from 'prismjs';
-import { Checkbox, CheckboxGroup } from '@nextui-org/react'; // Import NextUI components
+import { CheckboxGroup } from '@nextui-org/react';
+import { CustomCheckbox } from './CustomCheckbox';
 
 // A map to keep track of which languages have been imported
 const loadedLanguages = {};
@@ -82,24 +83,27 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
   };
 
   return (
-    <div>
+    <div className="code-snippet-container">
       <h2 className="text-xl font-medium mb-3 text-left text-gray-900">Code Snippet</h2>
-      {/* CheckboxGroup for toggling options */}
-      <CheckboxGroup
-        value={[isSyntaxHighlightingEnabled ? "syntaxHighlighting" : "", isLineWrappingEnabled ? "lineWrapping" : ""].filter(Boolean)}
-        onChange={(values) => {
-          setIsSyntaxHighlightingEnabled(values.includes("syntaxHighlighting"));
-          setIsLineWrappingEnabled(values.includes("lineWrapping"));
-        }}
-      >
-        <Checkbox value="syntaxHighlighting">Syntax Highlighting</Checkbox>
-        <Checkbox value="lineWrapping">Line Wrapping</Checkbox>
-      </CheckboxGroup>
       <div className="max-w-[600px] mx-auto relative">
+        {/* CheckboxGroup for toggling options */}
+        <div className={`checkbox-group-overlay ${loading ? 'loading' : ''}`}>
+          <CheckboxGroup
+            value={[isSyntaxHighlightingEnabled ? "syntaxHighlighting" : "", isLineWrappingEnabled ? "lineWrapping" : ""].filter(Boolean)}
+            onChange={(values) => {
+              setIsSyntaxHighlightingEnabled(values.includes("syntaxHighlighting"));
+              setIsLineWrappingEnabled(values.includes("lineWrapping"));
+            }}
+            orientation="horizontal"
+          >
+            <CustomCheckbox value="syntaxHighlighting" size="sm">Highlight Syntax</CustomCheckbox>
+            <CustomCheckbox value="lineWrapping" size="sm">Wrap Lines</CustomCheckbox>
+          </CheckboxGroup>
+        </div>
         <pre style={{
             minWidth: '300px',
             minHeight: '25px',
-            background: '#f6f8fa',
+            background: 'hsl(230, 1%, 98%)', // Custom color
             padding: '1em',
             borderRadius: '5px',
             border: '1px solid #ddd',
@@ -113,7 +117,7 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
           }}>{formattedCodeSnippet}</code>
         </pre>
         {loading && (
-          <animated.div style={fadeLoading} className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50">
+          <animated.div style={{...fadeLoading, borderRadius: '5px'}} className="absolute inset-0 flex flex-col items-center justify-center bg-cyan-500 bg-opacity-70">
             <Ping size={45} speed={2} color="white" />
             <p className="mt-2 text-white">{currentDescription}</p>
           </animated.div>
