@@ -67,9 +67,8 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
       loadPrismLanguage(language);
     } else {
       // Clear highlighting or reset the code snippet to its unhighlighted state
-      // This might involve setting the innerHTML of the codeRef element to its plain text
       if (codeRef.current) {
-        codeRef.current.innerHTML = formattedCodeSnippet;
+        codeRef.current.textContent = formattedCodeSnippet; // Use textContent for better performance and to avoid potential XSS vulnerabilities
       }
     }
   }, [formattedCodeSnippet, language, isSyntaxHighlightingEnabled]);
@@ -77,7 +76,9 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
   // Adjust styles based on isLineWrappingEnabled
   const codeStyle = {
     whiteSpace: isLineWrappingEnabled ? 'pre-wrap' : 'pre',
+    wordBreak: isLineWrappingEnabled ? 'normal' : 'break-all',
     overflowWrap: isLineWrappingEnabled ? 'break-word' : 'normal',
+    overflowX: 'auto', // Ensure horizontal scrolling is possible when line wrapping is disabled
   };
 
   return (
@@ -87,7 +88,6 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
       <CheckboxGroup
         value={[isSyntaxHighlightingEnabled ? "syntaxHighlighting" : "", isLineWrappingEnabled ? "lineWrapping" : ""].filter(Boolean)}
         onChange={(values) => {
-          console.log("Toggled Values:", values); // Add this line
           setIsSyntaxHighlightingEnabled(values.includes("syntaxHighlighting"));
           setIsLineWrappingEnabled(values.includes("lineWrapping"));
         }}
@@ -108,7 +108,8 @@ export default function CodeSnippetDisplay({ codeSnippet, loading, language = 'p
           }}>
           <code ref={codeRef} className={`language-${language}`} style={{
             whiteSpace: 'pre-wrap',
-            overflowWrap: 'break-word'
+            overflowWrap: 'break-word',
+            ...codeStyle
           }}>{formattedCodeSnippet}</code>
         </pre>
         {loading && (
