@@ -173,16 +173,6 @@
   }
   
   .system-message {
-    border-radius: 10px;
-    background-color: #e7f3fe;
-    color: #333;
-    text-align: left;
-    max-width: 95%;
-    margin-top: 10px;
-    margin-left: auto;
-    margin-right: auto;
-    border: 1px solid #b3d4fc;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     position: relative;
     display: flex;
     justify-content: center;
@@ -194,6 +184,15 @@
     margin: 0;
     box-sizing: border-box;
   }
+
+  .system-message pre,
+.system-message code {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  background: transparent;
+  border: none;
+}
   
   .system-message .message {
     margin: 10px;

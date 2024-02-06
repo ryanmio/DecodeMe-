@@ -1,6 +1,6 @@
 // components/ChatWithScript.js
 import React, { useState, useEffect, useRef } from 'react';
-import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Listbox, ListboxItem } from "@nextui-org/react";
+import { ScrollShadow, Textarea, Button as NextUIButton, Tooltip, Listbox, ListboxItem } from "@nextui-org/react";
 import { FaExpand } from 'react-icons/fa';
 import ReactMarkdown from 'react-markdown';
 import NewChatIcon from '../app/src/icons/newChatIcon';
