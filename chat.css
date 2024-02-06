@@ -99,22 +99,26 @@
     align-self: flex-start;
     float: left;
   }
+
+  .assistant-message pre code {
+    color: white;
+  }
   
   .message pre {
     background-color: #2d2d2d;
-    color: #f8f8f2;
     padding: 16px;
     border-radius: 8px;
     overflow-x: auto;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-    white-space: pre-wrap;
-    word-break: break-word;
     margin: 8px 0;
   }
   
   .message pre code {
     font-family: 'Courier New', Courier, monospace;
     display: block;
+    background: none;
+    white-space: pre-wrap;
+    word-break: break-word;
   }
   
   .icon-color {
@@ -192,6 +196,7 @@
   overflow-wrap: break-word;
   background: transparent;
   border: none;
+  color: white;
 }
   
   .system-message .message {
@@ -199,6 +204,8 @@
     padding: 10px;
     width: 95%;
     box-sizing: border-box;
+    background-color: #2d2d2d;
+    color: white;
   }
   
   
