@@ -16,7 +16,15 @@ const usePlaySimilar = () => {
     // Set up "Play Similar" mode in local storage
     localStorage.setItem('selectedScriptForSimilarGame', JSON.stringify(selectedScript));
     localStorage.setItem('playSimilar', 'true');
-    
+
+    // Dispatch a custom event
+    window.dispatchEvent(new CustomEvent('playSimilarChanged', {
+      detail: {
+        playSimilar: true,
+        selectedScript
+      }
+    }));
+
     // Check if we're already on the home page to avoid unnecessary navigation
     if (router.pathname !== '/') {
       router.push('/');
