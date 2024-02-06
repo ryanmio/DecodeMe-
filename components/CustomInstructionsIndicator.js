@@ -23,10 +23,18 @@ const CustomInstructionsIndicator = ({ customInstructions }) => {
       setSelectedScript(null);
     };
 
+    const handlePlaySimilarChange = (event) => {
+      const { playSimilar, selectedScript } = event.detail;
+      setPlaySimilar(playSimilar);
+      setSelectedScript(selectedScript);
+    };
+
     window.addEventListener('storageCleared', handleStorageCleared);
+    window.addEventListener('playSimilarChanged', handlePlaySimilarChange);
 
     return () => {
       window.removeEventListener('storageCleared', handleStorageCleared);
+      window.removeEventListener('playSimilarChanged', handlePlaySimilarChange);
     };
   }, []);
 
