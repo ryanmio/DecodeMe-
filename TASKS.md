@@ -147,11 +147,11 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] Add a multistep loading description to the code fetch (generating... validating... etc...)
 - [x] wrap long lines in codesnippetdisplay
 - [x] play similar instructions are not being set correctly from the gameover component
+- [x] fix chat codeblock styles
+- [x] results share page needs primary button color
+- [x] share link needs max width
 - [ ] Hide chat on history render, open when chat needed
 - [ ] fix style of game mode selection arrows
-- [ ] fix chat codeblock styles
-- [ ] results share page needs primary button color
-- [ ] share link needs max width
 
 ### Testing
 - [ ] Test anonymous user flow
