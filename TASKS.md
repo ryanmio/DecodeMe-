@@ -3,7 +3,7 @@
 ## App Overview
 DecodeMe! is a web-based game that helps players understand code snippets in a fun and interactive way. Users can choose from multiple game modes including multiple-choice, open-ended questions, and a daily challenge.
 
-## Instructions for AI Agent (YOUR INSTRUCTIONS)
+## Instructions for AI Agent
 - The user is on MacOS using Visual Studio Code
 - The user prefers MacOS terminal
 - Never generate typescript even if the user provides an example in typescript
@@ -154,7 +154,7 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [ ] fix style of game mode selection arrows
 
 ### Testing
-- [ ] Test anonymous user flow
+- [x] Test anonymous user flow
 - [ ] UI tests for frontend
 - [ ] Test sign up flow
 
