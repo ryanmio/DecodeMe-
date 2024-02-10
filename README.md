@@ -1,6 +1,7 @@
 # DecodeMe!
 
 ## Project Overview
+DecodeMe! is a coding game with integrated language model.
 
 ## Tech Stack
 - Next.js
@@ -30,7 +31,6 @@
 ## Custom Instructions
 
 ## Safety Guardrails
-
 
 
 ## GPT Usage caps
