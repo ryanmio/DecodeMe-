@@ -95,9 +95,19 @@ const metadata = {
 };
 ```
 
+One drawback to server side rendering is the painfully slow time-to-first-byte. To make this more palatable I added a route-loading icon in the bottom right that animates during the server rendering wait time. The animation randomly switches between one of several visualized sorting algorithms including my favorites, heap, insert, and merge (examples below). I am really happy with how this turned out. I could watch sorting algorithms all day – I don't mind the route loading at all now. I almost wish it took longer sometimes!
+
 ## Learning Levels
+There are three difficulty settings built-in to the game to give users a quick way to control their experience. The difficult setting, which I'm calling 'learning levels', affect all aspects of the game, from the assistant messages to the code challenges. Importantly, the 'learning level' is implemented directly in the GPT functions. Put another way, the learning levels are implemented as custom instructions with corresponding prompting to adapt the gameplay difficulty, voice, and tone. An example of how the user's selected learning level effects the game play can be seen in the API calls below:
 
 ## Adaptive Learning based on User Performance
+The are two main ways the game adjusts itself autonomously based on the user's progress: in-game adjustments and between-game adjustments.
+
+In-game adjustments are more straightforward. When a user decodes a snippet correctly, the code generation agent is instructed to increase the difficult level for the following snippet. When a user answers a question incorrectly, the code generation agent is instructed to generate a similar question.
+
+Between-game difficulty adjusments include both system and user-directed adjustments. Starting with the latter, the user can set gameplay and assistant custom instructions to completely customize their gameplay. The end-game screen lists all the code snippets the user answered incorrectly and features 'play similar' and 'chat with assistant' functionalities. The history page shows all of the user's answered questions, including a module to review incorrect reponses and the same 'play more' and 'chat with assistant' functionality.
+
+There are also several between-game learning path features that are implemented server-side with cloud functions. After each game ends, cloud functions recalculate the user's lifetime stats including average accuracy, high score, total games played, and the distribution of games across different learning levels (beginner, intermediate, expert). These recalculated statistics are then updated in the user's profile to reflect their most recent gaming activity, ensuring that the learning experience is tailored to their progress and performance. Another cloud function calculates daily streaks and updates the game leaderboard.
 
 ## Minimalism
 
