@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 const ShareGameLink = ({ url }) => {
 
   const handleCopy = () => {
-    navigator.clipboard.writeText(url); // Use the Clipboard API to copy the text
+    navigator.clipboard.writeText(url);
     toast.success('Link copied to clipboard!');
   };
 
@@ -17,17 +17,17 @@ const ShareGameLink = ({ url }) => {
       alignItems: 'center', 
       fontSize: '0.8rem', 
       marginTop: '1rem',
-      maxWidth: '600px', // Set the maximum width for the entire component
-      width: '100%', // Ensure the component width is responsive
+      maxWidth: '600px',
+      width: '100%',
     }}>
       <Snippet text={url} symbol="" onCopy={handleCopy} width="100%" color="primary">
         <span style={{
-          maxWidth: 'calc(100% - 40px)', // Adjust the maxWidth to leave space for the copy button
-          display: 'inline-block', // Use inline-block for proper width application
-          overflow: 'hidden', // Hide the overflow
-          textOverflow: 'ellipsis', // Show ellipsis for overflow
-          whiteSpace: 'nowrap', // Keep the URL in a single line
-          verticalAlign: 'bottom' // Align the text with the copy button
+          maxWidth: 'calc(100% - 40px)',
+          display: 'inline-block',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          verticalAlign: 'bottom' 
         }}>
           {url}
         </span>
