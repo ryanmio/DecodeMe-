@@ -31,6 +31,8 @@
 
 ## Safety Guardrails
 
+
+
 ## GPT Usage caps
 
 ## SSR/SSG/ISR
@@ -110,8 +112,6 @@ Between-game difficulty adjusments include both system and user-directed adjustm
 There are also several between-game learning path features that are implemented server-side with cloud functions. After each game ends, cloud functions recalculate the user's lifetime stats including average accuracy, high score, total games played, and the distribution of games across different learning levels (beginner, intermediate, expert). These recalculated statistics are then updated in the user's profile to reflect their most recent gaming activity, ensuring that the learning experience is tailored to their progress and performance. Another cloud function calculates daily streaks and updates the game leaderboard.
 
 ## Minimalism
-
-## Gamification
 
 ## License
 This project is licensed under the MIT License. See [LICENSE](LICENSE) for more details.
