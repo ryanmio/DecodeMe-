@@ -32,7 +32,6 @@ DecodeMe! is a coding game with integrated language model.
 
 ## Safety Guardrails
 
-
 ## GPT Usage caps
 
 ## SSR/SSG/ISR
@@ -81,11 +80,11 @@ ISR allows us to update static content after the site has been built without nee
 
 By leveraging SSR, SSG, and ISR, the DecodeMe! app achieves a balance between dynamic content delivery, performance, and search engine optimization.
 
-## PageSpeed Insights 
+### PageSpeed Insights 
 https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=desktop
 
-## Dynamic SEO
-For each game result page, we dynamically generate metadata tags such as title, description, and Open Graph (OG) tags. This ensures that each shared result has its own unique metadata, improving its visibility and shareability on social media platforms and search engines.
+### Dynamic SEO
+Server side rendering allows DecodeMe! to generate dynamic metadata tags such as title, description, and Open Graph (OG) tags. This means that when a user shares their game results, the SEO and sharing metadata can be customized to the user's game results instead of being generic for the app.
 
 Example from results/[shareId].js:
 ```javacript
