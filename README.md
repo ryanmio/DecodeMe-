@@ -19,6 +19,8 @@ An agent is anything that can perceive its environment through sensors and acts 
 
 #### Simple Reflex Agents
 These agents operate on a direct condition-action rule, meaning they choose actions based on the current percept, ignoring the rest of the percept history. The `CheckCustomInstructions` agent is a good example, as it reacts to user-submitted instructions without considering past interactions.
+[![Agent Diagram](https://media.geeksforgeeks.org/wp-content/cdn-uploads/ai3-1.png)](https://www.geeksforgeeks.org/agents-artificial-intelligence/)
+
 
 #### Model-Based Reflex Agents
 These agents maintain an internal state of the world based on the current and previous percepts. The `getCodeSnippet.js` function is an example of one model-based reflex agent within the DecodeMe! multi-agent system, tasked with generating coding challenges tailored to the user's current game mode, learning level, and interaction history. This agent perceives its environment through HTTP requests which convey user data such as the preferred game mode, learning level, and any custom instructions provided by the user. It then queries the OpenAI API to generate a code snippet that aligns with the percieved game enviornment.
