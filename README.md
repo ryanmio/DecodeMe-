@@ -115,6 +115,9 @@ By leveraging SSR, SSG, and ISR, the DecodeMe! app achieves a balance between dy
 
 ### PageSpeed Insights 
 https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=desktop
+<p align="center">
+  <img src="/public/images/lighthouse.png" alt="Lighthouse report showing all 100s" />
+</p>
 
 ### Dynamic SEO
 Server side rendering allows DecodeMe! to generate dynamic metadata tags such as title, description, and Open Graph (OG) tags. This means that when a user shares their game results, the SEO and sharing metadata can be customized to the user's game results instead of being generic for the app.
