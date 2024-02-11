@@ -18,10 +18,10 @@ An agent is anything that can perceive its environment through sensors and acts 
 ### Types of Agents in DecodeMe!
 
 <p align="center">
-  <a href="https://www.geeksforgeeks.org/agents-artificial-intelligence/">
+  <a href="https://www.geeksforgeeks.org/agents-artificial-intelligence/" target="_blank" rel="noopener noreferrer">
     <img src="https://media.geeksforgeeks.org/wp-content/cdn-uploads/ai3-1.png" alt="Simple Reflex Agents" width="45%"/>
   </a>
-  <a href="https://www.geeksforgeeks.org/agents-artificial-intelligence/">
+  <a href="https://www.geeksforgeeks.org/agents-artificial-intelligence/" target="_blank" rel="noopener noreferrer">
     <img src="https://media.geeksforgeeks.org/wp-content/uploads/art1.png" alt="Model-Based Reflex Agents" width="45%"/>
   </a>
 </p>
