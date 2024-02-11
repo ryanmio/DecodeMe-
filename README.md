@@ -32,8 +32,6 @@ An agent is anything that can perceive its environment through sensors and acts 
 #### Simple Reflex Agents
 These agents operate on a direct condition-action rule, meaning they choose actions based on the current percept, ignoring the rest of the percept history. The `CheckCustomInstructions` agent is a good example, as it reacts to user-submitted instructions without considering past interactions.
 
-
-
 #### Model-Based Reflex Agents
 These agents maintain an internal state of the world based on the current and previous percepts. The `getCodeSnippet.js` function is an example of one model-based reflex agent within the DecodeMe! multi-agent system, tasked with generating coding challenges tailored to the user's current game mode, learning level, and interaction history. This agent perceives its environment through HTTP requests which convey user data such as the preferred game mode, learning level, and any custom instructions provided by the user. It then queries the OpenAI API to generate a code snippet that aligns with the percieved game enviornment.
 
@@ -53,7 +51,8 @@ The implementation of agent commands will leverage function calling to interact 
 
 ## Chat Interface Module
 The `ChatWithScript.js` component and related cloud function `chatWithScript` operates by receiving user inputs and environmental contexts via HTTP requests, which it processes to understand the user's current state, needs, and progression within the game.
-The architecture of this module facilitates a continuous perception-action cycle, wherein the AI agent assimilates inputs from the user—ranging from queries to commands—and responds with customized feedback tailored to enhance the user's comprehension and proficiency. By implementing as a reusable React component, the game can simulate a persistent agent that interacts with the user across different stages of the game, despite the underlying mechanism being a constellation of cloud functions that process and act on environmental data.
+The architecture of this module facilitates a continuous perception-action cycle, wherein the AI agent assimilates inputs from the user—ranging from queries to commands—and responds with customized feedback tailored to enhance the user's comprehension and proficiency. By implementing as a reusable React component, the game can simulate a persistent agent that interacts with the user across different stages of the game, despite the underlying mechanism being a constellation of cloud functions that process and act on environmental data. This reusable component design also allows for contextually relevant conversation starters to be dynamically passed to the chat module.
+
 
 ## Modular Context Elements
 The chat interface is designed to allow users to add various context elements to enhance the conversation with the AI agent. Initially, the system supports adding code snippets as context elements, which in turn, the chat agent utilizes to generate responses that consider all added context elements. Other context elements will include past game questions, past chat logs, and personalized user notes called 'memories'.
@@ -69,6 +68,11 @@ Upon detection of an update to a user's custom instructions, the function execut
 The core of the safety assessment involves an API call to OpenAI, where the instruction is submitted for evaluation by a pre-trained model. This model is tasked with determining whether the instruction poses any risk of prompt injection, token smuggling, prompt leaking, or attempts to override established safety guardrails. The evaluation criteria are based on predefined safety protocols aimed at identifying patterns or content that could manipulate the AI's behavior or extract sensitive information.
 
 If the AI model deems the instruction "unsafe," the function proceeds to clear the problematic instruction from the user's custom instructions field. Additionally, it logs a warning in a dedicated Firestore collection, providing an audit trail of detected misuse attempts. The user is also notified that their instruction was found to be unsafe and has been removed, reinforcing the importance of adhering to the platform's safety guidelines.
+
+<p align="center">
+  <img src="/public/images/safety.png" alt="Safety Message" width="50%"/>
+</p>
+
 
 ## GPT Token Caps
 To ensure fair usage and protect against potential abuse and misuse of our system, DecodeMe! has implemented a GPT token cap mechanism. This mechanism is supported by four key functions: `initializeUserCaps.js`, `checkUsageData.js`, `resetUsageData.js`, and the token tracking within `chatWithScript.js`, which collectively set, monitor, and manage the number of tokens each user can consume.
