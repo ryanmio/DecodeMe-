@@ -131,7 +131,7 @@ const metadata = {
 
 One drawback to server side rendering is the painfully slow time-to-first-byte. To make this more palatable I added a route-loading icon in the bottom right that animates during the server rendering wait time. The animation randomly switches between one of several visualized sorting algorithms including my favorites, heap, insert, and merge (examples below). I am really happy with how this turned out. I could watch sorting algorithms all day – I don't mind the route loading at all now. I almost wish it took longer sometimes!
 
-![Merge Sort Visualization](/images/merge-sort.gif)
+![Merge Sort Visualization](/public/images/merge-sort.gif)
 ![Heap Sort Visualization](/images/heap-sort.gif)
 ![Insert Sort Visualization](/images/insert-sort.gif)
 
