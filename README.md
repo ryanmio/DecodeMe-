@@ -29,8 +29,6 @@ An agent is anything that can perceive its environment through sensors and acts 
   <em>Diagram 1: Simple Reflex Agents</em> &nbsp;&nbsp; | &nbsp;&nbsp; <em>Diagram 2: Model-Based Reflex Agents</em>
 </p>
 
-[![Agent Diagram](https://media.geeksforgeeks.org/wp-content/cdn-uploads/ai3-1.png)](https://www.geeksforgeeks.org/agents-artificial-intelligence/)
-
 #### Simple Reflex Agents
 These agents operate on a direct condition-action rule, meaning they choose actions based on the current percept, ignoring the rest of the percept history. The `CheckCustomInstructions` agent is a good example, as it reacts to user-submitted instructions without considering past interactions.
 
