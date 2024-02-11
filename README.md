@@ -131,9 +131,11 @@ const metadata = {
 
 One drawback to server side rendering is the painfully slow time-to-first-byte. To make this more palatable I added a route-loading icon in the bottom right that animates during the server rendering wait time. The animation randomly switches between one of several visualized sorting algorithms including my favorites, heap, insert, and merge (examples below). I am really happy with how this turned out. I could watch sorting algorithms all day – I don't mind the route loading at all now. I almost wish it took longer sometimes!
 
-![Merge Sort Visualization](/public/images/merge-sort.gif)
-![Heap Sort Visualization](/images/heap-sort.gif)
-![Insert Sort Visualization](/images/insert-sort.gif)
+<p align="center">
+  <img src="/public/images/merge-sort.gif" alt="Merge Sort Visualization" />
+  <img src="/public/images/heap-sort.gif" alt="Heap Sort Visualization" />
+  <img src="/public/images/insert-sort.gif" alt="Insert Sort Visualization" />
+</p>
 
 ## Learning Levels
 There are three difficulty settings built-in to the game to give users a quick way to control their experience. The difficult setting, which I'm calling 'learning levels', affect all aspects of the game, from the assistant messages to the code challenges. Importantly, the 'learning level' is implemented directly in the GPT functions. Put another way, the learning levels are implemented as custom instructions with corresponding prompting to adapt the gameplay difficulty, voice, and tone. An example of how the user's selected learning level effects the game play can be seen in the API calls below:
