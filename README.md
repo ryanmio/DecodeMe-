@@ -114,9 +114,12 @@ ISR allows us to update static content after the site has been built without nee
 By leveraging SSR, SSG, and ISR, the DecodeMe! app achieves a balance between dynamic content delivery, performance, and search engine optimization.
 
 ### PageSpeed Insights 
-https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=desktop
 <p align="center">
-  <img src="/public/images/lighthouse.png" alt="Lighthouse report showing all 100s" />
+  <a href="https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=desktop">
+    <img src="/public/images/lighthouse.png" alt="Lighthouse report showing all 100s" />
+  </a>
+  <br>
+  (<a href="https://pagespeed.web.dev/analysis/https-decodeme-app/t8rp5vvta9?form_factor=desktop">Link</a>)
 </p>
 
 ### Dynamic SEO
