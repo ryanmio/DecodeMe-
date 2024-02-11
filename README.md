@@ -1,5 +1,7 @@
-# DecodeMe!
+[![Play DecodeMe!](https://img.shields.io/badge/-Play%20DecodeMe!-26C6DA?style=for-the-badge)](https://decodeme.app/)
 
+<img src="public/android-chrome-512x512.png" align="right" alt="DecodeMe! Logo" width="150">
+     
 ## Project Overview
 DecodeMe! is a coding game with integrated language model. This is a work in progress.
 
