@@ -38,12 +38,10 @@ module.exports = {
   plugins: [
     nextui({
       themes: {
-        // Assuming you want to apply this to a default theme, which could be 'light' or 'dark'
-        light: { // or 'dark' if you want to apply it to the dark theme
+        light: {
           colors: {
             primary: {
               DEFAULT: '#26C6DA', // Cyan 400 as primary color
-              // Add other shades if necessary
             },
             // Define a custom gradient property for the theme if needed
             gradient: {
