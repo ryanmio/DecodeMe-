@@ -150,8 +150,6 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 - [x] fix chat codeblock styles
 - [x] results share page needs primary button color
 - [x] share link needs max width
-- [ ] Hide chat on history render, open when chat needed
-- [ ] fix style of game mode selection arrows
 
 ### Testing
 - [x] Test anonymous user flow
