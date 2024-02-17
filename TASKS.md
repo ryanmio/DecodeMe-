@@ -92,7 +92,16 @@ DecodeMe! is a web-based game that helps players understand code snippets in a f
 
 ### Future Release Features
 - [ ] Sidebar Mode for Chat
-- [ ] Open-ended mode
+- [ ] Implement Conversational Mode
+  - [ ] Update `GameModeSelection` to enable Conversational mode
+  - [ ] Create `ConversationalInput` component for text input
+  - [ ] Modify `getCodeSnippet.js` to handle conversational input
+  - [ ] Update `pages/index.js` to support Conversational mode
+    - [ ] Render `ConversationalInput` based on game mode
+    - [ ] Implement `handleConversationalSubmit` for processing user input
+  - [ ] Adjust OpenAI API call in `getCodeSnippet.js` for conversational logic
+  - [ ] Test Conversational mode functionality
+  - [ ] Ensure no impact on existing game modes
 - [ ] Daily challenge mode
 - [ ] sign-in with google/github
 - [ ] Support for other lanaguages aside from python
